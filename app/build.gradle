@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.y3p1_w1_d5_room_and_livedata'
+    namespace 'com.example.running_app'
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.y3p1_w1_d5_room_and_livedata"
+        applicationId "com.example.running_app"
         minSdk 29
         targetSdk 32
         versionCode 1

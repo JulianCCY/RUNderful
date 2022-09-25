@@ -79,4 +79,8 @@ dependencies {
 
     // Material 3
     implementation 'com.google.android.material:material:1.6.1'
+    // Icons
+    implementation "androidx.compose.material:material-icons-extended:$compose_ui_version"
+    // System UI
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.23.1"
 }

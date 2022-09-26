@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.*
@@ -17,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.running_app.ui.theme.*
@@ -36,10 +39,10 @@ fun MainScreen() {
             Quotes()
             FeatureGrids(
                 features = listOf(
-                    FeaturesUI("Weather", Icons.Sharp.WbSunny, Blue1, Blue2, Blue3), 
-                    FeaturesUI("Track Suggestions", Icons.Sharp.FollowTheSigns, Blue1, Blue2, Blue3),
-                    FeaturesUI("Statistics", Icons.Sharp.Insights, Blue1, Blue2, Blue3),
-                    FeaturesUI("Trainings", Icons.Sharp.FitnessCenter, Blue1, Blue2, Blue3),
+                    FeaturesUI("Weather", Icons.Sharp.WbSunny, Blue1, Blue2, Blue3, 1),
+                    FeaturesUI("Track Suggestions", Icons.Sharp.FollowTheSigns, Blue1, Blue2, Blue3, 2),
+                    FeaturesUI("Statistics", Icons.Sharp.Insights, Blue1, Blue2, Blue3, 3),
+                    FeaturesUI("Trainings", Icons.Sharp.FitnessCenter, Blue1, Blue2, Blue3, 4),
                 )
             )
         }
@@ -82,12 +85,13 @@ fun Greetings() {
         Column {
             Text(
                 text = date,
-                fontSize = 18.sp,
-                color = Orange1
+                fontFamily = FontFamily(Font(R.font.leaguegothic_regular)),
+                fontSize = 24.sp,
             )
             Text(
                 text = time,
-                fontSize = 90.sp,
+                fontFamily = FontFamily(Font(R.font.leaguegothic_regular)),
+                fontSize = 96.sp,
             )
         }
     }
@@ -104,7 +108,7 @@ fun Quotes() {
     ) {
         Text(
             text = "What a nice day to exercise.",
-            fontSize = 18.sp,
+            style = MaterialTheme.typography.body1
         )
     }
 }
@@ -191,6 +195,7 @@ fun FeatureItem(
         ) {
             Text(
                 text = feature.title,
+                style = MaterialTheme.typography.body2,
                 lineHeight = 24.sp,
                 modifier = Modifier
                     .align(Alignment.TopStart)

@@ -10,4 +10,5 @@ data class FeaturesUI(
     val lightColor: Color,
     val mediumColor: Color,
     val darkColor: Color,
+    val type: Int,
 )

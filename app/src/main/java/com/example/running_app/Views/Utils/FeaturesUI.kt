@@ -1,4 +1,4 @@
-package com.example.running_app
+package com.example.running_app.Views.Utils
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.Color

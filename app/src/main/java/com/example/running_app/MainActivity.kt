@@ -7,14 +7,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.example.running_app.Views.MainScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.running_app.views.MainScreen
 import com.example.running_app.ui.theme.Running_AppTheme
+import com.example.running_app.views.WeatherScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
             Running_AppTheme {
                 // A surface container using the 'background' color from the theme
                 rememberSystemUiController().setStatusBarColor(
@@ -24,7 +29,26 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainScreen()
+                    NavHost(navController, startDestination = "main") {
+                        composable("main") {
+                            MainScreen(navController)
+                        }
+                        composable("weather") {
+                            WeatherScreen()
+                        }
+                        composable("tracks") {
+
+                        }
+                        composable("stats") {
+
+                        }
+                        composable("training") {
+
+                        }
+                        composable("startRunning") {
+
+                        }
+                    }
                 }
             }
         }

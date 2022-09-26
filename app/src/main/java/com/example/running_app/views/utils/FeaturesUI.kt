@@ -1,6 +1,5 @@
-package com.example.running_app.Views.Utils
+package com.example.running_app.views.utils
 
-import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 

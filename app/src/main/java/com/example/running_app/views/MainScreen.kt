@@ -1,4 +1,4 @@
-package com.example.running_app.Views
+package com.example.running_app.views
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -22,14 +23,15 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.running_app.R
-import com.example.running_app.Views.Utils.FeaturesUI
+import com.example.running_app.views.utils.FeaturesUI
 import com.example.running_app.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .background(Light)
@@ -45,7 +47,8 @@ fun MainScreen() {
                     FeaturesUI("Track Suggestions", Icons.Sharp.FollowTheSigns, LightYellow1, LightYellow2, LightYellow3, 2),
                     FeaturesUI("Statistics", Icons.Sharp.Insights, LightViolet1, LightViolet2, LightViolet3, 3),
                     FeaturesUI("Trainings", Icons.Sharp.FitnessCenter, LightOrange1, LightOrange2, LightOrange3, 4),
-                )
+                ),
+                navController
             )
         }
     }
@@ -115,7 +118,7 @@ fun Quotes() {
     }
 }
 @Composable
-fun FeatureSection(features: List<FeaturesUI>) {
+fun FeatureSection(features: List<FeaturesUI>, navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -124,7 +127,7 @@ fun FeatureSection(features: List<FeaturesUI>) {
             modifier = Modifier
                 .align(Alignment.Center)
         ) {
-            FeatureGrids(features = features)
+            FeatureGrids(features = features, navController)
             Box(
                 modifier = Modifier
                     .size(120.dp)
@@ -148,7 +151,7 @@ fun FeatureSection(features: List<FeaturesUI>) {
 }
 
 @Composable
-fun FeatureGrids(features: List<FeaturesUI>) {
+fun FeatureGrids(features: List<FeaturesUI>, navController: NavController) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp),
@@ -156,14 +159,15 @@ fun FeatureGrids(features: List<FeaturesUI>) {
             .fillMaxWidth()
     ) {
         items(features.size) {
-            FeatureItem(feature = features[it])
+            FeatureItem(feature = features[it], navController)
         }
     }
 }
 
 @Composable
 fun FeatureItem(
-    feature: FeaturesUI
+    feature: FeaturesUI,
+    navController: NavController
 ) {
     if (feature.type == 1) {
         BoxWithConstraints(
@@ -176,6 +180,10 @@ fun FeatureItem(
                     clip = true
                 }
                 .background(feature.darkColor)
+                .selectable(
+                    selected = true,
+                    onClick = {navController.navigate("weather")}
+                )
         ) {
             val width = constraints.maxWidth
             val height = constraints.maxHeight

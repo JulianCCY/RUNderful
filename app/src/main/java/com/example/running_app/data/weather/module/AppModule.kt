@@ -1,6 +1,7 @@
-package com.example.running_app.data.weather
+package com.example.running_app.data.weather.module
 
 import android.app.Application
+import com.example.running_app.data.weather.api.WeatherApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.Module
@@ -18,7 +19,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWeatherApi():WeatherApi {
+    fun provideWeatherApi(): WeatherApi {
         return Retrofit.Builder()
             .baseUrl("https://api.open-meteo.com/")
             .addConverterFactory(MoshiConverterFactory.create())

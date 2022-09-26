@@ -1,5 +1,6 @@
-package com.example.running_app.data.weather
+package com.example.running_app.data.weather.api
 
+import com.example.running_app.data.weather.weatherData.WeatherDto
 import retrofit2.http.*
 
 // There is where we call the weather api from Open-Meteo Weather Forecast API

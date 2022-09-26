@@ -1,5 +1,10 @@
-package com.example.running_app.data.weather
+package com.example.running_app.data.weather.api
 
+import com.example.running_app.data.weather.display.WeatherData
+import com.example.running_app.data.weather.WeatherType
+import com.example.running_app.data.weather.weatherData.WeatherDataDto
+import com.example.running_app.data.weather.weatherData.WeatherDto
+import com.example.running_app.data.weather.weatherData.WeatherInfo
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

@@ -1,4 +1,4 @@
-package com.example.running_app.data.weather
+package com.example.running_app.data.weather.weatherData
 
 import retrofit2.http.*
 import com.squareup.moshi.Json

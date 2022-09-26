@@ -1,4 +1,4 @@
-package com.example.running_app.data.weather
+package com.example.running_app.data.weather.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -6,6 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.running_app.data.weather.LocationTracker
+import com.example.running_app.data.weather.WeatherRepository
+import com.example.running_app.data.weather.WeatherResource
+import com.example.running_app.data.weather.WeatherState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

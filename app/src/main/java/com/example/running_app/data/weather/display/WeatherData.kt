@@ -1,5 +1,6 @@
-package com.example.running_app.data.weather
+package com.example.running_app.data.weather.display
 
+import com.example.running_app.data.weather.WeatherType
 import java.time.LocalDateTime
 
 data class WeatherData(

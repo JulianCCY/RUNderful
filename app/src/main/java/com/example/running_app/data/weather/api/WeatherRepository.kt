@@ -1,6 +1,8 @@
 package com.example.running_app.data.weather
 
-import android.util.Log
+import com.example.running_app.data.weather.api.WeatherApi
+import com.example.running_app.data.weather.api.toWeatherInfo
+import com.example.running_app.data.weather.weatherData.WeatherInfo
 import javax.inject.Inject
 
 

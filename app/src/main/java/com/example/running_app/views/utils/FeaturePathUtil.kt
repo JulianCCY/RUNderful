@@ -1,4 +1,4 @@
-package com.example.running_app.views
+package com.example.running_app.views.utils
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path

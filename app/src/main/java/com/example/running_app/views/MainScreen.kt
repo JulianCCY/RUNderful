@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import com.example.running_app.R
 import com.example.running_app.views.utils.FeaturesUI
 import com.example.running_app.ui.theme.*
+import com.example.running_app.views.utils.quadFromTo
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,7 +35,7 @@ import java.util.*
 fun MainScreen(navController: NavController) {
     Box(
         modifier = Modifier
-            .background(Light)
+//            .background(Light)
             .fillMaxSize()
     ) {
         Column {

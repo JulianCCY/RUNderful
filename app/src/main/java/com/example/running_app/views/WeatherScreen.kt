@@ -3,6 +3,7 @@ package com.example.running_app.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Divider
@@ -10,15 +11,13 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.sharp.Air
-import androidx.compose.material.icons.sharp.Thermostat
-import androidx.compose.material.icons.sharp.WaterDrop
-import androidx.compose.material.icons.sharp.Waves
+import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -35,12 +34,7 @@ fun WeatherScreen() {
             .fillMaxSize()
     ) {
         CurrentWeather()
-//        Toggle(
-//            selection = "24hr",
-//            states = listOf(
-//                "24hr", "7days"
-//            )
-//        )
+        Switch()
     }
 }
 
@@ -48,11 +42,23 @@ fun WeatherScreen() {
 fun CurrentWeather() {
     Box(
         modifier = Modifier
-            .padding(15.dp)
+            .padding(horizontal = 15.dp)
             .fillMaxWidth()
-            .clip(CutCornerShape(10.dp))
-            .border(4.dp, Orange1, CutCornerShape(10.dp))
+//            .clip(CutCornerShape(20.dp))
+//            .border(4.dp, Orange1, CutCornerShape(20.dp))
     ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(20.dp)
+        ) {
+            Icon(
+                Icons.Sharp.NightsStay,
+                contentDescription = "Night",
+                modifier = Modifier
+                    .size(64.dp)
+            )
+        }
         Column(
             modifier = Modifier
                 .padding(15.dp)
@@ -62,17 +68,23 @@ fun CurrentWeather() {
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = "Last updated: ",
-                    style = MaterialTheme.typography.h3,
+                Icon(
+                    Icons.Sharp.Update,
+                    contentDescription = "LastUpdated",
+                    modifier = Modifier
+                        .size(24.dp)
                 )
+//                Text(
+//                    text = "Last updated: ",
+//                    style = MaterialTheme.typography.h3,
+//                )
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 80.dp)
+                    .padding(top = 10.dp, bottom = 80.dp)
             ) {
                 // Temperature
                 Text(
@@ -136,52 +148,42 @@ fun CurrentWeather() {
 }
 
 @Composable
-fun Toggle(
-    selection: String,
-    states: List<String>,
-    onToggleChange: (String) -> Unit = {}
-) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
+fun Switch() {
+    Column (
         modifier = Modifier
+            .padding(15.dp)
             .fillMaxWidth()
-            .height(IntrinsicSize.Min)
-            .clip(CutCornerShape(10.dp))
-            .border(4.dp, Orange1)
     ) {
-        states.forEachIndexed { index, state ->
-            val isSelected = selection.lowercase() == state.lowercase()
-            val backgroundTint = if (isSelected) Blue1 else Blue2
-
-            if (index != 0) {
-                Divider(
-                    color = Orange1,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(2.dp)
-                )
-            }
-            Row(
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+        ) {
+            Text(
+                text = "Hours",
+                style = MaterialTheme.typography.body2,
                 modifier = Modifier
-                    .background(backgroundTint)
-                    .padding(vertical = 6.dp, horizontal = 8.dp)
-                    .toggleable(
-                        value = isSelected,
-                        enabled = true,
-                        onValueChange = { selected ->
-                            if (selected) {
-                                onToggleChange(state)
-                            }
-                        }
+                    .selectable(
+                        selected = true,
+                        onClick = {}
                     )
-            ) {
-                Text(
-                    text = state,
-                    modifier = Modifier
-                        .padding(8.dp)
-                )
-            }
+            )
+            Text(
+                text = "Week",
+                style = MaterialTheme.typography.body2,
+                modifier = Modifier
+                    .selectable(
+                        selected = true,
+                        onClick = {}
+                    )
+            )
         }
+        Divider(
+            color = Orange1,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
     }
 }
 

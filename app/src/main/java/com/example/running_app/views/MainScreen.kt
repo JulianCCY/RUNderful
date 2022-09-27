@@ -47,7 +47,7 @@ fun MainScreen(navController: NavController) {
                     FeaturesUI("Weather", Icons.Sharp.WbSunny, LightGreen1, LightGreen2, LightGreen3, 1),
                     FeaturesUI("Track Suggestions", Icons.Sharp.FollowTheSigns, LightYellow1, LightYellow2, LightYellow3, 2),
                     FeaturesUI("Statistics", Icons.Sharp.Insights, LightViolet1, LightViolet2, LightViolet3, 3),
-                    FeaturesUI("Trainings", Icons.Sharp.FitnessCenter, LightOrange1, LightOrange2, LightOrange3, 4),
+                    FeaturesUI("Goals", Icons.Sharp.EmojiEvents, LightOrange1, LightOrange2, LightOrange3, 4),
                 ),
                 navController
             )

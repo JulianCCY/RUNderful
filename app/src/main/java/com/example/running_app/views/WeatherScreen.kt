@@ -58,6 +58,7 @@ fun CurrentWeather() {
             Icon(
                 Icons.Sharp.NightsStay,
                 contentDescription = "Night",
+                tint = MaterialTheme.colors.onSurface,
                 modifier = Modifier
                     .size(64.dp)
             )
@@ -94,11 +95,13 @@ fun CurrentWeather() {
                     text = "14",
                     fontFamily = FontFamily(Font(R.font.leaguegothic_regular)),
                     fontSize = 96.sp,
+                    color = Orange1,
                 )
                 // Description
                 Text(
                     text = "Partly Cloudy",
                     style = MaterialTheme.typography.body1,
+                    color = Orange2,
                 )
             }
             // Air pressure
@@ -109,11 +112,12 @@ fun CurrentWeather() {
                 Icon(
                     Icons.Sharp.Waves,
                     contentDescription = "AirPressure",
-//                    tint = Orange1,
+                    tint = MaterialTheme.colors.surface,
                 )
                 Text(
-                    text = "900 hpa",
+                    text = " 900 hpa",
                     style = MaterialTheme.typography.body2,
+                    color = MaterialTheme.colors.surface,
                 )
             }
             // Humidity
@@ -124,11 +128,12 @@ fun CurrentWeather() {
                 Icon(
                     Icons.Sharp.WaterDrop,
                     contentDescription = "Humidity",
-//                    tint = Orange1,
+                    tint = MaterialTheme.colors.surface,
                 )
                 Text(
-                    text = "50%",
+                    text = " 50%",
                     style = MaterialTheme.typography.body2,
+                    color = MaterialTheme.colors.surface,
                 )
             }
             // Wind speed
@@ -139,11 +144,12 @@ fun CurrentWeather() {
                 Icon(
                     Icons.Sharp.Air,
                     contentDescription = "WindSpeed",
-//                    tint = Orange1,
+                    tint = MaterialTheme.colors.surface,
                 )
                 Text(
-                    text = "8 km/h",
+                    text = " 8 km/h",
                     style = MaterialTheme.typography.body2,
+                    color = MaterialTheme.colors.surface,
                 )
             }
         }

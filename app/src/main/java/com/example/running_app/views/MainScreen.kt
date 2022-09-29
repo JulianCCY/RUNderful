@@ -170,340 +170,345 @@ fun FeatureItem(
     feature: FeaturesUI,
     navController: NavController
 ) {
-    if (feature.type == 1) {
-        BoxWithConstraints(
-            modifier = Modifier
-                .padding(10.dp)
-                .aspectRatio(1f)
-                .graphicsLayer {
-                    shadowElevation = 4.dp.toPx()
-                    shape = CutCornerShape(20.dp, 0.dp, 80.dp, 0.dp)
-                    clip = true
+    when (feature.type) {
+        1 -> {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .aspectRatio(1f)
+                    .graphicsLayer {
+                        shadowElevation = 4.dp.toPx()
+                        shape = CutCornerShape(20.dp, 0.dp, 80.dp, 0.dp)
+                        clip = true
+                    }
+                    .background(feature.darkColor)
+                    .selectable(
+                        selected = true,
+                        onClick = {navController.navigate("weather")}
+                    )
+            ) {
+                val width = constraints.maxWidth
+                val height = constraints.maxHeight
+
+                // Medium Color points
+                val mp1 = Offset(0f, height * 0.65f)
+                val mp2 = Offset(width * 0.2f, height * 0.2f)
+                val mp3 = Offset(width * 0.45f, height * 0.6f)
+                val mp4 = Offset(width * 0.85f, height * 0.05f)
+                val mp5 = Offset(width * 1.3f, height * 1.3f)
+
+                val mediumColorPath = Path().apply {
+                    moveTo(mp1.x, mp1.y)
+                    quadFromTo(mp1, mp2)
+                    quadFromTo(mp2, mp3)
+                    quadFromTo(mp3, mp4)
+                    quadFromTo(mp4, mp5)
+                    lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+                    lineTo(-100f, height.toFloat() + 100f)
+                    close()
                 }
-                .background(feature.darkColor)
-                .selectable(
-                    selected = true,
-                    onClick = {navController.navigate("weather")}
-                )
-        ) {
-            val width = constraints.maxWidth
-            val height = constraints.maxHeight
+                // Light Color points
+                val lp1 = Offset(0f, height * 0.7f)
+                val lp2 = Offset(width * 0.2f, height * 0.3f)
+                val lp3 = Offset(width * 0.4f, height * 0.85f)
+                val lp4 = Offset(width * 0.8f, height * 0.4f)
+                val lp5 = Offset(width * 1.4f, height * 1.3f)
 
-            // Medium Color points
-            val mp1 = Offset(0f, height * 0.65f)
-            val mp2 = Offset(width * 0.2f, height * 0.2f)
-            val mp3 = Offset(width * 0.45f, height * 0.6f)
-            val mp4 = Offset(width * 0.85f, height * 0.05f)
-            val mp5 = Offset(width * 1.3f, height * 1.3f)
-
-            val mediumColorPath = Path().apply {
-                moveTo(mp1.x, mp1.y)
-                quadFromTo(mp1, mp2)
-                quadFromTo(mp2, mp3)
-                quadFromTo(mp3, mp4)
-                quadFromTo(mp4, mp5)
-                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-                lineTo(-100f, height.toFloat() + 100f)
-                close()
-            }
-            // Light Color points
-            val lp1 = Offset(0f, height * 0.7f)
-            val lp2 = Offset(width * 0.2f, height * 0.3f)
-            val lp3 = Offset(width * 0.4f, height * 0.85f)
-            val lp4 = Offset(width * 0.8f, height * 0.4f)
-            val lp5 = Offset(width * 1.4f, height * 1.3f)
-
-            val lightColorPath = Path().apply {
-                moveTo(lp1.x, lp1.y)
-                quadFromTo(lp1, lp2)
-                quadFromTo(lp2, lp3)
-                quadFromTo(lp3, lp4)
-                quadFromTo(lp4, lp5)
-                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-                lineTo(-100f, height.toFloat() + 100f)
-                close()
-            }
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                drawPath(
-                    path = mediumColorPath,
-                    color = feature.mediumColor
-                )
-                drawPath(
-                    path = lightColorPath,
-                    color = feature.lightColor
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(15.dp)
-            ) {
-                Text(
-                    text = feature.title,
-                    style = MaterialTheme.typography.body2,
-                    lineHeight = 24.sp,
+                val lightColorPath = Path().apply {
+                    moveTo(lp1.x, lp1.y)
+                    quadFromTo(lp1, lp2)
+                    quadFromTo(lp2, lp3)
+                    quadFromTo(lp3, lp4)
+                    quadFromTo(lp4, lp5)
+                    lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+                    lineTo(-100f, height.toFloat() + 100f)
+                    close()
+                }
+                Canvas(
                     modifier = Modifier
-                        .align(Alignment.TopStart)
-                )
-                Icon(
-                    feature.icon,
-                    contentDescription = feature.title,
+                        .fillMaxSize()
+                ) {
+                    drawPath(
+                        path = mediumColorPath,
+                        color = feature.mediumColor
+                    )
+                    drawPath(
+                        path = lightColorPath,
+                        color = feature.lightColor
+                    )
+                }
+                Box(
                     modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .size(36.dp)
-                )
+                        .fillMaxSize()
+                        .padding(15.dp)
+                ) {
+                    Text(
+                        text = feature.title,
+                        style = MaterialTheme.typography.body2,
+                        lineHeight = 24.sp,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                    )
+                    Icon(
+                        feature.icon,
+                        contentDescription = feature.title,
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .size(36.dp)
+                    )
+                }
             }
         }
-    } else if (feature.type == 2) {
-        BoxWithConstraints(
-            modifier = Modifier
-                .padding(10.dp)
-                .aspectRatio(1f)
-                .graphicsLayer {
-                    shadowElevation = 4.dp.toPx()
-                    shape = CutCornerShape(0.dp, 20.dp, 0.dp, 80.dp)
-                    clip = true
+        2 -> {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .aspectRatio(1f)
+                    .graphicsLayer {
+                        shadowElevation = 4.dp.toPx()
+                        shape = CutCornerShape(0.dp, 20.dp, 0.dp, 80.dp)
+                        clip = true
+                    }
+                    .background(feature.darkColor)
+            ) {
+                val width = constraints.maxWidth
+                val height = constraints.maxHeight
+
+                // Medium Color points
+                val mp1 = Offset(0f, height * 0.4f)
+                val mp2 = Offset(width * 0.25f, height * 0.25f)
+                val mp3 = Offset(width * 0.45f, height * 0.6f)
+                val mp4 = Offset(width * 0.85f, height * 0.2f)
+                val mp5 = Offset(width * 1.3f, height * 1.3f)
+
+                val mediumColorPath = Path().apply {
+                    moveTo(mp1.x, mp1.y)
+                    quadFromTo(mp1, mp2)
+                    quadFromTo(mp2, mp3)
+                    quadFromTo(mp3, mp4)
+                    quadFromTo(mp4, mp5)
+                    lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+                    lineTo(-100f, height.toFloat() + 100f)
+                    close()
                 }
-                .background(feature.darkColor)
-        ) {
-            val width = constraints.maxWidth
-            val height = constraints.maxHeight
 
-            // Medium Color points
-            val mp1 = Offset(0f, height * 0.4f)
-            val mp2 = Offset(width * 0.25f, height * 0.25f)
-            val mp3 = Offset(width * 0.45f, height * 0.6f)
-            val mp4 = Offset(width * 0.85f, height * 0.2f)
-            val mp5 = Offset(width * 1.3f, height * 1.3f)
+                val lp1 = Offset(0f, height * 0.7f)
+                val lp2 = Offset(width * 0.2f, height * 0.8f)
+                val lp3 = Offset(width * 0.5f, height * 0.85f)
+                val lp4 = Offset(width * 0.8f, height * 0.4f)
+                val lp5 = Offset(width * 1.4f, height * 1.3f)
 
-            val mediumColorPath = Path().apply {
-                moveTo(mp1.x, mp1.y)
-                quadFromTo(mp1, mp2)
-                quadFromTo(mp2, mp3)
-                quadFromTo(mp3, mp4)
-                quadFromTo(mp4, mp5)
-                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-                lineTo(-100f, height.toFloat() + 100f)
-                close()
-            }
-
-            val lp1 = Offset(0f, height * 0.7f)
-            val lp2 = Offset(width * 0.2f, height * 0.8f)
-            val lp3 = Offset(width * 0.5f, height * 0.85f)
-            val lp4 = Offset(width * 0.8f, height * 0.4f)
-            val lp5 = Offset(width * 1.4f, height * 1.3f)
-
-            val lightColorPath = Path().apply {
-                moveTo(lp1.x, lp1.y)
-                quadFromTo(lp1, lp2)
-                quadFromTo(lp2, lp3)
-                quadFromTo(lp3, lp4)
-                quadFromTo(lp4, lp5)
-                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-                lineTo(-100f, height.toFloat() + 100f)
-                close()
-            }
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                drawPath(
-                    path = mediumColorPath,
-                    color = feature.mediumColor
-                )
-                drawPath(
-                    path = lightColorPath,
-                    color = feature.lightColor
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(15.dp)
-            ) {
-                Text(
-                    text = feature.title,
-                    style = MaterialTheme.typography.body2,
-                    lineHeight = 24.sp,
+                val lightColorPath = Path().apply {
+                    moveTo(lp1.x, lp1.y)
+                    quadFromTo(lp1, lp2)
+                    quadFromTo(lp2, lp3)
+                    quadFromTo(lp3, lp4)
+                    quadFromTo(lp4, lp5)
+                    lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+                    lineTo(-100f, height.toFloat() + 100f)
+                    close()
+                }
+                Canvas(
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
-                )
-                Icon(
-                    feature.icon,
-                    contentDescription = feature.title,
+                        .fillMaxSize()
+                ) {
+                    drawPath(
+                        path = mediumColorPath,
+                        color = feature.mediumColor
+                    )
+                    drawPath(
+                        path = lightColorPath,
+                        color = feature.lightColor
+                    )
+                }
+                Box(
                     modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .size(36.dp)
-                )
+                        .fillMaxSize()
+                        .padding(15.dp)
+                ) {
+                    Text(
+                        text = feature.title,
+                        style = MaterialTheme.typography.body2,
+                        lineHeight = 24.sp,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                    )
+                    Icon(
+                        feature.icon,
+                        contentDescription = feature.title,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(36.dp)
+                    )
+                }
             }
         }
-    } else if (feature.type == 3) {
-        BoxWithConstraints(
-            modifier = Modifier
-                .padding(10.dp)
-                .aspectRatio(1f)
-                .graphicsLayer {
-                    shadowElevation = 4.dp.toPx()
-                    shape = CutCornerShape(0.dp, 80.dp, 0.dp, 20.dp)
-                    clip = true
+        3 -> {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .aspectRatio(1f)
+                    .graphicsLayer {
+                        shadowElevation = 4.dp.toPx()
+                        shape = CutCornerShape(0.dp, 80.dp, 0.dp, 20.dp)
+                        clip = true
+                    }
+                    .background(feature.darkColor)
+            ) {
+                val width = constraints.maxWidth
+                val height = constraints.maxHeight
+
+                // Medium Color points
+                val mp1 = Offset(0f, height * 0.35f)
+                val mp2 = Offset(width * 0.15f, height * 0.45f)
+                val mp3 = Offset(width * 0.5f, height * 0.05f)
+                val mp4 = Offset(width * 0.7f, height * 0.7f)
+                val mp5 = Offset(width * 1.4f, -height.toFloat())
+
+                val mediumColorPath = Path().apply {
+                    moveTo(mp1.x, mp1.y)
+                    quadFromTo(mp1, mp2)
+                    quadFromTo(mp2, mp3)
+                    quadFromTo(mp3, mp4)
+                    quadFromTo(mp4, mp5)
+                    lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+                    lineTo(-100f, height.toFloat() + 100f)
+                    close()
                 }
-                .background(feature.darkColor)
-        ) {
-            val width = constraints.maxWidth
-            val height = constraints.maxHeight
 
-            // Medium Color points
-            val mp1 = Offset(0f, height * 0.35f)
-            val mp2 = Offset(width * 0.15f, height * 0.45f)
-            val mp3 = Offset(width * 0.5f, height * 0.05f)
-            val mp4 = Offset(width * 0.7f, height * 0.7f)
-            val mp5 = Offset(width * 1.4f, -height.toFloat())
+                val lp1 = Offset(0f, height * 0.4f)
+                val lp2 = Offset(width * 0.1f, height * 0.5f)
+                val lp3 = Offset(width * 0.4f, height * 0.35f)
+                val lp4 = Offset(width * 0.65f, height.toFloat())
+                val lp5 = Offset(width * 1.4f, -height.toFloat()/3f)
 
-            val mediumColorPath = Path().apply {
-                moveTo(mp1.x, mp1.y)
-                quadFromTo(mp1, mp2)
-                quadFromTo(mp2, mp3)
-                quadFromTo(mp3, mp4)
-                quadFromTo(mp4, mp5)
-                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-                lineTo(-100f, height.toFloat() + 100f)
-                close()
-            }
-
-            val lp1 = Offset(0f, height * 0.4f)
-            val lp2 = Offset(width * 0.1f, height * 0.5f)
-            val lp3 = Offset(width * 0.4f, height * 0.35f)
-            val lp4 = Offset(width * 0.65f, height.toFloat())
-            val lp5 = Offset(width * 1.4f, -height.toFloat()/3f)
-
-            val lightColorPath = Path().apply {
-                moveTo(lp1.x, lp1.y)
-                quadFromTo(lp1, lp2)
-                quadFromTo(lp2, lp3)
-                quadFromTo(lp3, lp4)
-                quadFromTo(lp4, lp5)
-                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-                lineTo(-100f, height.toFloat() + 100f)
-                close()
-            }
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                drawPath(
-                    path = mediumColorPath,
-                    color = feature.mediumColor
-                )
-                drawPath(
-                    path = lightColorPath,
-                    color = feature.lightColor
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(15.dp)
-            ) {
-                Text(
-                    text = feature.title,
-                    style = MaterialTheme.typography.body2,
-                    lineHeight = 24.sp,
+                val lightColorPath = Path().apply {
+                    moveTo(lp1.x, lp1.y)
+                    quadFromTo(lp1, lp2)
+                    quadFromTo(lp2, lp3)
+                    quadFromTo(lp3, lp4)
+                    quadFromTo(lp4, lp5)
+                    lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+                    lineTo(-100f, height.toFloat() + 100f)
+                    close()
+                }
+                Canvas(
                     modifier = Modifier
-                        .align(Alignment.BottomStart)
-                )
-                Icon(
-                    feature.icon,
-                    contentDescription = feature.title,
+                        .fillMaxSize()
+                ) {
+                    drawPath(
+                        path = mediumColorPath,
+                        color = feature.mediumColor
+                    )
+                    drawPath(
+                        path = lightColorPath,
+                        color = feature.lightColor
+                    )
+                }
+                Box(
                     modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .size(36.dp)
-                )
+                        .fillMaxSize()
+                        .padding(15.dp)
+                ) {
+                    Text(
+                        text = feature.title,
+                        style = MaterialTheme.typography.body2,
+                        lineHeight = 24.sp,
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                    )
+                    Icon(
+                        feature.icon,
+                        contentDescription = feature.title,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .size(36.dp)
+                    )
+                }
             }
         }
-    } else if (feature.type == 4) {
-        BoxWithConstraints(
-            modifier = Modifier
-                .padding(10.dp)
-                .aspectRatio(1f)
-                .graphicsLayer {
-                    shadowElevation = 4.dp.toPx()
-                    shape = CutCornerShape(80.dp, 0.dp, 20.dp, 0.dp)
-                    clip = true
+        4 -> {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .aspectRatio(1f)
+                    .graphicsLayer {
+                        shadowElevation = 4.dp.toPx()
+                        shape = CutCornerShape(80.dp, 0.dp, 20.dp, 0.dp)
+                        clip = true
+                    }
+                    .background(feature.darkColor)
+            ) {
+                val width = constraints.maxWidth
+                val height = constraints.maxHeight
+
+                // Medium Color points
+                val mp1 = Offset(0f, height * 0.8f)
+                val mp2 = Offset(width * 0.1f, height * 0.5f)
+                val mp3 = Offset(width * 0.4f, height * 0.05f)
+                val mp4 = Offset(width * 0.7f, height * 0.7f)
+                val mp5 = Offset(width * 1.4f, -height.toFloat())
+
+                val mediumColorPath = Path().apply {
+                    moveTo(mp1.x, mp1.y)
+                    quadFromTo(mp1, mp2)
+                    quadFromTo(mp2, mp3)
+                    quadFromTo(mp3, mp4)
+                    quadFromTo(mp4, mp5)
+                    lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+                    lineTo(-100f, height.toFloat() + 100f)
+                    close()
                 }
-                .background(feature.darkColor)
-        ) {
-            val width = constraints.maxWidth
-            val height = constraints.maxHeight
 
-            // Medium Color points
-            val mp1 = Offset(0f, height * 0.8f)
-            val mp2 = Offset(width * 0.1f, height * 0.5f)
-            val mp3 = Offset(width * 0.4f, height * 0.05f)
-            val mp4 = Offset(width * 0.7f, height * 0.7f)
-            val mp5 = Offset(width * 1.4f, -height.toFloat())
+                val lp1 = Offset(0f, height * 0.85f)
+                val lp2 = Offset(width * 0.1f, height * 0.6f)
+                val lp3 = Offset(width * 0.3f, height * 0.35f)
+                val lp4 = Offset(width * 0.65f, height * 0.9f)
+                val lp5 = Offset(width * 1.4f, -height.toFloat()/3f)
 
-            val mediumColorPath = Path().apply {
-                moveTo(mp1.x, mp1.y)
-                quadFromTo(mp1, mp2)
-                quadFromTo(mp2, mp3)
-                quadFromTo(mp3, mp4)
-                quadFromTo(mp4, mp5)
-                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-                lineTo(-100f, height.toFloat() + 100f)
-                close()
-            }
-
-            val lp1 = Offset(0f, height * 0.85f)
-            val lp2 = Offset(width * 0.1f, height * 0.6f)
-            val lp3 = Offset(width * 0.3f, height * 0.35f)
-            val lp4 = Offset(width * 0.65f, height * 0.9f)
-            val lp5 = Offset(width * 1.4f, -height.toFloat()/3f)
-
-            val lightColorPath = Path().apply {
-                moveTo(lp1.x, lp1.y)
-                quadFromTo(lp1, lp2)
-                quadFromTo(lp2, lp3)
-                quadFromTo(lp3, lp4)
-                quadFromTo(lp4, lp5)
-                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-                lineTo(-100f, height.toFloat() + 100f)
-                close()
-            }
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                drawPath(
-                    path = mediumColorPath,
-                    color = feature.mediumColor
-                )
-                drawPath(
-                    path = lightColorPath,
-                    color = feature.lightColor
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(15.dp)
-            ) {
-                Text(
-                    text = feature.title,
-                    style = MaterialTheme.typography.body2,
-                    lineHeight = 24.sp,
+                val lightColorPath = Path().apply {
+                    moveTo(lp1.x, lp1.y)
+                    quadFromTo(lp1, lp2)
+                    quadFromTo(lp2, lp3)
+                    quadFromTo(lp3, lp4)
+                    quadFromTo(lp4, lp5)
+                    lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+                    lineTo(-100f, height.toFloat() + 100f)
+                    close()
+                }
+                Canvas(
                     modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                )
-                Icon(
-                    feature.icon,
-                    contentDescription = feature.title,
+                        .fillMaxSize()
+                ) {
+                    drawPath(
+                        path = mediumColorPath,
+                        color = feature.mediumColor
+                    )
+                    drawPath(
+                        path = lightColorPath,
+                        color = feature.lightColor
+                    )
+                }
+                Box(
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .size(36.dp)
-                )
+                        .fillMaxSize()
+                        .padding(15.dp)
+                ) {
+                    Text(
+                        text = feature.title,
+                        style = MaterialTheme.typography.body2,
+                        lineHeight = 24.sp,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                    )
+                    Icon(
+                        feature.icon,
+                        contentDescription = feature.title,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .size(36.dp)
+                    )
+                }
             }
         }
     }

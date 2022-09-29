@@ -1,6 +1,5 @@
-package com.example.running_app.data.weather
+package com.example.running_app.data.weather.display
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -11,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.running_app.data.weather.DailyWeatherState
+import com.example.running_app.data.weather.WeatherState
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 

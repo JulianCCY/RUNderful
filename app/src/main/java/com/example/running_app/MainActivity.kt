@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 
 import androidx.compose.ui.Modifier
@@ -20,7 +19,6 @@ import androidx.compose.material.Surface
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.running_app.data.weather.WeatherCard
 import com.example.running_app.views.MainScreen
 import com.example.running_app.ui.theme.Running_AppTheme
 import com.example.running_app.views.RunningScreen
@@ -47,45 +45,38 @@ class MainActivity : ComponentActivity() {
             Manifest.permission.ACCESS_COARSE_LOCATION,
         ))
         setContent {
+            val navController = rememberNavController()
+            Running_AppTheme {
+                // A surface container using the 'background' color from the theme
+                rememberSystemUiController().setStatusBarColor(
+                    color = MaterialTheme.colors.background
+                )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    NavHost(navController, startDestination = "main") {
+                        composable("main") {
+                            MainScreen(navController)
+                        }
+                        composable("weather") {
+                            WeatherScreen(weatherViewModel, dailyWeatherViewModel)
+                        }
+                        composable("tracks") {
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                WeatherCard(weatherViewModel.state, dailyWeatherViewModel.dailyState)
+                        }
+                        composable("stats") {
+
+                        }
+                        composable("training") {
+
+                        }
+                        composable("startRunning") {
+                            RunningScreen()
+                        }
+                    }
+                }
             }
-//            val navController = rememberNavController()
-//            Running_AppTheme {
-//                // A surface container using the 'background' color from the theme
-//                rememberSystemUiController().setStatusBarColor(
-//                    color = MaterialTheme.colors.background
-//                )
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colors.background
-//                ) {
-//                    NavHost(navController, startDestination = "main") {
-//                        composable("main") {
-//                            MainScreen(navController)
-//                        }
-//                        composable("weather") {
-//                            WeatherScreen(weatherViewModel, dailyWeatherViewModel)
-//                        }
-//                        composable("tracks") {
-//
-//                        }
-//                        composable("stats") {
-//
-//                        }
-//                        composable("training") {
-//
-//                        }
-//                        composable("startRunning") {
-//                            RunningScreen()
-//                        }
-//                    }
-//                }
-//            }
         }
     }
 }

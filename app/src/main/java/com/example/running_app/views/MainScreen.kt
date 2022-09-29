@@ -139,6 +139,10 @@ fun FeatureSection(features: List<FeaturesUI>, navController: NavController) {
                         clip = true
                     }
                     .background(Orange1)
+                    .selectable(
+                        selected = true,
+                        onClick = {navController.navigate("startRunning")}
+                    )
             ) {
                 Text(
                     text = "Start",

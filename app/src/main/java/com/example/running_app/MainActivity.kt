@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.running_app.views.MainScreen
 import com.example.running_app.ui.theme.Running_AppTheme
+import com.example.running_app.views.RunningScreen
 import com.example.running_app.views.WeatherScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
 
                         }
                         composable("startRunning") {
-
+                            RunningScreen()
                         }
                     }
                 }

@@ -3,9 +3,11 @@ package com.example.running_app.views
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.Font
@@ -24,6 +26,8 @@ fun RunningScreen() {
             .fillMaxSize()
     ) {
         CounterDisplay()
+        StatsDisplay()
+        Spacer(modifier = Modifier.height(150.dp))
         Buttons()
     }
 }
@@ -34,7 +38,6 @@ fun CounterDisplay(runningViewModel: RunningViewModel = viewModel()) {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(horizontal = 15.dp)
             .fillMaxWidth()
     ) {
         Text(
@@ -42,6 +45,33 @@ fun CounterDisplay(runningViewModel: RunningViewModel = viewModel()) {
             fontFamily = FontFamily(Font(R.font.leaguegothic_regular)),
             fontSize = 96.sp,
             color = Orange1,
+        )
+    }
+}
+
+@Composable
+fun StatsDisplay(runningViewModel: RunningViewModel = viewModel()) {
+    Column(
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+    ) {
+        Text(
+            text = "Total steps: 00000",
+            style = MaterialTheme.typography.body1
+        )
+        Text(
+            text = "Distance travelled: 00 km",
+            style = MaterialTheme.typography.body1
+        )
+        Text(
+            text = "Avg. velocity: 00 km/h",
+            style = MaterialTheme.typography.body1
+        )
+        Text(
+            text = "Avg. heart rate: 00 bpm",
+            style = MaterialTheme.typography.body1
         )
     }
 }
@@ -66,11 +96,18 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
             },
             modifier = Modifier
                 .clip(CutCornerShape(10.dp))
+                .width(100.dp)
         ) {
             if (pauseResume == "pause") {
-                Text(text = "Pause")
+                Text(
+                    text = "Pause",
+                    style = MaterialTheme.typography.body2
+                )
             } else if (pauseResume == "resume") {
-                Text(text = "Resume")
+                Text(
+                    text = "Resume",
+                    style = MaterialTheme.typography.body2
+                )
             }
         }
         Button(
@@ -79,8 +116,12 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
             },
             modifier = Modifier
                 .clip(CutCornerShape(10.dp))
+                .width(100.dp)
         ) {
-            Text(text = "Finish")
+            Text(
+                text = "Finish",
+                style = MaterialTheme.typography.body2
+            )
         }
     }
 }

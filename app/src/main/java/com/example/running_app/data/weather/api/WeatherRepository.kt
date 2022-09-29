@@ -1,7 +1,6 @@
-package com.example.running_app.data.weather
+package com.example.running_app.data.weather.api
 
-import com.example.running_app.data.weather.api.WeatherApi
-import com.example.running_app.data.weather.api.toWeatherInfo
+import com.example.running_app.data.weather.WeatherResource
 import com.example.running_app.data.weather.weatherData.WeatherInfo
 import javax.inject.Inject
 
@@ -14,7 +13,10 @@ class WeatherRepositoryImp @Inject constructor(
     private val myApi: WeatherApi
 ): WeatherRepository {
 
-    override suspend fun getWeatherData(lat: Double, long: Double): WeatherResource<WeatherInfo> {
+    override suspend fun getWeatherData(
+        lat: Double,
+        long: Double
+    ): WeatherResource<WeatherInfo> {
         return try {
             WeatherResource.Success(
                 data = myApi.getWeatherData(

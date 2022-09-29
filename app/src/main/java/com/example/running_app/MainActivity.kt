@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.running_app.data.weather.WeatherCard
-import com.example.running_app.data.weather.WeatherForecasting
+import com.example.running_app.data.weather.display.DailyWeatherForecasting
+import com.example.running_app.data.weather.display.WeatherForecasting
+import com.example.running_app.data.weather.viewmodel.DailyWeatherViewModel
 import com.example.running_app.data.weather.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val weatherViewModel: WeatherViewModel by viewModels()
+    private val dailyWeatherViewModel: DailyWeatherViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +33,7 @@ class MainActivity : ComponentActivity() {
             ActivityResultContracts.RequestMultiplePermissions()
         ){
             weatherViewModel.loadWeatherInfo()
+            dailyWeatherViewModel.loadDailyWeatherInfo()
         }
         permissionLauncher.launch(arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -41,9 +45,11 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                WeatherCard(weatherViewModel.state)
+                WeatherCard(weatherViewModel.state, dailyWeatherViewModel.dailyState)
                 Spacer(modifier = Modifier.height(16.dp))
                 WeatherForecasting(weatherViewModel.state)
+                Spacer(modifier = Modifier.height(10.dp))
+                DailyWeatherForecasting(dailyWeatherViewModel.dailyState)
             }
             
         }

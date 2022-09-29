@@ -1,8 +1,8 @@
 package com.example.running_app.data.weather.module
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import com.example.running_app.data.weather.InitLocationTracker
-import com.example.running_app.data.weather.LocationTracker
+import com.example.running_app.data.weather.location.InitLocationTracker
+import com.example.running_app.data.weather.location.LocationTracker
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

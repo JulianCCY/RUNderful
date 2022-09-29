@@ -17,7 +17,7 @@ import kotlin.math.roundToInt
 @Composable
 fun WeatherCard(
     state: WeatherState,
-    modifier: Modifier = Modifier
+    dailyState: DailyWeatherState,
 ){
     state.weatherInfo?.currentWeatherData?.let {
         Card(
@@ -40,51 +40,93 @@ fun WeatherCard(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "${it.temperatureCelsius.roundToInt()}°",
-                    fontSize = 50.sp,
+                    fontSize = 25.sp,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "apparent ${it.apparentTemperatureCelsius.roundToInt()}°",
-                    fontSize = 30.sp,
+                    fontSize = 15.sp,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(){
+                    Text(
+                        text = "sunrise " + "${dailyState.weatherInfo?.todayWeatherData?.sunrise_time?.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+                        fontSize = 15.sp,
+                        color = Color.White
+                    )
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Text(
+                        text = "sunrise " + "${dailyState.weatherInfo?.todayWeatherData?.sunset_time?.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+                        fontSize = 15.sp,
+                        color = Color.White
+                    )
+
+
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Row() {
+                    Text(
+                        text = "min " + "${dailyState.weatherInfo?.todayWeatherData?.temperatureCelsius_min?.roundToInt()}°",
+                        fontSize = 15.sp,
+                        color = Color.White
+                    )
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Text(
+                        text = "max " + "${dailyState.weatherInfo?.todayWeatherData?.temperatureCelsius_max?.roundToInt()}°",
+                        fontSize = 15.sp,
+                        color = Color.White
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = it.weatherType.weatherDesc,
+                    fontSize = 15.sp,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = it.weatherType.weatherDesc,
-                    fontSize = 20.sp,
+                    text = "daily ${dailyState.weatherInfo?.todayWeatherData?.daily_weatherType?.weatherDesc}",
+                    fontSize = 15.sp,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "air pressure " + it.pressure.roundToInt().toString() + "hpa",
-                    fontSize = 20.sp,
+                    fontSize = 15.sp,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "relative humidity " + it.humidity.roundToInt().toString() + "%",
-                    fontSize = 20.sp,
+                    fontSize = 15.sp,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "wind speed " + it.windSpeed.roundToInt().toString() + "km/h",
-                    fontSize = 20.sp,
+                    fontSize = 15.sp,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "rainfall " + it.rain.toString() + "mm inch",
-                    fontSize = 20.sp,
+                    text = "rainfall " + "${(it.rain * 10).roundToInt()} " + "mm",
+                    fontSize = 15.sp,
                     color = Color.White
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "snowfall " + it.snowfall.toString() + "cm inch",
-                    fontSize = 20.sp,
-                    color = Color.White
-                )
+//                Spacer(modifier = Modifier.height(16.dp))
+//                Text(
+//                    text = "snowfall " + it.snowfall.toString() + "cm inch",
+//                    fontSize = 20.sp,
+//                    color = Color.White
+//                )
+
+
             }
         }
     }

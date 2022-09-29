@@ -1,4 +1,4 @@
-package com.example.running_app.data.weather
+package com.example.running_app.data.weather.location
 
 import android.Manifest
 import android.app.Application

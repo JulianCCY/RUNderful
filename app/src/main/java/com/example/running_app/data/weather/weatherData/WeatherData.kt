@@ -1,4 +1,4 @@
-package com.example.running_app.data.weather.display
+package com.example.running_app.data.weather.weatherData
 
 import com.example.running_app.data.weather.WeatherType
 import java.time.LocalDateTime

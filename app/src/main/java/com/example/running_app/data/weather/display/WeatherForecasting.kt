@@ -1,23 +1,13 @@
-@file:Suppress("UNUSED_EXPRESSION")
+package com.example.running_app.data.weather.display
 
-package com.example.running_app.data.weather
-
-import android.util.Log
-import android.widget.ScrollView
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.running_app.data.weather.TwentyFourHoursForecastingDisplay
+import com.example.running_app.data.weather.WeatherState
 import java.time.LocalDateTime
 
 @Composable
@@ -26,7 +16,7 @@ fun WeatherForecasting(
     modifier: Modifier = Modifier
 ) {
 //    state.weatherInfo?.weatherDataPerDay?.values?.toList()?.flatten()?.map { it }?.filter { it.time.hour >= LocalDateTime.now().hour || it.time.isAfter(LocalDateTime.now()) }?.slice(0..24)
-    state.weatherInfo?.weatherDataPerDay?.values?.toList()?.flatten()?.map { it }?.filter { it.time.hour >= LocalDateTime.now().hour || it.time.isAfter(LocalDateTime.now()) }?.slice(0..24)?.let {
+    state.weatherInfo?.weatherDataPerHour?.values?.toList()?.flatten()?.map { it }?.filter { it.time.hour >= LocalDateTime.now().hour || it.time.isAfter(LocalDateTime.now()) }?.slice(0..24)?.let {
         Column(
             modifier = Modifier
                 .fillMaxWidth()

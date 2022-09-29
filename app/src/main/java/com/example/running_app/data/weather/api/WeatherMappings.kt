@@ -1,13 +1,11 @@
 package com.example.running_app.data.weather.api
 
-import com.example.running_app.data.weather.display.WeatherData
 import com.example.running_app.data.weather.WeatherType
-import com.example.running_app.data.weather.weatherData.WeatherDataDto
-import com.example.running_app.data.weather.weatherData.WeatherDto
-import com.example.running_app.data.weather.weatherData.WeatherInfo
+import com.example.running_app.data.weather.weatherData.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+// mapping for hourly forecasting
 private data class IndexedWeatherData(
     val index: Int,
     val data: WeatherData
@@ -53,7 +51,7 @@ fun WeatherDto.toWeatherInfo(): WeatherInfo {
         it.time.hour == hour
     }
     return WeatherInfo(
-        weatherDataPerDay = weatherDataMap,
+        weatherDataPerHour = weatherDataMap,
         currentWeatherData = currentWeatherData
     )
 }

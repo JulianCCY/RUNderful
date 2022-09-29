@@ -1,11 +1,13 @@
 package com.example.running_app.views
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -32,7 +34,7 @@ fun CounterDisplay(runningViewModel: RunningViewModel = viewModel()) {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(15.dp)
+            .padding(horizontal = 15.dp)
             .fillMaxWidth()
     ) {
         Text(
@@ -46,24 +48,39 @@ fun CounterDisplay(runningViewModel: RunningViewModel = viewModel()) {
 
 @Composable
 fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
+    var pauseResume by remember { mutableStateOf("pause") }
+    runningViewModel.startCountTime()
     Column(
         modifier = Modifier
             .padding(10.dp)
     ) {
-        Button(onClick = {
-            runningViewModel.startCountTime()
-        }) {
-            Text(text = "Start")
+        Button(
+            onClick = {
+                if (pauseResume == "pause") {
+                    runningViewModel.pauseCountTime()
+                    pauseResume = "resume"
+                } else if (pauseResume == "resume") {
+                    runningViewModel.startCountTime()
+                    pauseResume = "pause"
+                }
+            },
+            modifier = Modifier
+                .clip(CutCornerShape(10.dp))
+        ) {
+            if (pauseResume == "pause") {
+                Text(text = "Pause")
+            } else if (pauseResume == "resume") {
+                Text(text = "Resume")
+            }
         }
-        Button(onClick = {
-            runningViewModel.pauseCountTime()
-        }) {
-            Text(text = "Pause")
-        }
-        Button(onClick = {
+        Button(
+            onClick = {
             runningViewModel.stopCountTime()
-        }) {
-            Text(text = "Stop")
+            },
+            modifier = Modifier
+                .clip(CutCornerShape(10.dp))
+        ) {
+            Text(text = "Finish")
         }
     }
 }

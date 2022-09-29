@@ -3,6 +3,7 @@ package com.example.running_app.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CutCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.running_app.R
 import com.example.running_app.ui.theme.*
+import com.example.running_app.viewModels.WeatherViewModel
 
 
 @Composable
@@ -187,10 +190,15 @@ fun Switch() {
     }
 }
 
-@Composable
-fun WeatherForecast() {
-
-}
+//@Composable
+//fun WeatherForecast(weatherViewModel: WeatherViewModel) {
+//    val forecastData = weatherViewModel.forecastData.observeAsState(listOf())
+//    LazyColumn{
+//        items(forecastData.value) {
+//
+//        }
+//    }
+//}
 
 @Composable
 fun DayWeather() {

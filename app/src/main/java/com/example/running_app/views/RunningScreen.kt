@@ -18,6 +18,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.R
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.viewModels.RunningViewModel
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun RunningScreen() {
@@ -27,8 +33,9 @@ fun RunningScreen() {
     ) {
         CounterDisplay()
         StatsDisplay()
-        Spacer(modifier = Modifier.height(150.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Buttons()
+//        MapView()
     }
 }
 
@@ -52,27 +59,70 @@ fun CounterDisplay(runningViewModel: RunningViewModel = viewModel()) {
 @Composable
 fun StatsDisplay(runningViewModel: RunningViewModel = viewModel()) {
     Column(
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(horizontal = 10.dp)
+            .padding(15.dp)
+            .fillMaxWidth()
     ) {
-        Text(
-            text = "Total steps: 00000",
-            style = MaterialTheme.typography.body1
-        )
-        Text(
-            text = "Distance travelled: 00 km",
-            style = MaterialTheme.typography.body1
-        )
-        Text(
-            text = "Avg. velocity: 00 km/h",
-            style = MaterialTheme.typography.body1
-        )
-        Text(
-            text = "Avg. heart rate: 00 bpm",
-            style = MaterialTheme.typography.body1
-        )
+        Row(
+
+        ) {
+            Column(
+                modifier = Modifier
+                    .width(150.dp)
+            ) {
+                Text(
+                    text = "Total steps",
+                    style = MaterialTheme.typography.body1
+                )
+                Text(
+                    text = "0000",
+                    style = MaterialTheme.typography.subtitle2
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .width(150.dp)
+            ) {
+                Text(
+                    text = "Distance travelled",
+                    style = MaterialTheme.typography.body1
+                )
+                Text(
+                    text = "00 km",
+                    style = MaterialTheme.typography.subtitle2
+                )
+            }
+        }
+        Row() {
+            Column(
+                modifier = Modifier
+                    .width(150.dp)
+            ) {
+                Text(
+                    text = "Avg. velocity",
+                    style = MaterialTheme.typography.body1
+                )
+                Text(
+                    text = "00 m/s",
+                    style = MaterialTheme.typography.subtitle2
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .width(150.dp)
+            ) {
+                Text(
+                    text = "Avg. heart rate",
+                    style = MaterialTheme.typography.body1
+                )
+                Text(
+                    text = "00 bpm",
+                    style = MaterialTheme.typography.subtitle2
+                )
+            }
+        }
     }
 }
 
@@ -81,8 +131,10 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
     var pauseResume by remember { mutableStateOf("pause") }
     runningViewModel.startCountTime()
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(10.dp)
+            .fillMaxWidth()
     ) {
         Button(
             onClick = {
@@ -96,17 +148,17 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
             },
             modifier = Modifier
                 .clip(CutCornerShape(10.dp))
-                .width(100.dp)
+                .width(200.dp)
         ) {
             if (pauseResume == "pause") {
                 Text(
                     text = "Pause",
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body1,
                 )
             } else if (pauseResume == "resume") {
                 Text(
                     text = "Resume",
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body1,
                 )
             }
         }
@@ -116,12 +168,31 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
             },
             modifier = Modifier
                 .clip(CutCornerShape(10.dp))
-                .width(100.dp)
+                .width(200.dp)
         ) {
             Text(
                 text = "Finish",
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.body1
             )
         }
+    }
+}
+
+@Composable
+fun MapView() {
+    val helsinki = LatLng(60.19, 24.94)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(helsinki, 10f)
+    }
+    GoogleMap(
+        modifier = Modifier
+            .fillMaxWidth(),
+        cameraPositionState = cameraPositionState
+    ) {
+        Marker(
+            state = MarkerState(position = helsinki),
+            title = "Helsinki",
+            snippet = "Marker in Helsinki",
+        )
     }
 }

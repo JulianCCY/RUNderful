@@ -52,23 +52,23 @@ val Typography = Typography(
     ),
     subtitle1 = TextStyle(
         fontFamily = Font1,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Normal,
         fontSize = 48.sp
     ),
     subtitle2 = TextStyle(
         fontFamily = Font1,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Normal,
         fontSize = 36.sp
     ),
     body1 = TextStyle(
         fontFamily = Font1,
         fontWeight = FontWeight.Normal,
-        fontSize = 30.sp
+        fontSize = 24.sp
     ),
     body2 = TextStyle(
         fontFamily = Font1,
         fontWeight = FontWeight.Normal,
-        fontSize = 24.sp
+        fontSize = 16.sp
     ),
 
     /* Other default text styles to override

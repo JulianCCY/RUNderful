@@ -114,7 +114,7 @@ fun Quotes() {
     ) {
         Text(
             text = "What a nice day to exercise.",
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.subtitle2
         )
     }
 }
@@ -248,7 +248,7 @@ fun FeatureItem(
                 ) {
                     Text(
                         text = feature.title,
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.body1,
                         lineHeight = 24.sp,
                         modifier = Modifier
                             .align(Alignment.TopStart)
@@ -332,7 +332,7 @@ fun FeatureItem(
                 ) {
                     Text(
                         text = feature.title,
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.body1,
                         lineHeight = 24.sp,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -416,7 +416,7 @@ fun FeatureItem(
                 ) {
                     Text(
                         text = feature.title,
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.body1,
                         lineHeight = 24.sp,
                         modifier = Modifier
                             .align(Alignment.BottomStart)
@@ -500,7 +500,7 @@ fun FeatureItem(
                 ) {
                     Text(
                         text = feature.title,
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.body1,
                         lineHeight = 24.sp,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)

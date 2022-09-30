@@ -99,7 +99,7 @@ fun CurrentWeather(
                     // Description
                     Text(
                         text = "Partly Cloudy",
-                        style = MaterialTheme.typography.body1,
+                        style = MaterialTheme.typography.subtitle2,
                         color = Orange2,
                     )
                 }
@@ -115,7 +115,7 @@ fun CurrentWeather(
                     )
                     Text(
                         text = " 900 hpa",
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.body1,
                         color = MaterialTheme.colors.surface,
                     )
                 }
@@ -131,7 +131,7 @@ fun CurrentWeather(
                     )
                     Text(
                         text = " 50%",
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.body1,
                         color = MaterialTheme.colors.surface,
                     )
                 }
@@ -147,7 +147,7 @@ fun CurrentWeather(
                     )
                     Text(
                         text = " 8 km/h",
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.body1,
                         color = MaterialTheme.colors.surface,
                     )
                 }
@@ -171,7 +171,7 @@ fun Switch() {
         ) {
             Text(
                 text = "Hours",
-                style = MaterialTheme.typography.body2,
+                style = MaterialTheme.typography.body1,
                 modifier = Modifier
                     .selectable(
                         selected = true,
@@ -180,7 +180,7 @@ fun Switch() {
             )
             Text(
                 text = "Week",
-                style = MaterialTheme.typography.body2,
+                style = MaterialTheme.typography.body1,
                 modifier = Modifier
                     .selectable(
                         selected = true,

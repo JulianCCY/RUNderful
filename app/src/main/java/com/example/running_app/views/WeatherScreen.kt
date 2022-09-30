@@ -1,11 +1,10 @@
 package com.example.running_app.views
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.Composable
@@ -22,6 +21,7 @@ import com.example.running_app.ui.theme.*
 import com.example.running_app.viewModels.DailyWeatherViewModel
 import com.example.running_app.viewModels.WeatherViewModel
 import java.time.format.DateTimeFormatter
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -71,85 +71,174 @@ fun CurrentWeather(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(
-                        Icons.Sharp.Update,
-                        contentDescription = "LastUpdated",
-                        modifier = Modifier
-                            .size(24.dp)
-                    )
-                    Text(
-                        text = state.weatherInfo?.currentWeatherData?.time?.format(DateTimeFormatter.ofPattern("HH:mm"))?: " No state",
-                        style = MaterialTheme.typography.h3,
-                    )
+                    val updated = state.weatherInfo?.currentWeatherData?.time
+                    if (updated != null) {
+                        Icon(
+                            Icons.Sharp.Update,
+                            contentDescription = "LastUpdated",
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                        Text(
+                            text = state.weatherInfo.currentWeatherData.time.format(DateTimeFormatter.ofPattern("HH:mm")),
+                            style = MaterialTheme.typography.body2,
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .width(40.dp)
+                                .height(24.dp)
+                                .background(Gray)
+                        ) { }
+                    }
                 }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 10.dp, bottom = 80.dp)
+                        .padding(top = 10.dp, bottom = 50.dp)
                 ) {
                     // Temperature
-                    Text(
-                        text = "14",
-                        fontFamily = FontFamily(Font(R.font.leaguegothic_regular)),
-                        fontSize = 96.sp,
-                        color = Orange1,
-                    )
+                    val temperature = state.weatherInfo?.currentWeatherData?.temperatureCelsius
+                    if (temperature != null) {
+                        Text(
+                            text = "${state.weatherInfo.currentWeatherData.temperatureCelsius.roundToInt()}°",
+                            fontFamily = FontFamily(Font(R.font.leaguegothic_regular)),
+                            fontSize = 96.sp,
+                            color = Orange1,
+                        )
+                    } else {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(128.dp)
+                                .padding(15.dp),
+                            strokeWidth = 8.dp,
+                        )
+                    }
                     // Description
-                    Text(
-                        text = "Partly Cloudy",
-                        style = MaterialTheme.typography.subtitle2,
-                        color = Orange2,
-                    )
+                    val desc = dailyState.weatherInfo?.todayWeatherData?.daily_weatherType?.weatherDesc
+                    if (desc != null) {
+                        Text(
+                            text = dailyState.weatherInfo.todayWeatherData.daily_weatherType.weatherDesc,
+                            style = MaterialTheme.typography.body1,
+                            color = Orange2,
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(28.dp)
+                        ) {
+                            Canvas(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(4.dp)
+                            ) {
+                                drawRect(Gray)
+                            }
+                        }
+                    }
                 }
                 // Air pressure
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        Icons.Sharp.Waves,
-                        contentDescription = "AirPressure",
-                        tint = MaterialTheme.colors.surface,
-                    )
-                    Text(
-                        text = " 900 hpa",
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.surface,
-                    )
+                val airPressure = state.weatherInfo?.currentWeatherData?.pressure
+                if (airPressure != null) {
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Sharp.Waves,
+                            contentDescription = "AirPressure",
+                            tint = MaterialTheme.colors.surface,
+                        )
+                        Text(
+                            text = " 900 hpa",
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.surface,
+                        )
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(30.dp)
+                    ) {
+                        Canvas(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp)
+                        ) {
+                            drawRect(Gray)
+                        }
+                    }
                 }
                 // Humidity
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        Icons.Sharp.WaterDrop,
-                        contentDescription = "Humidity",
-                        tint = MaterialTheme.colors.surface,
-                    )
-                    Text(
-                        text = " 50%",
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.surface,
-                    )
+                val humidity = state.weatherInfo?.currentWeatherData?.humidity
+                if (humidity != null) {
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Sharp.WaterDrop,
+                            contentDescription = "Humidity",
+                            tint = MaterialTheme.colors.surface,
+                        )
+                        Text(
+                            text = humidity.roundToInt().toString() + "%",
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.surface,
+                        )
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(28.dp)
+                    ) {
+                        Canvas(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp)
+                        ) {
+                            drawRect(Gray)
+                        }
+                    }
                 }
+
                 // Wind speed
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        Icons.Sharp.Air,
-                        contentDescription = "WindSpeed",
-                        tint = MaterialTheme.colors.surface,
-                    )
-                    Text(
-                        text = " 8 km/h",
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.surface,
-                    )
+                val wind = state.weatherInfo?.currentWeatherData?.windSpeed
+                if (wind != null) {
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Sharp.Air,
+                            contentDescription = wind.roundToInt().toString() + "km/h",
+                            tint = MaterialTheme.colors.surface,
+                        )
+                        Text(
+                            text = " 8 km/h",
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.surface,
+                        )
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(28.dp)
+                    ) {
+                        Canvas(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp)
+                        ) {
+                            drawRect(Gray)
+                        }
+                    }
                 }
             }
 //        }

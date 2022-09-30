@@ -15,8 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.running_app.R
@@ -41,7 +43,8 @@ fun WeatherScreen(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: Dai
     ) {
         CurrentWeather(weatherViewModel.state, dailyWeatherViewModel.dailyState)
         Switch()
-        HourWeather(weatherViewModel.state)
+//        HourWeather(weatherViewModel.state)
+        WeekWeather(dailyWeatherViewModel.dailyState)
     }
 }
 
@@ -289,6 +292,7 @@ fun Switch() {
                     )
             )
         }
+        Spacer(modifier = Modifier.height(2.dp))
         Divider(
             color = Orange1,
             modifier = Modifier
@@ -333,10 +337,12 @@ fun HourWeather(
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = timeFormatter
+                            text = timeFormatter,
+                            style = MaterialTheme.typography.body1
                         )
                         Text(
                             text = "${data.temperatureCelsius}°",
+                            style = MaterialTheme.typography.body1
                         )
                     }
                 }
@@ -348,7 +354,36 @@ fun HourWeather(
 
 @Composable
 fun WeekWeather(
-    weatherData: DailyWeatherData,
+    state: DailyWeatherState
 ) {
-
+    state.weatherInfo?.weatherDataPerDay?.values?.toList()?.flatten()?.map{ it }?.let {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+        ) {
+            LazyColumn(content = {
+                items(it) { data ->
+                    val timeFormatter = remember(data) {
+                        data.date.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase)
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .padding(start = 15.dp, end = 15.dp, bottom = 20.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = if(data.date.dayOfYear == LocalDateTime.now().dayOfYear) "Today" else timeFormatter,
+                            style = MaterialTheme.typography.body1
+                        )
+                        Text(
+                            text = "${data.temperatureCelsius_min.roundToInt()}°C - ${data.temperatureCelsius_max.roundToInt()}°C",
+                            style = MaterialTheme.typography.body1
+                        )
+                    }
+                }
+            })
+        }
+    }
 }

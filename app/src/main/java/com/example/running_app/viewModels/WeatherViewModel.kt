@@ -48,6 +48,7 @@ class WeatherViewModel @Inject constructor(
                     }
                 }
             } ?: kotlin.run {
+                Log.d("julian", "No Location available.")
                 state = state.copy(
                     isLoading = false,
                     error = "Couldn't retrieve location. Make sure to grant permission and enable GPS."

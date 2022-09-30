@@ -26,8 +26,6 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun WeatherScreen(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: DailyWeatherViewModel) {
-    weatherViewModel.loadWeatherInfo()
-    dailyWeatherViewModel.loadDailyWeatherInfo()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -42,7 +40,7 @@ fun CurrentWeather(
     state: WeatherState,
     dailyState: DailyWeatherState,
 ) {
-    state.weatherInfo?.currentWeatherData?.let {
+//    state.weatherInfo?.currentWeatherData?.let {
         Box(
             modifier = Modifier
                 .padding(horizontal = 15.dp)
@@ -80,7 +78,7 @@ fun CurrentWeather(
                             .size(24.dp)
                     )
                     Text(
-                        text = it.time.format(DateTimeFormatter.ofPattern("HH:mm")),
+                        text = state.weatherInfo?.currentWeatherData?.time?.format(DateTimeFormatter.ofPattern("HH:mm"))?: " No state",
                         style = MaterialTheme.typography.h3,
                     )
                 }
@@ -154,7 +152,7 @@ fun CurrentWeather(
                     )
                 }
             }
-        }
+//        }
     }
 }
 

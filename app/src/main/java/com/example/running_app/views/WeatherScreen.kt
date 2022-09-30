@@ -1,13 +1,18 @@
 package com.example.running_app.views
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
@@ -17,9 +22,13 @@ import androidx.compose.ui.unit.sp
 import com.example.running_app.R
 import com.example.running_app.data.weather.DailyWeatherState
 import com.example.running_app.data.weather.WeatherState
+import com.example.running_app.data.weather.display.TwentyFourHoursForecastingDisplay
+import com.example.running_app.data.weather.weatherData.DailyWeatherData
+import com.example.running_app.data.weather.weatherData.WeatherData
 import com.example.running_app.ui.theme.*
 import com.example.running_app.viewModels.DailyWeatherViewModel
 import com.example.running_app.viewModels.WeatherViewModel
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -32,6 +41,7 @@ fun WeatherScreen(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: Dai
     ) {
         CurrentWeather(weatherViewModel.state, dailyWeatherViewModel.dailyState)
         Switch()
+        HourWeather(weatherViewModel.state)
     }
 }
 
@@ -261,7 +271,7 @@ fun Switch() {
                 .height(IntrinsicSize.Min)
         ) {
             Text(
-                text = "Hours",
+                text = "Next 24 hours",
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier
                     .selectable(
@@ -270,7 +280,7 @@ fun Switch() {
                     )
             )
             Text(
-                text = "Week",
+                text = "Following week",
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier
                     .selectable(
@@ -298,11 +308,47 @@ fun Switch() {
 //}
 
 @Composable
-fun DayWeather() {
+fun HourWeather(
+    state: WeatherState,
+) {
+    state.weatherInfo?.weatherDataPerHour?.values?.toList()?.flatten()?.map { it }?.filter { it.time.hour >= LocalDateTime.now().hour || it.time.isAfter(
+        LocalDateTime.now()) }?.slice(1..24)?.let {
 
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+        ) {
+            LazyColumn(content = {
+                items(it) { data ->
+                    val timeFormatter = remember(data) {
+                        data.time.format(
+                            DateTimeFormatter.ofPattern("HH:mm")
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .padding(horizontal = 30.dp, vertical = 5.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = timeFormatter
+                        )
+                        Text(
+                            text = "${data.temperatureCelsius}°",
+                        )
+                    }
+                }
+            })
+        }
+    }
 }
 
+
 @Composable
-fun WeekWeather() {
+fun WeekWeather(
+    weatherData: DailyWeatherData,
+) {
 
 }

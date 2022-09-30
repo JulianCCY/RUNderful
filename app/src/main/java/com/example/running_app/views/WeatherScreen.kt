@@ -318,7 +318,7 @@ fun HourWeather(
     state: WeatherState,
 ) {
     state.weatherInfo?.weatherDataPerHour?.values?.toList()?.flatten()?.map { it }?.filter { it.time.hour >= LocalDateTime.now().hour || it.time.isAfter(
-        LocalDateTime.now()) }?.slice(1..24)?.let {
+        LocalDateTime.now()) }?.slice(0..23)?.let {
 
         Column(
             modifier = Modifier
@@ -339,11 +339,16 @@ fun HourWeather(
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = timeFormatter,
+
+//                            if ( weatherData.time.hour == LocalDateTime.now().hour && weatherData.time.dayOfMonth == LocalDateTime.now().dayOfMonth)
+//                                "current"
+//                            else
+                            text = if (data.time.hour == LocalDateTime.now().hour && data.time.dayOfMonth == LocalDateTime.now().dayOfMonth) "Current"
+                            else timeFormatter,
                             style = MaterialTheme.typography.body1
                         )
                         Text(
-                            text = "${data.temperatureCelsius}°",
+                            text = "${data.temperatureCelsius.roundToInt()}°",
                             style = MaterialTheme.typography.body1
                         )
                     }

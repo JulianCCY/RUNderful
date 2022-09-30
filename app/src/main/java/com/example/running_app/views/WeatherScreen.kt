@@ -329,7 +329,7 @@ fun HourWeather(
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .padding(horizontal = 30.dp, vertical = 5.dp)
+                            .padding(start = 30.dp, end = 30.dp, bottom = 10.dp)
                             .fillMaxWidth()
                     ) {
                         Text(

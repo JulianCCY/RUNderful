@@ -48,19 +48,21 @@ fun CurrentWeather(
 //            .clip(CutCornerShape(20.dp))
 //            .border(4.dp, Orange1, CutCornerShape(20.dp))
         ) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(20.dp)
-            ) {
-                // Weather Icon
-                Icon(
-                    Icons.Sharp.NightsStay,
-                    contentDescription = "Night",
-                    tint = MaterialTheme.colors.onSurface,
+            dailyState.weatherInfo?.todayWeatherData?.let {
+                Box(
                     modifier = Modifier
-                        .size(64.dp)
-                )
+                        .align(Alignment.BottomEnd)
+                        .padding(20.dp)
+                ) {
+                    // Weather Icon
+                    Icon(
+                        Icons.Sharp.NightsStay,
+                        contentDescription = "Night",
+                        tint = MaterialTheme.colors.onSurface,
+                        modifier = Modifier
+                            .size(64.dp)
+                    )
+                }
             }
             Column(
                 modifier = Modifier

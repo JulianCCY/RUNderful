@@ -11,8 +11,8 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,9 +42,8 @@ fun WeatherScreen(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: Dai
             .fillMaxSize()
     ) {
         CurrentWeather(weatherViewModel.state, dailyWeatherViewModel.dailyState)
-        Switch()
-//        HourWeather(weatherViewModel.state)
-        WeekWeather(dailyWeatherViewModel.dailyState)
+        Switch(weatherViewModel)
+        Forecast(weatherViewModel, dailyWeatherViewModel)
     }
 }
 
@@ -92,7 +91,7 @@ fun CurrentWeather(
                             Icons.Sharp.Update,
                             contentDescription = "LastUpdated",
                             modifier = Modifier
-                                .size(24.dp)
+                                .size(20.dp)
                         )
                         Text(
                             text = state.weatherInfo.currentWeatherData.time.format(DateTimeFormatter.ofPattern("HH:mm")),
@@ -261,7 +260,8 @@ fun CurrentWeather(
 }
 
 @Composable
-fun Switch() {
+fun Switch(weatherViewModel: WeatherViewModel) {
+    val switch = weatherViewModel.switch.observeAsState()
     Column (
         modifier = Modifier
             .padding(15.dp)
@@ -276,23 +276,25 @@ fun Switch() {
             Text(
                 text = "Next 24 hours",
                 style = MaterialTheme.typography.body1,
+                fontWeight = if (switch.value == "hours") FontWeight.Bold else FontWeight.Normal,
                 modifier = Modifier
                     .selectable(
                         selected = true,
-                        onClick = {}
+                        onClick = { weatherViewModel.switch.postValue("hours") }
                     )
             )
             Text(
                 text = "Following week",
                 style = MaterialTheme.typography.body1,
+                fontWeight = if (switch.value == "week") FontWeight.Bold else FontWeight.Normal,
                 modifier = Modifier
                     .selectable(
                         selected = true,
-                        onClick = {}
+                        onClick = { weatherViewModel.switch.postValue("week") }
                     )
             )
         }
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(3.dp))
         Divider(
             color = Orange1,
             modifier = Modifier
@@ -301,15 +303,15 @@ fun Switch() {
     }
 }
 
-//@Composable
-//fun WeatherForecast(weatherViewModel: WeatherViewModel) {
-//    val forecastData = weatherViewModel.observeAsState(listOf())
-//    LazyColumn{
-//        items(forecastData.value) {
-//
-//        }
-//    }
-//}
+@Composable
+fun Forecast(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: DailyWeatherViewModel) {
+    if (weatherViewModel.switch.value == "hours") {
+        HourWeather(weatherViewModel.state)
+    }
+    if (weatherViewModel.switch.value == "week") {
+        WeekWeather(dailyWeatherViewModel.dailyState)
+    }
+}
 
 @Composable
 fun HourWeather(
@@ -370,7 +372,7 @@ fun WeekWeather(
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .padding(start = 15.dp, end = 15.dp, bottom = 20.dp)
+                            .padding(start = 15.dp, end = 15.dp, bottom = 16.dp)
                             .fillMaxWidth()
                     ) {
                         Text(

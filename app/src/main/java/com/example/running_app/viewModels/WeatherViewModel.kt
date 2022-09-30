@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.running_app.data.weather.location.LocationTracker
@@ -20,6 +22,7 @@ class WeatherViewModel @Inject constructor(
     private val locationTracker: LocationTracker
 ): ViewModel() {
 
+    val switch = MutableLiveData("hours")
     var state by mutableStateOf(WeatherState())
         private set
 

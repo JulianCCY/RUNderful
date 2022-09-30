@@ -1,4 +1,4 @@
-package com.example.running_app.data.weather
+package com.example.running_app.data.weather.display
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text

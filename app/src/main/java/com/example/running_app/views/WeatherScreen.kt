@@ -155,7 +155,7 @@ fun CurrentWeather(
                             tint = MaterialTheme.colors.surface,
                         )
                         Text(
-                            text = " 900 hpa",
+                            text = airPressure.roundToInt().toString() + "hpa",
                             style = MaterialTheme.typography.body1,
                             color = MaterialTheme.colors.surface,
                         )
@@ -289,7 +289,7 @@ fun Switch() {
 
 //@Composable
 //fun WeatherForecast(weatherViewModel: WeatherViewModel) {
-//    val forecastData = weatherViewModel.forecastData.observeAsState(listOf())
+//    val forecastData = weatherViewModel.observeAsState(listOf())
 //    LazyColumn{
 //        items(forecastData.value) {
 //

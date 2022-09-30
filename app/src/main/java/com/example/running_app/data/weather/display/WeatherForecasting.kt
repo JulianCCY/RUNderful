@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.running_app.data.weather.TwentyFourHoursForecastingDisplay
 import com.example.running_app.data.weather.WeatherState
 import java.time.LocalDateTime
 

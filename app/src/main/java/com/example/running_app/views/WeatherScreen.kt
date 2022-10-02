@@ -1,21 +1,19 @@
 package com.example.running_app.views
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AcUnit
+import androidx.compose.material.icons.filled.SevereCold
 import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -24,9 +22,6 @@ import androidx.compose.ui.unit.sp
 import com.example.running_app.R
 import com.example.running_app.data.weather.DailyWeatherState
 import com.example.running_app.data.weather.WeatherState
-import com.example.running_app.data.weather.display.TwentyFourHoursForecastingDisplay
-import com.example.running_app.data.weather.weatherData.DailyWeatherData
-import com.example.running_app.data.weather.weatherData.WeatherData
 import com.example.running_app.ui.theme.*
 import com.example.running_app.viewModels.DailyWeatherViewModel
 import com.example.running_app.viewModels.WeatherViewModel
@@ -52,28 +47,19 @@ fun CurrentWeather(
     state: WeatherState,
     dailyState: DailyWeatherState,
 ) {
-//    state.weatherInfo?.currentWeatherData?.let {
         Box(
             modifier = Modifier
                 .padding(horizontal = 15.dp)
                 .fillMaxWidth()
-//            .clip(CutCornerShape(20.dp))
-//            .border(4.dp, Orange1, CutCornerShape(20.dp))
         ) {
             dailyState.weatherInfo?.todayWeatherData?.let {
+                // Weather Icon
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(20.dp)
                 ) {
-                    // Weather Icon
-                    Icon(
-                        Icons.Sharp.NightsStay,
-                        contentDescription = "Night",
-                        tint = MaterialTheme.colors.onSurface,
-                        modifier = Modifier
-                            .size(64.dp)
-                    )
+                    WeatherIcon(dailyState)
                 }
             }
             Column(
@@ -162,7 +148,7 @@ fun CurrentWeather(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Icon(
-                            Icons.Sharp.Waves,
+                            Icons.Sharp.Air,
                             contentDescription = "AirPressure",
                             tint = MaterialTheme.colors.surface,
                         )
@@ -229,7 +215,7 @@ fun CurrentWeather(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Icon(
-                            Icons.Sharp.Air,
+                            Icons.Sharp.WindPower,
                             contentDescription = wind.roundToInt().toString() + "km/h",
                             tint = MaterialTheme.colors.surface,
                         )
@@ -261,7 +247,7 @@ fun CurrentWeather(
 
 @Composable
 fun Switch(weatherViewModel: WeatherViewModel) {
-    val switch = weatherViewModel.switch.observeAsState()
+    val switch by remember { weatherViewModel.switch }
     Column (
         modifier = Modifier
             .padding(15.dp)
@@ -276,21 +262,23 @@ fun Switch(weatherViewModel: WeatherViewModel) {
             Text(
                 text = "Next 24 hours",
                 style = MaterialTheme.typography.body1,
-                fontWeight = if (switch.value == "hours") FontWeight.Bold else FontWeight.Normal,
+                fontWeight = if (switch == "hours") FontWeight.Bold else FontWeight.Normal,
                 modifier = Modifier
                     .selectable(
                         selected = true,
-                        onClick = { weatherViewModel.switch.postValue("hours") }
+                        onClick = { weatherViewModel.switch.value = "hours" }
                     )
             )
             Text(
                 text = "Following week",
                 style = MaterialTheme.typography.body1,
-                fontWeight = if (switch.value == "week") FontWeight.Bold else FontWeight.Normal,
+                fontWeight = if (switch == "week") FontWeight.Bold else FontWeight.Normal,
                 modifier = Modifier
                     .selectable(
                         selected = true,
-                        onClick = { weatherViewModel.switch.postValue("week") }
+                        onClick = {
+                            weatherViewModel.switch.value = "week"
+                        }
                     )
             )
         }
@@ -305,10 +293,11 @@ fun Switch(weatherViewModel: WeatherViewModel) {
 
 @Composable
 fun Forecast(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: DailyWeatherViewModel) {
-    if (weatherViewModel.switch.value == "hours") {
+    val switch by remember { weatherViewModel.switch }
+    if (switch == "hours") {
         HourWeather(weatherViewModel.state)
     }
-    if (weatherViewModel.switch.value == "week") {
+    if (switch == "week") {
         WeekWeather(dailyWeatherViewModel.dailyState)
     }
 }
@@ -339,10 +328,6 @@ fun HourWeather(
                             .fillMaxWidth()
                     ) {
                         Text(
-
-//                            if ( weatherData.time.hour == LocalDateTime.now().hour && weatherData.time.dayOfMonth == LocalDateTime.now().dayOfMonth)
-//                                "current"
-//                            else
                             text = if (data.time.hour == LocalDateTime.now().hour && data.time.dayOfMonth == LocalDateTime.now().dayOfMonth) "Current"
                             else timeFormatter,
                             style = MaterialTheme.typography.body1
@@ -391,6 +376,67 @@ fun WeekWeather(
                     }
                 }
             })
+        }
+    }
+}
+
+@Composable
+fun WeatherIcon(dailyState: DailyWeatherState) {
+    // Weather Icon
+    when (dailyState.weatherInfo?.todayWeatherData?.daily_weatherType?.weatherDesc) {
+        "Clear sky", "Mainly clear" -> {
+            Icon(
+                Icons.Sharp.WbSunny,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSurface,
+                modifier = Modifier
+                    .size(64.dp)
+            )
+        }
+        "Partly cloudy", "Overcast", "Foggy", "Depositing rime fog" -> {
+            Icon(
+                Icons.Sharp.Cloud,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSurface,
+                modifier = Modifier
+                    .size(64.dp)
+            )
+        }
+        "Slight snow fall", "Moderate snow fall", "Snow grains", "Light snow showers" -> {
+            Icon(
+                Icons.Filled.AcUnit,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSurface,
+                modifier = Modifier
+                    .size(64.dp)
+            )
+        }
+        "Heavy snow fall", "Heavy snow showers" -> {
+            Icon(
+                Icons.Filled.SevereCold,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSurface,
+                modifier = Modifier
+                    .size(64.dp)
+            )
+        }
+        "Moderate thunderstorm", "Thunderstorm with slight hail", "Thunderstorm with heavy hail" -> {
+            Icon(
+                Icons.Sharp.Thunderstorm,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSurface,
+                modifier = Modifier
+                    .size(64.dp)
+            )
+        }
+        else -> {
+            Icon(
+                Icons.Sharp.Umbrella,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSurface,
+                modifier = Modifier
+                    .size(64.dp)
+            )
         }
     }
 }

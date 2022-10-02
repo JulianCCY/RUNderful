@@ -21,8 +21,7 @@ class WeatherViewModel @Inject constructor(
     private val repository: WeatherRepository,
     private val locationTracker: LocationTracker
 ): ViewModel() {
-
-    val switch = MutableLiveData("hours")
+    val switch = mutableStateOf("hours")
     var state by mutableStateOf(WeatherState())
         private set
 

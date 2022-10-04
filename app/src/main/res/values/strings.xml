@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Running_App</string>
-    <string name="weather_last_update">Last updated:</string>
+    <string name="statistic">Statistic</string>
 </resources>

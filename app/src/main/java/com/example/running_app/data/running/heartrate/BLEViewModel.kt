@@ -1,4 +1,4 @@
-package com.example.running_app.data.running
+package com.example.running_app.data.running.heartrate
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -9,7 +9,6 @@ import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

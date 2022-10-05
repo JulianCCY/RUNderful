@@ -1,8 +1,9 @@
-package com.example.running_app.data.running
+package com.example.running_app.data.running.heartrate
 
 import android.annotation.SuppressLint
 import android.bluetooth.*
 import android.util.Log
+import com.example.running_app.data.running.heartrate.BLEViewModel
 import java.util.*
 import javax.inject.Inject
 

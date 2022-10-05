@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.R
-import com.example.running_app.data.running.BLEViewModel
+import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.viewModels.RunningViewModel
 import com.google.android.gms.maps.model.CameraPosition

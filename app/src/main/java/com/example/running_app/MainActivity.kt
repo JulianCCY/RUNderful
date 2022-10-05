@@ -1,14 +1,7 @@
 package com.example.running_app
 
 import android.Manifest
-import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -24,7 +17,6 @@ import androidx.compose.material.Surface
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.running_app.data.running.BLEViewModel
 import com.example.running_app.views.MainScreen
 import com.example.running_app.ui.theme.Running_AppTheme
 import com.example.running_app.viewModels.RunningViewModel
@@ -39,8 +31,6 @@ class MainActivity : ComponentActivity(){
     private val dailyWeatherViewModel: DailyWeatherViewModel by viewModels()
     private val runningViewModel: RunningViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
-
-//    private val bleViewModel: BLEViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,40 +92,6 @@ class MainActivity : ComponentActivity(){
     }
 }
 
-//@Composable
-//fun MainView() {
-//    val navController = rememberNavController()
-//    val sdf1 = SimpleDateFormat("dd/MM/yyyy")
-//    val sdf2 = SimpleDateFormat("HH:mm")
-//    val date = sdf1.format(Date())
-//    val time = sdf2.format(Date())
-//    Column(
-//        modifier = Modifier.fillMaxWidth(),
-//    ) {
-//        Text(text = date)
-//        Text(text = time)
-//        NavHost(navController, startDestination = "home") {
-//            composable("home") {
-//
-//            }
-//            composable("weather") {
-//
-//            }
-//            composable("suggestedTracks") {
-//
-//            }
-//            composable("stats") {
-//
-//            }
-//            composable("training") {
-//
-//            }
-//            composable("startRunning") {
-//
-//            }
-//        }
-//    }
-//}
 //@Composable
 //fun Greeting(name: String) {
 //    Text(text = "Hello $name!")

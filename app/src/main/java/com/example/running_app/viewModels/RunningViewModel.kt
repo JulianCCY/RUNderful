@@ -19,6 +19,7 @@ import java.util.*
 
 class RunningViewModel(application: Application) : AndroidViewModel(application), SensorEventListener {
 
+    // Step Counter Sensor Setup
     private lateinit var sm: SensorManager
     private lateinit var stepCounter: Sensor
 
@@ -41,6 +42,7 @@ class RunningViewModel(application: Application) : AndroidViewModel(application)
         if (startOrResume){
             loadStepCounter()
             resetSteps()
+            // if start then connect to the bluetooth first
         }
 
         // start sensor monitoring

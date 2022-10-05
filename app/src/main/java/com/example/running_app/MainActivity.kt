@@ -24,6 +24,7 @@ import androidx.compose.material.Surface
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.running_app.data.running.BLEViewModel
 import com.example.running_app.views.MainScreen
 import com.example.running_app.ui.theme.Running_AppTheme
 import com.example.running_app.viewModels.RunningViewModel
@@ -39,6 +40,8 @@ class MainActivity : ComponentActivity(){
     private val runningViewModel: RunningViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
+//    private val bleViewModel: BLEViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         permissionLauncher = registerForActivityResult(
@@ -51,6 +54,8 @@ class MainActivity : ComponentActivity(){
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACTIVITY_RECOGNITION,
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.BLUETOOTH_CONNECT,
         ))
 
         setContent {

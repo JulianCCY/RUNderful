@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.R
+import com.example.running_app.data.running.BLEViewModel
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.viewModels.RunningViewModel
 import com.google.android.gms.maps.model.CameraPosition
@@ -60,10 +61,13 @@ fun CounterDisplay(runningViewModel: RunningViewModel = viewModel()) {
 }
 
 @Composable
-fun StatsDisplay(runningViewModel: RunningViewModel = viewModel()) {
+fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEViewModel = viewModel()) {
 
     val getSteps by runningViewModel.steps.observeAsState()
     val steps  = getSteps?.absoluteValue
+
+    val getHeartRate by bleViewModel.mBPM.observeAsState()
+    val heartRate = getHeartRate?.absoluteValue
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -126,7 +130,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel()) {
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = "00 bpm",
+                    text = if (heartRate != null && heartRate != 0) "$heartRate bpm" else "Not In Use",
                     style = MaterialTheme.typography.subtitle2
                 )
             }
@@ -135,7 +139,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel()) {
 }
 
 @Composable
-fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
+fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEViewModel = viewModel()) {
     var pauseResume by remember { mutableStateOf("pause") }
 //    runningViewModel.startCountTime()
     Column(
@@ -152,7 +156,11 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
                 isButtonVisible = false
                 Log.d("steps", "start")
 
-            }, modifier = Modifier.alpha(if (isButtonVisible) 1f else 0f)) {
+            }, modifier = Modifier
+                .alpha(if (isButtonVisible) 1f else 0f)
+                .clip(CutCornerShape(10.dp))
+                .width(200.dp)
+        ) {
             Text(
                 text = "Start",
                 style = MaterialTheme.typography.body1
@@ -205,6 +213,20 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
                 style = MaterialTheme.typography.body1
             )
         }
+        Button(
+            onClick = {
+                bleViewModel.scanDevices()
+            },
+            modifier = Modifier
+                .clip(CutCornerShape(10.dp))
+                .width(200.dp)
+        ) {
+            Text(
+                text = "Connect HR",
+                style = MaterialTheme.typography.body1
+            )
+        }
+
     }
 }
 

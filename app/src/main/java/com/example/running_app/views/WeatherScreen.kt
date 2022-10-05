@@ -150,12 +150,12 @@ fun CurrentWeather(
                         Icon(
                             Icons.Sharp.Air,
                             contentDescription = "AirPressure",
-                            tint = MaterialTheme.colors.surface,
+                            tint = MaterialTheme.colors.onPrimary,
                         )
                         Text(
                             text = airPressure.roundToInt().toString() + "hpa",
                             style = MaterialTheme.typography.body1,
-                            color = MaterialTheme.colors.surface,
+                            color = MaterialTheme.colors.onPrimary,
                         )
                     }
                 } else {
@@ -183,12 +183,12 @@ fun CurrentWeather(
                         Icon(
                             Icons.Sharp.WaterDrop,
                             contentDescription = "Humidity",
-                            tint = MaterialTheme.colors.surface,
+                            tint = MaterialTheme.colors.onPrimary,
                         )
                         Text(
                             text = humidity.roundToInt().toString() + "%",
                             style = MaterialTheme.typography.body1,
-                            color = MaterialTheme.colors.surface,
+                            color = MaterialTheme.colors.onPrimary,
                         )
                     }
                 } else {
@@ -217,12 +217,12 @@ fun CurrentWeather(
                         Icon(
                             Icons.Sharp.WindPower,
                             contentDescription = wind.roundToInt().toString() + "km/h",
-                            tint = MaterialTheme.colors.surface,
+                            tint = MaterialTheme.colors.onPrimary,
                         )
                         Text(
                             text = " 8 km/h",
                             style = MaterialTheme.typography.body1,
-                            color = MaterialTheme.colors.surface,
+                            color = MaterialTheme.colors.onPrimary,
                         )
                     }
                 } else {
@@ -388,7 +388,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
             Icon(
                 Icons.Sharp.WbSunny,
                 contentDescription = "WeatherIcon",
-                tint = MaterialTheme.colors.onSurface,
+                tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .size(64.dp)
             )
@@ -397,7 +397,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
             Icon(
                 Icons.Sharp.Cloud,
                 contentDescription = "WeatherIcon",
-                tint = MaterialTheme.colors.onSurface,
+                tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .size(64.dp)
             )
@@ -406,7 +406,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
             Icon(
                 Icons.Filled.AcUnit,
                 contentDescription = "WeatherIcon",
-                tint = MaterialTheme.colors.onSurface,
+                tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .size(64.dp)
             )
@@ -415,7 +415,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
             Icon(
                 Icons.Filled.SevereCold,
                 contentDescription = "WeatherIcon",
-                tint = MaterialTheme.colors.onSurface,
+                tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .size(64.dp)
             )
@@ -424,7 +424,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
             Icon(
                 Icons.Sharp.Thunderstorm,
                 contentDescription = "WeatherIcon",
-                tint = MaterialTheme.colors.onSurface,
+                tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .size(64.dp)
             )
@@ -433,7 +433,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
             Icon(
                 Icons.Sharp.Umbrella,
                 contentDescription = "WeatherIcon",
-                tint = MaterialTheme.colors.onSurface,
+                tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .size(64.dp)
             )

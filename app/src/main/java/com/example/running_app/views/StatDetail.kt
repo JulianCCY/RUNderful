@@ -1,8 +1,5 @@
 package com.example.running_app.views
 
-import android.provider.ContactsContract.Data
-import android.view.Display
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll

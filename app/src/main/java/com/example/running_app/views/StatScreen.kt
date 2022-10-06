@@ -135,7 +135,7 @@ fun OverviewData() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 20.dp)
-            .border(width = 2.dp, color = Orange1, CutCornerShape(60.dp, 0.dp, 60.dp, 0.dp))
+            .border(width = 2.dp, color = Orange1, CutCornerShape(60.dp, 10.dp, 60.dp, 10.dp))
             .height(200.dp)
     ) {
         Column {
@@ -333,7 +333,7 @@ data class RunRecord(
     val avgVelocityList: List<Int>,
     // Average heart rate (bpm)
     val avgHeart: Double,
-    // List of average heart rate for graph
+    // List of average heart rate for graph, similar to avgVelocity
     val avgHeartList: List<Int>,
     // Calories
     val calories: Int,

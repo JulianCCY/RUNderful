@@ -117,10 +117,10 @@ fun CurrentWeather(
                         )
                     }
                     // Description
-                    val desc = dailyState.weatherInfo?.todayWeatherData?.daily_weatherType?.weatherDesc
+                    val desc = state.weatherInfo?.currentWeatherData?.weatherType?.weatherDesc
                     if (desc != null) {
                         Text(
-                            text = dailyState.weatherInfo.todayWeatherData.daily_weatherType.weatherDesc,
+                            text = state.weatherInfo.currentWeatherData.weatherType.weatherDesc,
                             style = MaterialTheme.typography.body1,
                             color = Orange2,
                         )

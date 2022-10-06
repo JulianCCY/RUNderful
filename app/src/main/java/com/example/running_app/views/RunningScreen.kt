@@ -1,5 +1,6 @@
 package com.example.running_app.views
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Button
@@ -9,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -16,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.R
+import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.viewModels.RunningViewModel
 import com.google.android.gms.maps.model.CameraPosition
@@ -24,6 +27,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlin.math.absoluteValue
 
 @Composable
 fun RunningScreen() {
@@ -57,7 +61,14 @@ fun CounterDisplay(runningViewModel: RunningViewModel = viewModel()) {
 }
 
 @Composable
-fun StatsDisplay(runningViewModel: RunningViewModel = viewModel()) {
+fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEViewModel = viewModel()) {
+
+    val getSteps by runningViewModel.steps.observeAsState()
+    val steps  = getSteps?.absoluteValue
+
+    val getHeartRate by bleViewModel.mBPM.observeAsState()
+    val heartRate = getHeartRate?.absoluteValue
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -77,7 +88,8 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel()) {
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = "0000",
+                    text = if (steps != null) "$steps" else "0"
+                    ,
                     style = MaterialTheme.typography.subtitle2
                 )
             }
@@ -118,7 +130,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel()) {
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = "00 bpm",
+                    text = if (heartRate != null && heartRate != 0) "$heartRate bpm" else "Not In Use",
                     style = MaterialTheme.typography.subtitle2
                 )
             }
@@ -127,23 +139,46 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel()) {
 }
 
 @Composable
-fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
+fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEViewModel = viewModel()) {
     var pauseResume by remember { mutableStateOf("pause") }
-    runningViewModel.startCountTime()
+//    runningViewModel.startCountTime()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
     ) {
+        var isButtonVisible by remember { mutableStateOf(true) }
+        Button(
+            onClick = {
+                runningViewModel.isActive = true
+                runningViewModel.startCountTime(startOrResume = true)
+                isButtonVisible = false
+                Log.d("steps", "start")
+
+            }, modifier = Modifier
+                .alpha(if (isButtonVisible) 1f else 0f)
+                .clip(CutCornerShape(10.dp))
+                .width(200.dp)
+        ) {
+            Text(
+                text = "Start",
+                style = MaterialTheme.typography.body1
+            )
+        }
         Button(
             onClick = {
                 if (pauseResume == "pause") {
                     runningViewModel.pauseCountTime()
+                    runningViewModel.unregisterStepCounterSensor()
                     pauseResume = "resume"
+                    Log.d("steps", "pause")
                 } else if (pauseResume == "resume") {
+                    runningViewModel.isActive = true
                     runningViewModel.startCountTime()
+                    runningViewModel.registerStepCounterSensor()
                     pauseResume = "pause"
+                    Log.d("steps", "resume")
                 }
             },
             modifier = Modifier
@@ -164,7 +199,10 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
         }
         Button(
             onClick = {
-            runningViewModel.stopCountTime()
+                runningViewModel.stopCountTime()
+                runningViewModel.unregisterStepCounterSensor()
+                isButtonVisible = true
+                Log.d("steps", "stop")
             },
             modifier = Modifier
                 .clip(CutCornerShape(10.dp))
@@ -175,6 +213,20 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
                 style = MaterialTheme.typography.body1
             )
         }
+        Button(
+            onClick = {
+                bleViewModel.scanDevices()
+            },
+            modifier = Modifier
+                .clip(CutCornerShape(10.dp))
+                .width(200.dp)
+        ) {
+            Text(
+                text = "Connect HR",
+                style = MaterialTheme.typography.body1
+            )
+        }
+
     }
 }
 

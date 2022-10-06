@@ -1,10 +1,5 @@
 package com.example.running_app.viewModels
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
@@ -16,7 +11,6 @@ import java.util.*
 
 class RunningViewModel: ViewModel() {
 
-//    var time by mutableStateOf("00:00:000")
     var time = MutableLiveData("00:00:000")
 
     private var coroutineScope = CoroutineScope(Dispatchers.Main)

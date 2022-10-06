@@ -5,8 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.sharp.DeleteForever
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -372,7 +373,26 @@ fun Histories(viewModel: StatViewModel = viewModel(), navController: NavControll
                     .padding(vertical = 10.dp)
                     .border(2.dp, Orange1, CutCornerShape(15.dp, 8.dp, 15.dp, 8.dp))
                     .padding(vertical = 8.dp, horizontal = 16.dp)
+                    .clickable {
+                        navController.navigate("statsDetail/${it.id}")
+                    }
             ) {
+                // Delete button
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                ) {
+                    Icon(
+                        imageVector = Icons.Sharp.DeleteForever,
+                        contentDescription = "Localized description",
+                        tint = Orange2,
+                        modifier = Modifier
+                            .clickable {
+//                                viewModel.delete(it.id)
+                            },
+                    )
+                }
+                // Temperature
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)

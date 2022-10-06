@@ -17,11 +17,11 @@ import androidx.compose.material.Surface
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.running_app.views.MainScreen
 import com.example.running_app.ui.theme.Running_AppTheme
 import com.example.running_app.viewModels.RunningViewModel
 import com.example.running_app.views.RunningScreen
 import com.example.running_app.views.WeatherScreen
+import com.example.running_app.views.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @AndroidEntryPoint
@@ -70,9 +70,13 @@ class MainActivity : ComponentActivity(){
 
                         }
                         composable("stats") {
-
+                            StatScreen(navController)
                         }
-                        composable("training") {
+                        composable("statsDetail/{dataId}") {
+                            val dataId = it.arguments?.getString("dataId")?.toInt() ?: 0
+                            StatDetail(dataId = dataId)
+                        }
+                        composable("goals") {
 
                         }
                         composable("startRunning") {

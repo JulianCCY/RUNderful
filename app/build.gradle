@@ -104,6 +104,8 @@ dependencies {
     // Google Map
     implementation 'com.google.maps.android:maps-compose:2.7.2'
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
-
+    // Heartrate
     implementation 'androidx.multidex:multidex:2.0.1'
+    // Graph
+    implementation 'com.github.madrapps:plot:0.1.1'
 }

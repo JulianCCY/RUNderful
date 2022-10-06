@@ -323,7 +323,7 @@ data class RunRecord(
     val endTime: String,
     // Total time spend of the record (Float?/wtever u store, .tostring)
     val timeSpent: String,
-    // Average velocity (mph)
+    // Average velocity (m/s)
     val avgVelocity: Double,
     // List of average velocity with TimeStamp or StopwatchStamp --- Eg. [(velocity, minute:seconds), (2.3, 01:00), (2.5, 01:30), (3.1, 02:00)]
     // Or with metres... record once every 100 metres? --- Eg. [(2.1, 100), (2.6, 200), (2.4, 300)]

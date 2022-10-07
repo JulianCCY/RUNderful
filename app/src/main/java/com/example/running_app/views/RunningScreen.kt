@@ -69,6 +69,9 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
     val getHeartRate by bleViewModel.mBPM.observeAsState()
     val heartRate = getHeartRate?.absoluteValue
 
+    val getVelocity by runningViewModel.velocity.observeAsState()
+    val velocity = getVelocity?.absoluteValue
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -113,11 +116,11 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                     .width(150.dp)
             ) {
                 Text(
-                    text = "Avg. velocity",
+                    text = "Velocity",
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = "00 m/s",
+                    text = if (velocity != null) "$velocity" else "0.0" + " m/s",
                     style = MaterialTheme.typography.subtitle2
                 )
             }
@@ -130,7 +133,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = if (heartRate != null && heartRate != 0) "$heartRate bpm" else "Not In Use",
+                    text = if (heartRate != null && heartRate != 0) "$heartRate BPM" else "Not In Use",
                     style = MaterialTheme.typography.subtitle2
                 )
             }
@@ -141,34 +144,36 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
 @Composable
 fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEViewModel = viewModel()) {
     var pauseResume by remember { mutableStateOf("pause") }
-//    runningViewModel.startCountTime()
+    runningViewModel.isActive = true
+    runningViewModel.startCountTime(true)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
     ) {
-        var isButtonVisible by remember { mutableStateOf(true) }
-        Button(
-            onClick = {
-                runningViewModel.isActive = true
-                runningViewModel.startCountTime(startOrResume = true)
-                isButtonVisible = false
-                Log.d("steps", "start")
-
-            }, modifier = Modifier
-                .alpha(if (isButtonVisible) 1f else 0f)
-                .clip(CutCornerShape(10.dp))
-                .width(200.dp)
-        ) {
-            Text(
-                text = "Start",
-                style = MaterialTheme.typography.body1
-            )
-        }
+//        var isButtonVisible by remember { mutableStateOf(true) }
+//        Button(
+//            onClick = {
+//                runningViewModel.isActive = true
+//                runningViewModel.startCountTime(startOrResume = true)
+//                isButtonVisible = false
+//                Log.d("steps", "start")
+//
+//            }, modifier = Modifier
+//                .alpha(if (isButtonVisible) 1f else 0f)
+//                .clip(CutCornerShape(10.dp))
+//                .width(200.dp)
+//        ) {
+//            Text(
+//                text = "Start",
+//                style = MaterialTheme.typography.body1
+//            )
+//        }
         Button(
             onClick = {
                 if (pauseResume == "pause") {
+                    runningViewModel.isActive = false
                     runningViewModel.pauseCountTime()
                     runningViewModel.unregisterStepCounterSensor()
                     pauseResume = "resume"
@@ -201,7 +206,7 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEV
             onClick = {
                 runningViewModel.stopCountTime()
                 runningViewModel.unregisterStepCounterSensor()
-                isButtonVisible = true
+//                isButtonVisible = true
                 Log.d("steps", "stop")
             },
             modifier = Modifier

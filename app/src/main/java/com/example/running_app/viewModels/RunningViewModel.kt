@@ -6,18 +6,30 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.running_app.data.running.running_location.RunningLocationViewModel
 import kotlinx.coroutines.*
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.inject.Inject
 
-class RunningViewModel(application: Application) : AndroidViewModel(application), SensorEventListener {
+class RunningViewModel (
+    application: Application,
+) : AndroidViewModel(application), SensorEventListener, LocationListener {
+
+    // Time
+    var time = MutableLiveData("00:00:000")
+    private var timeMills = 0L
+    private var lastTimeStamp = 0L
 
     // Step Counter Sensor Setup
     private lateinit var sm: SensorManager
@@ -28,13 +40,16 @@ class RunningViewModel(application: Application) : AndroidViewModel(application)
     private var prevSteps = 0
     private var totalSteps = 0
 
-    var time = MutableLiveData("00:00:000")
-
+    // Conditions
     private var coroutineScope = CoroutineScope(Dispatchers.Main)
     var isActive = false
 
-    private var timeMills = 0L
-    private var lastTimeStamp = 0L
+    // Running Velocity
+    private lateinit var locationManager: LocationManager
+    val velocity_: MutableLiveData<Double> = MutableLiveData(0.0)
+    val velocity: LiveData<Double> = velocity_
+
+    // Running Distance
 
     fun startCountTime(startOrResume: Boolean = false) {
 
@@ -42,13 +57,14 @@ class RunningViewModel(application: Application) : AndroidViewModel(application)
         if (startOrResume){
             loadStepCounter()
             resetSteps()
-            // if start then connect to the bluetooth first
         }
 
         // start sensor monitoring
         registerStepCounterSensor()
+        // start update location while running
+        startTrackingRunningLocation()
 
-        if (isActive) {
+        if (isActive){
             coroutineScope.launch {
                 lastTimeStamp = System.currentTimeMillis()
                 this@RunningViewModel.isActive = true
@@ -67,12 +83,14 @@ class RunningViewModel(application: Application) : AndroidViewModel(application)
     fun pauseCountTime() {
         isActive = false
         unregisterStepCounterSensor()
+        stopTrackingRunningLocation()
     }
 
     // finish running
     // stop sensor and save step count
     fun stopCountTime() {
         unregisterStepCounterSensor()
+        stopTrackingRunningLocation()
 
         saveStepCounter()
         updateStepCounter(0)
@@ -160,4 +178,20 @@ class RunningViewModel(application: Application) : AndroidViewModel(application)
     // this part is not required
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
     }
+
+    private fun startTrackingRunningLocation(){
+        locationManager = getApplication<Application>().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
+    }
+
+    private fun stopTrackingRunningLocation(){
+        locationManager.removeUpdates(this)
+    }
+
+    override fun onLocationChanged(location: Location) {
+        velocity_.postValue(location.speed.toDouble())
+        Log.d("Running Speed","Latitude: " + location.latitude + " , Longitude: " + location.longitude + " , Speed: " + location.speed)
+    }
+
+
 }

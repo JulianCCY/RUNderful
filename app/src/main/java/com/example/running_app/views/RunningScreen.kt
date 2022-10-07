@@ -27,6 +27,8 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import kotlin.math.absoluteValue
 
 @Composable
@@ -71,6 +73,9 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
 
     val getVelocity by runningViewModel.velocity.observeAsState()
     val velocity = getVelocity?.absoluteValue
+
+    val velocityFormatter = DecimalFormat("#.##")
+    velocityFormatter.roundingMode = RoundingMode.DOWN
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -120,7 +125,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = if (velocity != null) "$velocity" else "0.0" + " m/s",
+                    text = if (velocity != null) velocityFormatter.format(velocity) else "0.0" + " m/s",
                     style = MaterialTheme.typography.subtitle2
                 )
             }

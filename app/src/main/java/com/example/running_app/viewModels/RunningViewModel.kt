@@ -186,7 +186,7 @@ var prevLat: Double? = null
 
     private fun startTrackingRunningLocation(){
         locationManager = getApplication<Application>().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1f, this)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5f, this)
     }
 
     private fun stopTrackingRunningLocation(){

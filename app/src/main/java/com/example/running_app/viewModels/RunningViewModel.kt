@@ -49,7 +49,8 @@ class RunningViewModel (
     val velocity: LiveData<Double> = velocity_
 
 //     Running Distance
-    var prevLocation: Location? = null
+var prevLat: Double? = null
+    var prevLong: Double? = null
     val distance_: MutableLiveData<Double> = MutableLiveData(0.0)
     val distance: LiveData<Double> = distance_
 
@@ -185,7 +186,7 @@ class RunningViewModel (
 
     private fun startTrackingRunningLocation(){
         locationManager = getApplication<Application>().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0f, this)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1f, this)
     }
 
     private fun stopTrackingRunningLocation(){
@@ -194,13 +195,20 @@ class RunningViewModel (
 
     override fun onLocationChanged(location: Location) {
 
-        if (prevLocation == null) {
-            prevLocation = location
-        } else {
-            distance_.postValue(distance_.value?.plus(location.distanceTo(prevLocation)))
+
+        if (location.speed != 0.0f) {
+            if (prevLat == null && prevLong == null){
+                prevLat = location.latitude
+                prevLong = location.longitude
+            } else {
+                val prevLocation = Location("previous location")
+                prevLocation.latitude = prevLat!!
+                prevLocation.longitude = prevLong!!
+
+                val distanceDiff = distance_.value?.plus(location.distanceTo(prevLocation))
+                distance_.postValue(distanceDiff)
+            }
         }
-
-
         velocity_.postValue(location.speed.toDouble())
 
         Log.d("Running Speed","Latitude: " + location.latitude + " , Longitude: " + location.longitude + " , Speed: " + location.speed)

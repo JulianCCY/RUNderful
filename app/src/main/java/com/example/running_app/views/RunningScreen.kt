@@ -74,8 +74,14 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
     val getVelocity by runningViewModel.velocity.observeAsState()
     val velocity = getVelocity?.absoluteValue
 
+    val getDistance by runningViewModel.distance.observeAsState()
+    val distance = getDistance?.absoluteValue
+
     val velocityFormatter = DecimalFormat("#.##")
     velocityFormatter.roundingMode = RoundingMode.DOWN
+
+    val distanceFormatter = DecimalFormat("#.##")
+    distanceFormatter.roundingMode = RoundingMode.DOWN
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,7 +98,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                     .width(150.dp)
             ) {
                 Text(
-                    text = "Total steps",
+                    text = "Total Steps",
                     style = MaterialTheme.typography.body1
                 )
                 Text(
@@ -110,7 +116,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = "00 km",
+                    text = if (distance != null) distanceFormatter.format(distance) + " M" else "0 M",
                     style = MaterialTheme.typography.subtitle2
                 )
             }
@@ -125,7 +131,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = if (velocity != null) velocityFormatter.format(velocity) else "0.0" + " m/s",
+                    text = if (velocity != null) velocityFormatter.format(velocity) + " M/S" else "Rest",
                     style = MaterialTheme.typography.subtitle2
                 )
             }
@@ -240,21 +246,21 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEV
     }
 }
 
-@Composable
-fun MapView() {
-    val helsinki = LatLng(60.19, 24.94)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(helsinki, 10f)
-    }
-    GoogleMap(
-        modifier = Modifier
-            .fillMaxWidth(),
-        cameraPositionState = cameraPositionState
-    ) {
-        Marker(
-            state = MarkerState(position = helsinki),
-            title = "Helsinki",
-            snippet = "Marker in Helsinki",
-        )
-    }
-}
+//@Composable
+//fun MapView() {
+//    val helsinki = LatLng(60.19, 24.94)
+//    val cameraPositionState = rememberCameraPositionState {
+//        position = CameraPosition.fromLatLngZoom(helsinki, 10f)
+//    }
+//    GoogleMap(
+//        modifier = Modifier
+//            .fillMaxWidth(),
+//        cameraPositionState = cameraPositionState
+//    ) {
+//        Marker(
+//            state = MarkerState(position = helsinki),
+//            title = "Helsinki",
+//            snippet = "Marker in Helsinki",
+//        )
+//    }
+//}

@@ -1,6 +1,6 @@
 package com.example.running_app.viewModels
 
-import android.app.Application
+import  android.app.Application
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -13,7 +13,6 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.running_app.data.running.running_location.RunningLocationViewModel
 import kotlinx.coroutines.*
 import java.time.Instant
 import java.time.LocalDateTime
@@ -49,7 +48,10 @@ class RunningViewModel (
     val velocity_: MutableLiveData<Double> = MutableLiveData(0.0)
     val velocity: LiveData<Double> = velocity_
 
-    // Running Distance
+//     Running Distance
+    var prevLocation: Location? = null
+    val distance_: MutableLiveData<Double> = MutableLiveData(0.0)
+    val distance: LiveData<Double> = distance_
 
     fun startCountTime(startOrResume: Boolean = false) {
 
@@ -63,6 +65,7 @@ class RunningViewModel (
         registerStepCounterSensor()
         // start update location while running
         startTrackingRunningLocation()
+
 
         if (isActive){
             coroutineScope.launch {
@@ -84,6 +87,7 @@ class RunningViewModel (
         isActive = false
         unregisterStepCounterSensor()
         stopTrackingRunningLocation()
+        velocity_.postValue(null)
     }
 
     // finish running
@@ -181,7 +185,7 @@ class RunningViewModel (
 
     private fun startTrackingRunningLocation(){
         locationManager = getApplication<Application>().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0f, this)
     }
 
     private fun stopTrackingRunningLocation(){
@@ -189,7 +193,16 @@ class RunningViewModel (
     }
 
     override fun onLocationChanged(location: Location) {
+
+        if (prevLocation == null) {
+            prevLocation = location
+        } else {
+            distance_.postValue(distance_.value?.plus(location.distanceTo(prevLocation)))
+        }
+
+
         velocity_.postValue(location.speed.toDouble())
+
         Log.d("Running Speed","Latitude: " + location.latitude + " , Longitude: " + location.longitude + " , Speed: " + location.speed)
     }
 

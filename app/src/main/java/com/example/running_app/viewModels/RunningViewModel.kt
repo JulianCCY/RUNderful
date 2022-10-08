@@ -186,7 +186,7 @@ var prevLat: Double? = null
 
     private fun startTrackingRunningLocation(){
         locationManager = getApplication<Application>().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5f, this)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 2f, this)
     }
 
     private fun stopTrackingRunningLocation(){
@@ -195,7 +195,7 @@ var prevLat: Double? = null
 
     override fun onLocationChanged(location: Location) {
 
-
+        // will not update the distance if user doesn't run
         if (location.speed != 0.0f) {
             if (prevLat == null && prevLong == null){
                 prevLat = location.latitude
@@ -205,10 +205,15 @@ var prevLat: Double? = null
                 prevLocation.latitude = prevLat!!
                 prevLocation.longitude = prevLong!!
 
+                // calculate distance difference
                 val distanceDiff = distance_.value?.plus(location.distanceTo(prevLocation))
                 distance_.postValue(distanceDiff)
             }
         }
+        //update previous location
+        prevLat = location.latitude
+        prevLong = location.longitude
+
         velocity_.postValue(location.speed.toDouble())
 
         Log.d("Running Speed","Latitude: " + location.latitude + " , Longitude: " + location.longitude + " , Speed: " + location.speed)

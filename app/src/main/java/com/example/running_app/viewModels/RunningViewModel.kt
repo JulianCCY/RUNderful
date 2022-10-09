@@ -69,22 +69,22 @@ class RunningViewModel (
 
     fun startRunning(StartIsTrueAndPauseIsFalse: Boolean = false) {
 
+        prevLat = null
+        prevLong = null
+
         // if click start button -> reload steps count
         if (StartIsTrueAndPauseIsFalse){
             loadStepCounter()
             resetSteps()
         }
-
-        prevLat = null
-        prevLong = null
+        // start sensor monitoring
+        registerStepCounterSensor()
+        // start update location while running
+        startTrackingRunningLocation()
 
         if (isRunning){
             coroutineScope.launch {
-                delay(3000)
-                // start sensor monitoring
-                registerStepCounterSensor()
-                // start update location while running
-                startTrackingRunningLocation()
+
 
                 lastTimeStamp = System.currentTimeMillis()
                 this@RunningViewModel.isRunning = true

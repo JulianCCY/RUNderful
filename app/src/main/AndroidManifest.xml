@@ -31,6 +31,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Running_App"
         tools:targetApi="31" >
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCJgO4YlKtqL8bDP01HJMzXKHLmeKzxMVM" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -40,7 +43,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

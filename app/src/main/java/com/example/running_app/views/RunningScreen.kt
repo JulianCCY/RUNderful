@@ -2,7 +2,9 @@ package com.example.running_app.views
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -34,12 +36,13 @@ fun RunningScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         CounterDisplay()
         StatsDisplay()
         Spacer(modifier = Modifier.height(10.dp))
         Buttons()
-//        MapView()
+        MapView()
     }
 }
 
@@ -141,6 +144,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
 @Composable
 fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEViewModel = viewModel()) {
     var pauseResume by remember { mutableStateOf("pause") }
+//    runningViewModel.isActive = true
 //    runningViewModel.startCountTime()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -201,7 +205,7 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEV
             onClick = {
                 runningViewModel.stopCountTime()
                 runningViewModel.unregisterStepCounterSensor()
-                isButtonVisible = true
+//                isButtonVisible = true
                 Log.d("steps", "stop")
             },
             modifier = Modifier
@@ -234,10 +238,11 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEV
 fun MapView() {
     val helsinki = LatLng(60.19, 24.94)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(helsinki, 10f)
+        position = CameraPosition.fromLatLngZoom(helsinki, 15f)
     }
     GoogleMap(
         modifier = Modifier
+            .height(200.dp)
             .fillMaxWidth(),
         cameraPositionState = cameraPositionState
     ) {

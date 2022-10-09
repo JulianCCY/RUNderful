@@ -103,7 +103,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
     // Google Map
     implementation 'com.google.maps.android:maps-compose:2.7.2'
-    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.maps.android:maps-compose-widgets:2.7.2'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
     // Heartrate
     implementation 'androidx.multidex:multidex:2.0.1'
     // Graph

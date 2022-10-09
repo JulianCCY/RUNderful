@@ -445,7 +445,10 @@ fun FeatureItem(
                         shape = CutCornerShape(80.dp, 0.dp, 20.dp, 0.dp)
                         clip = true
                     }
-                    .background(feature.darkColor)
+                    .background(feature.darkColor).selectable(
+                        selected = true,
+                        onClick = {navController.navigate("goals")}
+                    )
             ) {
                 val width = constraints.maxWidth
                 val height = constraints.maxHeight

@@ -13,38 +13,41 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.running_app.data.running.heartrate.BLEViewModel
 import kotlinx.coroutines.*
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import javax.inject.Inject
 
 class RunningViewModel (
     application: Application,
 ) : AndroidViewModel(application), SensorEventListener, LocationListener {
 
-    // Time
-    var time = MutableLiveData("00:00:000")
-    private var timeMills = 0L
-    private var lastTimeStamp = 0L
+    // Conditions
+    private var coroutineScope = CoroutineScope(Dispatchers.Main)
+    var isRunning = false
 
     // Step Counter Sensor Setup
     private lateinit var sm: SensorManager
     private lateinit var stepCounter: Sensor
 
-    private val _steps: MutableLiveData<Int> = MutableLiveData()
+    // Step count
+    private val _steps: MutableLiveData<Int> = MutableLiveData(0)
     val steps: LiveData<Int> = _steps
     private var prevSteps = 0
     private var totalSteps = 0
 
-    // Conditions
-    private var coroutineScope = CoroutineScope(Dispatchers.Main)
-    var isActive = false
+    // set up Location Tracking while running
+    private lateinit var locationManager: LocationManager
+
+    // Time
+    var time = MutableLiveData("00:00:00")
+    private var timeMills = 0L
+    private var lastTimeStamp = 0L
 
     // Running Velocity
-    private lateinit var locationManager: LocationManager
     val velocity_: MutableLiveData<Double> = MutableLiveData(0.0)
     val velocity: LiveData<Double> = velocity_
 
@@ -54,25 +57,38 @@ class RunningViewModel (
     val distance_: MutableLiveData<Double> = MutableLiveData(0.0)
     val distance: LiveData<Double> = distance_
 
-    fun startCountTime(startOrResume: Boolean = false) {
+    // Heart rate
+    val mBPM: LiveData<Int> = BLEViewModel.mBPM_
+    val hBPM: LiveData<Int> = BLEViewModel.hBPM_
+    val lBPM: LiveData<Int> = BLEViewModel.lBPM_
+
+    // Stride Length
+    val sLength: Double? = distance.value?.div(steps.value?.toDouble()!!)
+
+    // Calories
+
+    fun startRunning(StartIsTrueAndPauseIsFalse: Boolean = false) {
 
         // if click start button -> reload steps count
-        if (startOrResume){
+        if (StartIsTrueAndPauseIsFalse){
             loadStepCounter()
             resetSteps()
         }
 
-        // start sensor monitoring
-        registerStepCounterSensor()
-        // start update location while running
-        startTrackingRunningLocation()
+        prevLat = null
+        prevLong = null
 
-
-        if (isActive){
+        if (isRunning){
             coroutineScope.launch {
+                delay(3000)
+                // start sensor monitoring
+                registerStepCounterSensor()
+                // start update location while running
+                startTrackingRunningLocation()
+
                 lastTimeStamp = System.currentTimeMillis()
-                this@RunningViewModel.isActive = true
-                while (this@RunningViewModel.isActive) {
+                this@RunningViewModel.isRunning = true
+                while (this@RunningViewModel.isRunning) {
                     delay(10L)
                     timeMills += System.currentTimeMillis() - lastTimeStamp
                     lastTimeStamp = System.currentTimeMillis()
@@ -84,8 +100,8 @@ class RunningViewModel (
 
     // pause the timer and step count sensor
     // but it still keeps the value of step counter
-    fun pauseCountTime() {
-        isActive = false
+    fun pauseRunning() {
+        isRunning = false
         unregisterStepCounterSensor()
         stopTrackingRunningLocation()
         prevLat = null
@@ -95,7 +111,7 @@ class RunningViewModel (
 
     // finish running
     // stop sensor and save step count
-    fun stopCountTime() {
+    fun stopRunning() {
         unregisterStepCounterSensor()
         stopTrackingRunningLocation()
         prevLat = null
@@ -110,15 +126,16 @@ class RunningViewModel (
         lastTimeStamp = 0L
 //        time = "00:00:000"
         time.postValue(formatTime(0))
-        isActive = false
+        isRunning = false
     }
 
+    // formatting the time count
     private fun formatTime(timeMills: Long): String {
         val localDateTime = LocalDateTime.ofInstant(
             Instant.ofEpochMilli(timeMills),
             ZoneId.systemDefault()
         )
-        val formatter = DateTimeFormatter.ofPattern("mm:ss:SSS", Locale.getDefault())
+        val formatter = DateTimeFormatter.ofPattern("mm:ss:SS", Locale.getDefault())
         return localDateTime.format(formatter)
     }
 

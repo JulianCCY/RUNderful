@@ -274,6 +274,10 @@ fun FeatureItem(
                         clip = true
                     }
                     .background(feature.darkColor)
+                    .selectable(
+                        selected = true,
+                        onClick = {navController.navigate("tracks")}
+                    )
             ) {
                 val width = constraints.maxWidth
                 val height = constraints.maxHeight

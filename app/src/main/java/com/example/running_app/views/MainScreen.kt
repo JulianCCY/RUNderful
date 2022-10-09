@@ -333,6 +333,7 @@ fun FeatureItem(
                     Text(
                         text = feature.title,
                         style = MaterialTheme.typography.body1,
+                        fontSize = 24.sp,
                         lineHeight = 24.sp,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -446,6 +447,10 @@ fun FeatureItem(
                         clip = true
                     }
                     .background(feature.darkColor)
+                    .selectable(
+                        selected = true,
+                        onClick = {navController.navigate("goals")}
+                    )
             ) {
                 val width = constraints.maxWidth
                 val height = constraints.maxHeight

@@ -198,6 +198,7 @@ class RunningViewModel (
 
         val currentSteps = totalSteps - prevSteps
         Log.d("currentSteps", "$currentSteps")
+
         updateStepCounter(currentSteps)
     }
 

@@ -38,8 +38,10 @@ open class GATTClientCallBack @Inject constructor(
         if (newState == BluetoothGatt.STATE_CONNECTED) {
             Log.d(TAG, "Connected GATT service")
             gatt.discoverServices()
+            model.isConnected_.postValue(true)
         } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
             Log.d(TAG, "Disconnected GATT service")
+            model.isConnected_.postValue(false)
         }
     }
 

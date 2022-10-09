@@ -20,6 +20,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:name=".data.weather.display.WeatherScreen"
         android:allowBackup="true"

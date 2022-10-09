@@ -48,8 +48,8 @@ class RunningViewModel (
     val velocity_: MutableLiveData<Double> = MutableLiveData(0.0)
     val velocity: LiveData<Double> = velocity_
 
-//     Running Distance
-var prevLat: Double? = null
+    // Running Distance
+    var prevLat: Double? = null
     var prevLong: Double? = null
     val distance_: MutableLiveData<Double> = MutableLiveData(0.0)
     val distance: LiveData<Double> = distance_
@@ -88,6 +88,8 @@ var prevLat: Double? = null
         isActive = false
         unregisterStepCounterSensor()
         stopTrackingRunningLocation()
+        prevLat = null
+        prevLong = null
         velocity_.postValue(null)
     }
 
@@ -96,6 +98,8 @@ var prevLat: Double? = null
     fun stopCountTime() {
         unregisterStepCounterSensor()
         stopTrackingRunningLocation()
+        prevLat = null
+        prevLong = null
 
         saveStepCounter()
         updateStepCounter(0)
@@ -186,7 +190,7 @@ var prevLat: Double? = null
 
     private fun startTrackingRunningLocation(){
         locationManager = getApplication<Application>().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 2f, this)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1.5f, this)
     }
 
     private fun stopTrackingRunningLocation(){
@@ -207,6 +211,7 @@ var prevLat: Double? = null
 
                 // calculate distance difference
                 val distanceDiff = distance_.value?.plus(location.distanceTo(prevLocation))
+                Log.d("new distance", "$distanceDiff")
                 distance_.postValue(distanceDiff)
             }
         }

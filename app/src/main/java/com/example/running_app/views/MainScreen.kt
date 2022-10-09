@@ -9,24 +9,33 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.running_app.R
+import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.views.utils.FeaturesUI
 import com.example.running_app.ui.theme.*
+import com.example.running_app.viewModels.RunningViewModel
 import com.example.running_app.views.utils.quadFromTo
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,7 +65,11 @@ fun MainScreen(navController: NavController) {
 }
 
 @Composable
-fun Setting() {
+fun Setting(bleViewModel: BLEViewModel = viewModel()) {
+
+    val getIsConnected by bleViewModel.isConnected.observeAsState()
+    val isConnected = getIsConnected
+
     Row(
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
@@ -64,13 +77,20 @@ fun Setting() {
             .fillMaxWidth()
             .padding(top = 18.dp, end = 18.dp)
     ) {
-        Icon(
-            Icons.Sharp.Settings,
-            contentDescription = "Settings",
-            tint = Orange1,
-            modifier = Modifier
-                .size(24.dp)
-        )
+        IconButton(
+            onClick = {
+                bleViewModel.scanDevices()
+            }
+        ) {
+            Icon(
+                if (isConnected == true) Icons.Sharp.BluetoothConnected else Icons.Sharp.Bluetooth,
+//            Icons.Sharp.Settings,
+                contentDescription = "Settings",
+                tint = Orange1,
+                modifier = Modifier
+                    .size(45.dp)
+            )
+        }
     }
 }
 
@@ -120,6 +140,8 @@ fun Quotes() {
 }
 @Composable
 fun FeatureSection(features: List<FeaturesUI>, navController: NavController) {
+    val haptic = LocalHapticFeedback.current
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -141,7 +163,10 @@ fun FeatureSection(features: List<FeaturesUI>, navController: NavController) {
                     .background(Orange1)
                     .selectable(
                         selected = true,
-                        onClick = {navController.navigate("startRunning")}
+                        onClick = {
+                            navController.navigate("startRunning")
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        }
                     )
             ) {
                 Text(
@@ -188,7 +213,7 @@ fun FeatureItem(
                     .background(feature.darkColor)
                     .selectable(
                         selected = true,
-                        onClick = {navController.navigate("weather")}
+                        onClick = { navController.navigate("weather") }
                     )
             ) {
                 val width = constraints.maxWidth
@@ -360,7 +385,7 @@ fun FeatureItem(
                     .background(feature.darkColor)
                     .selectable(
                         selected = true,
-                        onClick = {navController.navigate("stats")}
+                        onClick = { navController.navigate("stats") }
                     )
             ) {
                 val width = constraints.maxWidth

@@ -1,6 +1,8 @@
 package com.example.running_app
 
 import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +16,7 @@ import com.example.running_app.viewModels.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.core.app.ActivityCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -23,6 +26,8 @@ import com.example.running_app.views.RunningScreen
 import com.example.running_app.views.WeatherScreen
 import com.example.running_app.views.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(){
@@ -39,7 +44,6 @@ class MainActivity : ComponentActivity(){
         ){
             weatherViewModel.loadWeatherInfo()
             dailyWeatherViewModel.loadDailyWeatherInfo()
-
         }
         permissionLauncher.launch(arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -88,7 +92,6 @@ class MainActivity : ComponentActivity(){
             }
         }
     }
-
     override fun onResume() {
         super.onResume()
         if (runningViewModel.isActive){

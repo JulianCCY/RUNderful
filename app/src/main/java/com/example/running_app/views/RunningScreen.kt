@@ -6,13 +6,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.sharp.Bluetooth
+import androidx.compose.material.icons.sharp.BluetoothConnected
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -22,13 +27,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.R
 import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.ui.theme.Orange1
+import com.example.running_app.ui.theme.Red1
 import com.example.running_app.viewModels.RunningViewModel
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import kotlin.math.absoluteValue
 
 @Composable
@@ -48,7 +50,7 @@ fun RunningScreen() {
 
 @Composable
 fun CounterDisplay(runningViewModel: RunningViewModel = viewModel()) {
-    val time = runningViewModel.time.observeAsState("00:00:000")
+    val time = runningViewModel.time.observeAsState("00:00:00")
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
@@ -66,28 +68,46 @@ fun CounterDisplay(runningViewModel: RunningViewModel = viewModel()) {
 @Composable
 fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEViewModel = viewModel()) {
 
+    // Getting data from the viewModel
     val getSteps by runningViewModel.steps.observeAsState()
     val steps  = getSteps?.absoluteValue
 
-    val getHeartRate by bleViewModel.mBPM.observeAsState()
+    val getHeartRate by runningViewModel.mBPM.observeAsState()
     val heartRate = getHeartRate?.absoluteValue
+
+    val getVelocity by runningViewModel.velocity.observeAsState()
+    val velocity = getVelocity?.absoluteValue
+
+    val getDistance by runningViewModel.distance.observeAsState()
+    val distance = getDistance?.absoluteValue
+
+    val strideLength = runningViewModel.sLength
+
+    val velocityFormatter = DecimalFormat("#.##")
+    velocityFormatter.roundingMode = RoundingMode.DOWN
+
+    val distanceFormatter = DecimalFormat("#.##")
+    distanceFormatter.roundingMode = RoundingMode.DOWN
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(15.dp)
+            .padding(start = 30.dp)
+            .padding(vertical = 15.dp)
             .fillMaxWidth()
     ) {
         Row(
-
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
             Column(
                 modifier = Modifier
                     .width(150.dp)
             ) {
                 Text(
-                    text = "Total steps",
+                    text = "Total Steps",
                     style = MaterialTheme.typography.body1
                 )
                 Text(
@@ -101,11 +121,11 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                     .width(150.dp)
             ) {
                 Text(
-                    text = "Distance travelled",
+                    text = "Total Distance",
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = "00 km",
+                    text = if (distance != null) distanceFormatter.format(distance) + " M" else "0 M",
                     style = MaterialTheme.typography.subtitle2
                 )
             }
@@ -116,11 +136,11 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                     .width(150.dp)
             ) {
                 Text(
-                    text = "Avg. velocity",
+                    text = "Speed",
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = "00 m/s",
+                    text = if (velocity != null) velocityFormatter.format(velocity) + " M/S" else "Rest",
                     style = MaterialTheme.typography.subtitle2
                 )
             }
@@ -129,11 +149,64 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                     .width(150.dp)
             ) {
                 Text(
-                    text = "Avg. heart rate",
+                    text = "Heart Rate",
+                    style = MaterialTheme.typography.body1
+                )
+                Row(
+
+                ){
+                    if (heartRate != null && heartRate != 0) {
+                        Text(
+                            text = "$heartRate",
+                            style = MaterialTheme.typography.subtitle2
+                        )
+                        Icon(
+                            Icons.Filled.Favorite,
+                            contentDescription = "My Heart",
+                            tint = Red1,
+                            modifier = Modifier
+                                .size(38.dp)
+                        )
+                        Text(
+                            text = "BPM",
+                            style = MaterialTheme.typography.subtitle2
+                        )
+                    } else {
+                        Text(
+                            text = "Not In Use",
+                            style = MaterialTheme.typography.subtitle2
+                        )
+                    }
+
+                }
+
+            }
+        }
+
+        Row() {
+            Column(
+                modifier = Modifier
+                    .width(150.dp)
+            ) {
+                Text(
+                    text = "Stride Length",
                     style = MaterialTheme.typography.body1
                 )
                 Text(
-                    text = if (heartRate != null && heartRate != 0) "$heartRate bpm" else "Not In Use",
+                    text = if (runningViewModel.sLength == null) "${runningViewModel.sLength} M" else "0 M",
+                    style = MaterialTheme.typography.subtitle2
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .width(150.dp)
+            ) {
+                Text(
+                    text = "Active Calories",
+                    style = MaterialTheme.typography.body1
+                )
+                Text(
+                    text = "Active Calories",
                     style = MaterialTheme.typography.subtitle2
                 )
             }
@@ -142,44 +215,27 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
 }
 
 @Composable
-fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEViewModel = viewModel()) {
+fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
     var pauseResume by remember { mutableStateOf("pause") }
-//    runningViewModel.isActive = true
-//    runningViewModel.startCountTime()
+    runningViewModel.isRunning = true
+    runningViewModel.startRunning(true)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
     ) {
-        var isButtonVisible by remember { mutableStateOf(true) }
-        Button(
-            onClick = {
-                runningViewModel.isActive = true
-                runningViewModel.startCountTime(startOrResume = true)
-                isButtonVisible = false
-                Log.d("steps", "start")
-
-            }, modifier = Modifier
-                .alpha(if (isButtonVisible) 1f else 0f)
-                .clip(CutCornerShape(10.dp))
-                .width(200.dp)
-        ) {
-            Text(
-                text = "Start",
-                style = MaterialTheme.typography.body1
-            )
-        }
         Button(
             onClick = {
                 if (pauseResume == "pause") {
-                    runningViewModel.pauseCountTime()
+                    runningViewModel.isRunning = false
+                    runningViewModel.pauseRunning()
                     runningViewModel.unregisterStepCounterSensor()
                     pauseResume = "resume"
                     Log.d("steps", "pause")
                 } else if (pauseResume == "resume") {
-                    runningViewModel.isActive = true
-                    runningViewModel.startCountTime()
+                    runningViewModel.isRunning = true
+                    runningViewModel.startRunning()
                     runningViewModel.registerStepCounterSensor()
                     pauseResume = "pause"
                     Log.d("steps", "resume")
@@ -203,7 +259,7 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEV
         }
         Button(
             onClick = {
-                runningViewModel.stopCountTime()
+                runningViewModel.stopRunning()
                 runningViewModel.unregisterStepCounterSensor()
 //                isButtonVisible = true
                 Log.d("steps", "stop")
@@ -217,20 +273,6 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel(), bleViewModel: BLEV
                 style = MaterialTheme.typography.body1
             )
         }
-        Button(
-            onClick = {
-                bleViewModel.scanDevices()
-            },
-            modifier = Modifier
-                .clip(CutCornerShape(10.dp))
-                .width(200.dp)
-        ) {
-            Text(
-                text = "Connect HR",
-                style = MaterialTheme.typography.body1
-            )
-        }
-
     }
 }
 

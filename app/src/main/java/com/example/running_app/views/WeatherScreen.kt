@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.AcUnit
 import androidx.compose.material.icons.filled.SevereCold
 import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
@@ -25,6 +26,7 @@ import com.example.running_app.data.weather.WeatherState
 import com.example.running_app.ui.theme.*
 import com.example.running_app.viewModels.DailyWeatherViewModel
 import com.example.running_app.viewModels.WeatherViewModel
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
@@ -32,11 +34,13 @@ import kotlin.math.roundToInt
 
 @Composable
 fun WeatherScreen(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: DailyWeatherViewModel) {
+//    weatherViewModel.loadWeatherInfo()
+//    dailyWeatherViewModel.loadDailyWeatherInfo()
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        CurrentWeather(weatherViewModel.state, dailyWeatherViewModel.dailyState)
+        CurrentWeather(weatherViewModel.state, dailyWeatherViewModel.dailyState, weatherViewModel)
         Switch(weatherViewModel)
         Forecast(weatherViewModel, dailyWeatherViewModel)
     }
@@ -46,7 +50,9 @@ fun WeatherScreen(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: Dai
 fun CurrentWeather(
     state: WeatherState,
     dailyState: DailyWeatherState,
+    viewModel: WeatherViewModel,
 ) {
+
         Box(
             modifier = Modifier
                 .padding(horizontal = 15.dp)
@@ -54,68 +60,103 @@ fun CurrentWeather(
         ) {
             dailyState.weatherInfo?.todayWeatherData?.let {
                 // Weather Icon
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(20.dp)
-                ) {
-                    WeatherIcon(dailyState)
-                }
+//                Box(
+//                    modifier = Modifier
+//                        .align(Alignment.BottomEnd)
+//                        .padding(20.dp)
+//                ) {
+//                    WeatherIcon(dailyState)
+//                }
             }
             Column(
                 modifier = Modifier
                     .padding(15.dp)
             ) {
                 // Last updated
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    val updated = state.weatherInfo?.currentWeatherData?.time
-                    if (updated != null) {
-                        Icon(
-                            Icons.Sharp.Update,
-                            contentDescription = "LastUpdated",
-                            modifier = Modifier
-                                .size(20.dp)
-                        )
-                        Text(
-                            text = state.weatherInfo.currentWeatherData.time.format(DateTimeFormatter.ofPattern("HH:mm")),
-                            style = MaterialTheme.typography.body2,
-                        )
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .width(40.dp)
-                                .height(24.dp)
-                                .background(Gray)
-                        ) { }
-                    }
-                }
+//                Row(
+//                    horizontalArrangement = Arrangement.Start,
+//                    verticalAlignment = Alignment.CenterVertically,
+//                ) {
+//                    val updated = state.weatherInfo?.currentWeatherData?.time
+//                    if (updated != null) {
+//                        Icon(
+//                            Icons.Sharp.Update,
+//                            contentDescription = "LastUpdated",
+//                            modifier = Modifier
+//                                .size(20.dp)
+//                        )
+//                        Text(
+//                            text = state.weatherInfo.currentWeatherData.time.format(DateTimeFormatter.ofPattern("HH:mm")),
+//                            style = MaterialTheme.typography.body2,
+//                        )
+//                    } else {
+//                        Box(
+//                            modifier = Modifier
+//                                .width(40.dp)
+//                                .height(24.dp)
+//                                .background(Gray)
+//                        ) { }
+//                    }
+//                }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 10.dp, bottom = 50.dp)
+                        .padding(top = 5.dp, bottom = 30.dp)
                 ) {
+                    // Current City
+                    val address by viewModel.address.observeAsState()
+                    if (address != null){
+                        Text(
+                            text = "$address",
+                            style = MaterialTheme.typography.h2,
+                            color = Orange2,
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(28.dp)
+                        ) {
+                            Canvas(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(4.dp)
+                            ) {
+                                drawRect(Gray)
+                            }
+                        }
+                    }
+
                     // Temperature
                     val temperature = state.weatherInfo?.currentWeatherData?.temperatureCelsius
                     if (temperature != null) {
                         Text(
                             text = "${state.weatherInfo.currentWeatherData.temperatureCelsius.roundToInt()}°",
                             fontFamily = FontFamily(Font(R.font.leaguegothic_regular)),
-                            fontSize = 96.sp,
+                            fontSize = 94.sp,
                             color = Orange1,
+                            modifier = Modifier
+                                .padding(start = 20.dp)
                         )
                     } else {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(128.dp)
-                                .padding(15.dp),
-                            strokeWidth = 8.dp,
+                        Text(
+                            text = "——",
+                            fontFamily = FontFamily(Font(R.font.leaguegothic_regular)),
+                            fontSize = 96.sp,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onPrimary,
                         )
+//                        CircularProgressIndicator(
+//                            modifier = Modifier
+//                                .size(128.dp)
+//                                .padding(15.dp),
+//                            strokeWidth = 8.dp,
+//                        )
                     }
+
                     // Description
                     val desc = state.weatherInfo?.currentWeatherData?.weatherType?.weatherDesc
                     if (desc != null) {
@@ -139,7 +180,60 @@ fun CurrentWeather(
                             }
                         }
                     }
+
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                    ){
+                        // Highest temperature of the day
+                        val maxTemperature = dailyState.weatherInfo?.todayWeatherData?.temperatureCelsius_max
+                        if (maxTemperature != null) {
+                            Text(
+                                text = "H: ${dailyState.weatherInfo.todayWeatherData.temperatureCelsius_max.roundToInt()}°",
+                                style = MaterialTheme.typography.body1,
+                                color = Orange2,
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .width(80.dp)
+                                    .height(28.dp)
+                            ) {
+                                Canvas(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(4.dp)
+                                ) {
+                                    drawRect(Gray)
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(horizontal = 15.dp))
+                        // Lowest temperature of the day
+                        val minTemperature = dailyState.weatherInfo?.todayWeatherData?.temperatureCelsius_min
+                        if (minTemperature != null) {
+                            Text(
+                                text = "L: ${dailyState.weatherInfo.todayWeatherData.temperatureCelsius_min.roundToInt()}°",
+                                style = MaterialTheme.typography.body1,
+                                color = Orange2,
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .width(80.dp)
+                                    .height(28.dp)
+                            ) {
+                                Canvas(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(4.dp)
+                                ) {
+                                    drawRect(Gray)
+                                }
+                            }
+                        }
+                    }
                 }
+
                 // Air pressure
                 val airPressure = state.weatherInfo?.currentWeatherData?.pressure
                 if (airPressure != null) {
@@ -153,11 +247,12 @@ fun CurrentWeather(
                             tint = MaterialTheme.colors.onPrimary,
                         )
                         Text(
-                            text = airPressure.roundToInt().toString() + "hpa",
+                            text = airPressure.roundToInt().toString() + " hpa",
                             style = MaterialTheme.typography.body1,
                             color = MaterialTheme.colors.onPrimary,
                         )
                     }
+
                 } else {
                     Box(
                         modifier = Modifier
@@ -191,6 +286,7 @@ fun CurrentWeather(
                             color = MaterialTheme.colors.onPrimary,
                         )
                     }
+
                 } else {
                     Box(
                         modifier = Modifier
@@ -330,7 +426,7 @@ fun HourWeather(
                         Text(
                             text = if (data.time.hour == LocalDateTime.now().hour && data.time.dayOfMonth == LocalDateTime.now().dayOfMonth) "Current"
                             else timeFormatter,
-                            style = MaterialTheme.typography.body1
+                            style = MaterialTheme.typography.body1,
                         )
                         Text(
                             text = "${data.temperatureCelsius.roundToInt()}°",
@@ -357,7 +453,8 @@ fun WeekWeather(
             LazyColumn(content = {
                 items(it) { data ->
                     val timeFormatter = remember(data) {
-                        data.date.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase)
+//                        data.date.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase)
+                        data.date.dayOfWeek.name.uppercase().slice(0..2)
                     }
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -369,9 +466,10 @@ fun WeekWeather(
                             text = if(data.date.dayOfYear == LocalDateTime.now().dayOfYear) "Today" else timeFormatter,
                             style = MaterialTheme.typography.body1
                         )
+                        WeatherIcon(state)
                         Text(
-                            text = "${data.temperatureCelsius_min.roundToInt()}°C - ${data.temperatureCelsius_max.roundToInt()}°C",
-                            style = MaterialTheme.typography.body1
+                            text = "${data.temperatureCelsius_min.roundToInt()}° - ${data.temperatureCelsius_max.roundToInt()}°",
+                            style = MaterialTheme.typography.body1,
                         )
                     }
                 }
@@ -390,7 +488,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
                 contentDescription = "WeatherIcon",
                 tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(20.dp)
             )
         }
         "Partly cloudy", "Overcast", "Foggy", "Depositing rime fog" -> {
@@ -399,7 +497,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
                 contentDescription = "WeatherIcon",
                 tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(20.dp)
             )
         }
         "Slight snow fall", "Moderate snow fall", "Snow grains", "Light snow showers" -> {
@@ -408,7 +506,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
                 contentDescription = "WeatherIcon",
                 tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(20.dp)
             )
         }
         "Heavy snow fall", "Heavy snow showers" -> {
@@ -417,7 +515,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
                 contentDescription = "WeatherIcon",
                 tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(20.dp)
             )
         }
         "Moderate thunderstorm", "Thunderstorm with slight hail", "Thunderstorm with heavy hail" -> {
@@ -426,7 +524,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
                 contentDescription = "WeatherIcon",
                 tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(20.dp)
             )
         }
         else -> {
@@ -435,7 +533,7 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
                 contentDescription = "WeatherIcon",
                 tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(20.dp)
             )
         }
     }

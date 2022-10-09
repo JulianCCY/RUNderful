@@ -87,10 +87,9 @@ class MainActivity : ComponentActivity(){
             }
         }
     }
-
     override fun onResume() {
         super.onResume()
-        if (runningViewModel.isActive){
+        if (runningViewModel.isRunning){
             runningViewModel.registerStepCounterSensor()
         }
     }

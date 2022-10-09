@@ -2,5 +2,6 @@
     <string name="app_name">Running_App</string>
     <string name="statistic">Statistic</string>
     <string name="history_list_title">Record history</string>
+    <string name="Goal_list_title">Goal</string>
     <string name="goals">Goals</string>
 </resources>

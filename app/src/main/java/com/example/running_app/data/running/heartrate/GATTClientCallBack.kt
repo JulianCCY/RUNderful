@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.bluetooth.*
 import android.util.Log
 import com.example.running_app.data.running.heartrate.BLEViewModel
+import java.lang.Integer.max
+import java.lang.Integer.min
 import java.util.*
 import javax.inject.Inject
 
@@ -38,8 +40,10 @@ open class GATTClientCallBack @Inject constructor(
         if (newState == BluetoothGatt.STATE_CONNECTED) {
             Log.d(TAG, "Connected GATT service")
             gatt.discoverServices()
+            model.isConnected_.postValue(true)
         } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
             Log.d(TAG, "Disconnected GATT service")
+            model.isConnected_.postValue(false)
         }
     }
 
@@ -76,16 +80,28 @@ open class GATTClientCallBack @Inject constructor(
     }
 
     override fun onDescriptorWrite(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
-        Log.d(TAG,
-            "onDescriptorWrite status is $status and descriptor is ${descriptor.value}  ${descriptor.permissions}")
+        Log.d(TAG, "onDescriptorWrite status is $status and descriptor is ${descriptor.value}  ${descriptor.permissions}")
     }
 
     override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
         Log.d("DBG", "Characteristic data received")
+        // get the heart rate from the sensor device
         val bpm = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 1)
         Log.d("My heart beat rate", "BPM: $bpm")
+
+        // when lowest heart rate is not initialised then let it be the current heart rate
+        if (model.lBPM_.value == null) model.lBPM_.postValue(bpm)
+        // update the new lowest heart rate if current one is lower
+        else model.lBPM_.postValue(min(bpm, model.lBPM_.value!!))
+
+
+        // when highest heart rate is not initialised then let it be the current heart rate
+        if (model.hBPM_.value == null) model.hBPM_.postValue(bpm)
+        // update the new highest heart rate if current one is higher
+        else model.hBPM_.postValue(max(bpm, model.hBPM_.value!!))
+
+        // update the current heart rate
         model.mBPM_.postValue(bpm)
     }
-
 
 }

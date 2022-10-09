@@ -24,20 +24,26 @@ class BLEViewModel(application: Application) : AndroidViewModel(application) {
     companion object{
         const val SCAN_PERIOD: Long = 5000
         val mBPM_: MutableLiveData<Int> = MutableLiveData(0)
+        val hBPM_: MutableLiveData<Int> = MutableLiveData(null)
+        val lBPM_: MutableLiveData<Int> = MutableLiveData(null)
+        val isConnected_: MutableLiveData<Boolean> = MutableLiveData(false)
     }
-    val mBPM: LiveData<Int> = mBPM_
 
     @SuppressLint("StaticFieldLeak")
     private val context = getApplication<Application>().applicationContext
 
+    // Bluetooth Setup
     private var mBluetoothAdapter: BluetoothAdapter? = null
     val bluetoothManager = getApplication<Application>().getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-
     val scanResults = MutableLiveData<List<ScanResult>>(null)
     val fScanning = MutableLiveData<Boolean>(false)
     private val mResults = java.util.HashMap<String, ScanResult>()
 
+    // Connect to the call back function
     val gattClientCallback = GATTClientCallBack(BLEViewModel)
+
+    // Connection condition
+    val isConnected: LiveData<Boolean> = isConnected_
 
     private fun checkBLEPermission(): Boolean {
         if (mBluetoothAdapter == null || !mBluetoothAdapter!!.isEnabled) {
@@ -76,6 +82,7 @@ class BLEViewModel(application: Application) : AndroidViewModel(application) {
                 // connect to the device if it is detected
                 val tar = scanResults.value?.get(0)?.device
                 tar?.connectGatt(context, false, gattClientCallback)
+                isConnected_.postValue(true)
             }
         }
     }

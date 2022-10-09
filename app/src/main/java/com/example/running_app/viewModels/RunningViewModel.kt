@@ -187,19 +187,19 @@ class RunningViewModel (
 
     // To update step count when the sensor is working
     override fun onSensorChanged(event: SensorEvent?) {
-        Log.d("steps", "${event!!.values[0].toInt()}")
+        if (isRunning) {
+            Log.d("steps", "${event!!.values[0].toInt()}")
+            totalSteps = event.values[0].toInt()
 
-        totalSteps = event.values[0].toInt()
+            if (prevSteps == 0){
+                loadStepCounter()
+                resetSteps()
+            }
 
-        if (prevSteps == 0){
-            loadStepCounter()
-            resetSteps()
+            val currentSteps = totalSteps - prevSteps
+            Log.d("currentSteps", "$currentSteps")
+            updateStepCounter(currentSteps)
         }
-
-        val currentSteps = totalSteps - prevSteps
-        Log.d("currentSteps", "$currentSteps")
-
-        updateStepCounter(currentSteps)
     }
 
     // this part is not required

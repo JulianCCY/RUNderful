@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity(){
                             StatDetail(dataId = dataId)
                         }
                         composable("goals") {
-
+                            GoalScreen(navController = navController)
                         }
                         composable("startRunning") {
                             RunningScreen()

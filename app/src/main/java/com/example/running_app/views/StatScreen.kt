@@ -31,7 +31,7 @@ fun StatScreen(navController: NavController) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Title()
+        StatTitle()
         OverviewBox()
         GraphSection()
         Histories(navController = navController)
@@ -39,7 +39,7 @@ fun StatScreen(navController: NavController) {
 }
 
 @Composable
-fun Title() {
+fun StatTitle() {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier

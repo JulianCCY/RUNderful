@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity(){
                             WeatherScreen(weatherViewModel, dailyWeatherViewModel)
                         }
                         composable("tracks") {
-
+                            TrackSuggestionScreen()
                         }
                         composable("stats") {
                             StatScreen(navController)
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity(){
                             StatDetail(dataId = dataId)
                         }
                         composable("goals") {
-                            GoalScreen(navController = navController)
+                            GoalsScreen()
                         }
                         composable("startRunning") {
                             RunningScreen()

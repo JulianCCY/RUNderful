@@ -299,6 +299,10 @@ fun FeatureItem(
                         clip = true
                     }
                     .background(feature.darkColor)
+                    .selectable(
+                        selected = true,
+                        onClick = {navController.navigate("tracks")}
+                    )
             ) {
                 val width = constraints.maxWidth
                 val height = constraints.maxHeight
@@ -358,6 +362,7 @@ fun FeatureItem(
                     Text(
                         text = feature.title,
                         style = MaterialTheme.typography.body1,
+                        fontSize = 24.sp,
                         lineHeight = 24.sp,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -470,7 +475,8 @@ fun FeatureItem(
                         shape = CutCornerShape(80.dp, 0.dp, 20.dp, 0.dp)
                         clip = true
                     }
-                    .background(feature.darkColor).selectable(
+                    .background(feature.darkColor)
+                    .selectable(
                         selected = true,
                         onClick = {navController.navigate("goals")}
                     )

@@ -22,7 +22,7 @@ private val LightColorPalette = lightColors(
     secondary = Teal200,
     background = Light,
     onPrimary = Black,
-    onSecondary = Blue2,
+    onSecondary = Blue3,
     surface = Light,
 
     /* Other default colors to override

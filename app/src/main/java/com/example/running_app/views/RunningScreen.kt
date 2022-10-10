@@ -30,6 +30,7 @@ import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.ui.theme.Red1
 import com.example.running_app.viewModels.RunningViewModel
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -426,12 +427,15 @@ fun MapView(runningViewModel: RunningViewModel = viewModel()) {
             modifier = Modifier
                 .height(200.dp)
                 .fillMaxWidth(),
-            cameraPositionState = cameraPositionState
+            cameraPositionState = cameraPositionState,
+            onMapClick = {cameraPositionState.move(CameraUpdateFactory.newLatLng(myCurrentLocation))}
         ) {
             Marker(
-                state = MarkerState(position = myCurrentLocation),
+                state = MarkerState(
+                    position = myCurrentLocation
+                ),
                 title = runningViewModel.getAddressWhenRunning(currentLat, currentLong),
-                snippet = "You're here",
+                snippet = "Current position",
             )
         }
     }

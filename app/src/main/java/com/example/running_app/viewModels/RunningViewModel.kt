@@ -6,9 +6,11 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -41,6 +43,12 @@ class RunningViewModel (
 
     // set up Location Tracking while running
     private lateinit var locationManager: LocationManager
+
+    // Current Location for running map
+    var runLat_: MutableLiveData<Double> = MutableLiveData()
+    val runLat: LiveData<Double> = runLat_
+    var runLong_: MutableLiveData<Double> = MutableLiveData()
+    val runLong: LiveData<Double> = runLong_
 
     // Time
     var time = MutableLiveData("00:00:00")
@@ -101,12 +109,12 @@ class RunningViewModel (
     // pause the timer and step count sensor
     // but it still keeps the value of step counter
     fun pauseRunning() {
-        isRunning = false
         unregisterStepCounterSensor()
         stopTrackingRunningLocation()
         prevLat = null
         prevLong = null
         velocity_.postValue(null)
+        isRunning = false
     }
 
     // finish running
@@ -148,9 +156,9 @@ class RunningViewModel (
         sm.registerListener(this, this.stepCounter, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_STATUS_ACCURACY_HIGH);
     }
 
-    // function to stop sensor monitoring
+    // function to stop step counter sensor to make changes
     fun unregisterStepCounterSensor(){
-        sm.unregisterListener(this)
+        sm.unregisterListener(this, this.stepCounter)
     }
 
     // update the step counter to UI
@@ -187,6 +195,7 @@ class RunningViewModel (
 
     // To update step count when the sensor is working
     override fun onSensorChanged(event: SensorEvent?) {
+        // if user is running
         if (isRunning) {
             Log.d("steps", "${event!!.values[0].toInt()}")
             totalSteps = event.values[0].toInt()
@@ -199,6 +208,10 @@ class RunningViewModel (
             val currentSteps = totalSteps - prevSteps
             Log.d("currentSteps", "$currentSteps")
             updateStepCounter(currentSteps)
+        } else {
+            // if user is not running, make sure the step counter sensor is off
+            isRunning = false
+            unregisterStepCounterSensor()
         }
     }
 
@@ -217,12 +230,17 @@ class RunningViewModel (
 
     override fun onLocationChanged(location: Location) {
 
+        // get current location to update the mapview in running screen
+        runLat_.postValue(location.latitude.toDouble())
+        runLong_.postValue(location.longitude.toDouble())
+
         // will not update the distance if user doesn't run
         if (location.speed != 0.0f) {
             if (prevLat == null && prevLong == null){
                 prevLat = location.latitude
                 prevLong = location.longitude
             } else {
+                // initialise previous location
                 val prevLocation = Location("previous location")
                 prevLocation.latitude = prevLat!!
                 prevLocation.longitude = prevLong!!
@@ -240,6 +258,23 @@ class RunningViewModel (
         velocity_.postValue(location.speed.toDouble())
 
         Log.d("Running Speed","Latitude: " + location.latitude + " , Longitude: " + location.longitude + " , Speed: " + location.speed)
+    }
+
+    fun getAddressWhenRunning(lat: Double, long: Double): String{
+        val geocoder = Geocoder(getApplication<Application>())
+        var address = ""
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            geocoder.getFromLocation(lat, long, 1)?.let{
+                address = it.first().getAddressLine(0)
+            }
+
+        } else {
+//            address = geocoder.getFromLocation(lat, long, 1)?.first()?.getAddressLine(0)?: ""
+            address = geocoder.getFromLocation(lat, long, 1)?.first()?.getAddressLine(0) ?: "Unknown Place"
+        }
+
+        return address
     }
 
 

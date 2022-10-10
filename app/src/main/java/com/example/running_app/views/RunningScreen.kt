@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.running_app.R
 import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.ui.theme.Orange1
@@ -40,7 +41,7 @@ import java.text.DecimalFormat
 import kotlin.math.absoluteValue
 
 @Composable
-fun RunningScreen() {
+fun RunningScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +50,7 @@ fun RunningScreen() {
         CounterDisplay()
         StatsDisplay()
         Spacer(modifier = Modifier.height(10.dp))
-        Buttons()
+        Buttons(navController = navController)
         MapView()
     }
 }
@@ -340,7 +341,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
 }
 
 @Composable
-fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
+fun Buttons(runningViewModel: RunningViewModel = viewModel(), navController: NavController) {
     var pauseResume by remember { mutableStateOf("pause") }
     runningViewModel.isRunning = true
     runningViewModel.startRunning(true)
@@ -352,6 +353,7 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
             .fillMaxWidth()
             .height(150.dp)
     ) {
+        // Pause Resume Button
         Button(
             onClick = {
                 if (pauseResume == "pause") {
@@ -384,11 +386,13 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
                 )
             }
         }
+        // Finish button
         Button(
             onClick = {
                 runningViewModel.stopRunning()
                 runningViewModel.unregisterStepCounterSensor()
 //                isButtonVisible = true
+                navController.navigate("result")
                 Log.d("steps", "stop")
             },
             modifier = Modifier
@@ -404,21 +408,32 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
 }
 
 @Composable
-fun MapView() {
-    val helsinki = LatLng(60.19, 24.94)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(helsinki, 15f)
-    }
-    GoogleMap(
-        modifier = Modifier
-            .height(200.dp)
-            .fillMaxWidth(),
-        cameraPositionState = cameraPositionState
-    ) {
-        Marker(
-            state = MarkerState(position = helsinki),
-            title = "Helsinki",
-            snippet = "Marker in Helsinki",
-        )
+fun MapView(runningViewModel: RunningViewModel = viewModel()) {
+
+    // live update the marker location
+    val getCurrentLat by runningViewModel.runLat.observeAsState()
+    val currentLat = getCurrentLat?.absoluteValue
+
+    val getCurrentLong by runningViewModel.runLong.observeAsState()
+    val currentLong = getCurrentLong?.absoluteValue
+
+    if (getCurrentLat != null && getCurrentLong != null) {
+        val myCurrentLocation = LatLng(currentLat!!, currentLong!!)
+        val cameraPositionState = rememberCameraPositionState {
+            position = CameraPosition.fromLatLngZoom(myCurrentLocation, 15f)
+        }
+        GoogleMap(
+            modifier = Modifier
+                .height(200.dp)
+                .fillMaxWidth(),
+            cameraPositionState = cameraPositionState
+        ) {
+            Marker(
+                state = MarkerState(position = myCurrentLocation),
+                title = runningViewModel.getAddressWhenRunning(currentLat, currentLong),
+                snippet = "You're here",
+            )
+        }
     }
 }
+

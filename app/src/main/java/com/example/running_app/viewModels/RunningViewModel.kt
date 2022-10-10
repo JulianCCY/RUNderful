@@ -109,12 +109,12 @@ class RunningViewModel (
     // pause the timer and step count sensor
     // but it still keeps the value of step counter
     fun pauseRunning() {
-        isRunning = false
         unregisterStepCounterSensor()
         stopTrackingRunningLocation()
         prevLat = null
         prevLong = null
         velocity_.postValue(null)
+        isRunning = false
     }
 
     // finish running
@@ -156,9 +156,9 @@ class RunningViewModel (
         sm.registerListener(this, this.stepCounter, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_STATUS_ACCURACY_HIGH);
     }
 
-    // function to stop sensor monitoring
+    // function to stop step counter sensor to make changes
     fun unregisterStepCounterSensor(){
-        sm.unregisterListener(this)
+        sm.unregisterListener(this, this.stepCounter)
     }
 
     // update the step counter to UI
@@ -195,6 +195,7 @@ class RunningViewModel (
 
     // To update step count when the sensor is working
     override fun onSensorChanged(event: SensorEvent?) {
+        // if user is running
         if (isRunning) {
             Log.d("steps", "${event!!.values[0].toInt()}")
             totalSteps = event.values[0].toInt()
@@ -207,6 +208,10 @@ class RunningViewModel (
             val currentSteps = totalSteps - prevSteps
             Log.d("currentSteps", "$currentSteps")
             updateStepCounter(currentSteps)
+        } else {
+            // if user is not running, make sure the step counter sensor is off
+            isRunning = false
+            unregisterStepCounterSensor()
         }
     }
 

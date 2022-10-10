@@ -48,7 +48,7 @@ fun MainScreen(navController: NavController) {
             .fillMaxSize()
     ) {
         Column {
-            Setting()
+            Setting(navController)
             Greetings()
             Quotes()
             FeatureSection(
@@ -65,7 +65,7 @@ fun MainScreen(navController: NavController) {
 }
 
 @Composable
-fun Setting(bleViewModel: BLEViewModel = viewModel()) {
+fun Setting(navController: NavController, bleViewModel: BLEViewModel = viewModel()) {
 
     val getIsConnected by bleViewModel.isConnected.observeAsState()
     val isConnected = getIsConnected
@@ -79,12 +79,13 @@ fun Setting(bleViewModel: BLEViewModel = viewModel()) {
     ) {
         IconButton(
             onClick = {
-                bleViewModel.scanDevices()
+//                bleViewModel.scanDevices()
+                navController.navigate("settings")
             }
         ) {
             Icon(
-                if (isConnected == true) Icons.Sharp.BluetoothConnected else Icons.Sharp.Bluetooth,
-//            Icons.Sharp.Settings,
+//                if (isConnected == true) Icons.Sharp.BluetoothConnected else Icons.Sharp.Bluetooth,
+                Icons.Sharp.Settings,
                 contentDescription = "Settings",
                 tint = Orange1,
                 modifier = Modifier

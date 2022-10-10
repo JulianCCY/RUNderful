@@ -63,6 +63,9 @@ class MainActivity : ComponentActivity(){
                         composable("main") {
                             MainScreen(navController)
                         }
+                        composable("settings") {
+                            SettingsScreen()
+                        }
                         composable("weather") {
                             WeatherScreen(weatherViewModel, dailyWeatherViewModel)
                         }

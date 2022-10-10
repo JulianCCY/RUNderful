@@ -15,6 +15,9 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.running_app.data.db.RoomDB
+import com.example.running_app.data.db.RunningDB
 import com.example.running_app.data.running.heartrate.BLEViewModel
 import kotlinx.coroutines.*
 import java.time.Instant
@@ -92,8 +95,6 @@ class RunningViewModel (
 
         if (isRunning){
             coroutineScope.launch {
-
-
                 lastTimeStamp = System.currentTimeMillis()
                 this@RunningViewModel.isRunning = true
                 while (this@RunningViewModel.isRunning) {
@@ -109,17 +110,18 @@ class RunningViewModel (
     // pause the timer and step count sensor
     // but it still keeps the value of step counter
     fun pauseRunning() {
+        isRunning = false
         unregisterStepCounterSensor()
         stopTrackingRunningLocation()
         prevLat = null
         prevLong = null
         velocity_.postValue(null)
-        isRunning = false
     }
 
     // finish running
     // stop sensor and save step count
     fun stopRunning() {
+        isRunning = false
         unregisterStepCounterSensor()
         stopTrackingRunningLocation()
         prevLat = null
@@ -134,7 +136,6 @@ class RunningViewModel (
         lastTimeStamp = 0L
 //        time = "00:00:000"
         time.postValue(formatTime(0))
-        isRunning = false
     }
 
     // formatting the time count
@@ -158,7 +159,7 @@ class RunningViewModel (
 
     // function to stop step counter sensor to make changes
     fun unregisterStepCounterSensor(){
-        sm.unregisterListener(this, this.stepCounter)
+        sm.unregisterListener(this, stepCounter)
     }
 
     // update the step counter to UI
@@ -276,6 +277,20 @@ class RunningViewModel (
 
         return address
     }
+
+    // Insert data into database after finished running
+    private val roomDB = RoomDB.get(application)
+
+//    fun insert(runningDB: RunningDB) {
+//        viewModelScope.launch {
+//            roomDB.runningDao().insert(
+//                RunningDB(
+//                    rid = 0,
+//
+//                )
+//            )
+//        }
+//    }
 
 
 }

@@ -89,19 +89,20 @@ open class GATTClientCallBack @Inject constructor(
         val bpm = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 1)
         Log.d("My heart beat rate", "BPM: $bpm")
 
+        // update the current heart rate
+        model.mBPM_.postValue(bpm)
+
         // when lowest heart rate is not initialised then let it be the current heart rate
         if (model.lBPM_.value == null) model.lBPM_.postValue(bpm)
         // update the new lowest heart rate if current one is lower
         else model.lBPM_.postValue(min(bpm, model.lBPM_.value!!))
-
 
         // when highest heart rate is not initialised then let it be the current heart rate
         if (model.hBPM_.value == null) model.hBPM_.postValue(bpm)
         // update the new highest heart rate if current one is higher
         else model.hBPM_.postValue(max(bpm, model.hBPM_.value!!))
 
-        // update the current heart rate
-        model.mBPM_.postValue(bpm)
+
     }
 
 }

@@ -16,7 +16,6 @@ import com.example.running_app.viewModels.StatDetailViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.ui.theme.Gray
 import com.example.running_app.ui.theme.Orange1
-import com.example.running_app.ui.theme.Orange2
 
 @Composable
 fun StatDetail(dataId: Int, viewModel: StatDetailViewModel = viewModel()) {

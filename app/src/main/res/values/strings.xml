@@ -4,4 +4,11 @@
     <string name="history_list_title">Record history</string>
     <string name="Goal_list_title">Goal</string>
     <string name="goals">Goals</string>
+    <string name="total_steps">Total steps</string>
+    <string name="steps">steps</string>
+    <string name="total_distance">Total distance</string>
+    <string name="speed">Speed</string>
+    <string name="heart_rate">Heart rate</string>
+    <string name="stride_length">Stride length</string>
+    <string name="calories">Calories</string>
 </resources>

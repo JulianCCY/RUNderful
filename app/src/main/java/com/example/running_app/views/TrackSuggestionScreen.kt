@@ -51,20 +51,20 @@ fun TrackSuggestionScreen(viewModel: TrackSuggestionViewModel = viewModel() ) {
 fun SuggestionContainer(model: TrackSuggestionStructure, onClickItem: () -> Unit, expanded: Boolean) {
     Box {
         Column {
-            SuggestionHeader(title = model.title, onClickItem = onClickItem)
-            ExpandableView(coords = model.coords, isExpanded = expanded)
+            SuggestionHeader(title = model.title, distance = model.distance, onClickItem = onClickItem)
+            ExpandableView(center = model.center, coords = model.coords, isExpanded = expanded)
         }
     }
 }
 
 @Composable
-fun SuggestionHeader(title: String, onClickItem: () -> Unit) {
+fun SuggestionHeader(title: String, distance: Int, onClickItem: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(15.dp)
             .border(2.dp, Orange1)
-            .padding(vertical = 5.dp, horizontal = 10.dp)
+            .padding(vertical = 10.dp, horizontal = 20.dp)
             .clickable(
                 indication = null,
                 interactionSource = remember {
@@ -73,15 +73,34 @@ fun SuggestionHeader(title: String, onClickItem: () -> Unit) {
                 onClick = onClickItem
             )
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.body1,
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.body1,
+            )
+            Row(
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Text(
+                    text = "~ $distance",
+                    style = MaterialTheme.typography.body1,
+                    color = MaterialTheme.colors.onSecondary,
+                )
+                Text(
+                    text = " m",
+                    style = MaterialTheme.typography.body2,
+                )
+            }
+        }
     }
 }
 
 @Composable
-fun ExpandableView(coords: List<LatLng>, isExpanded: Boolean) {
+fun ExpandableView(center: LatLng, coords: List<LatLng>, isExpanded: Boolean) {
     val expandTransition = remember {
         expandVertically(
             expandFrom = Alignment.Top,
@@ -103,6 +122,6 @@ fun ExpandableView(coords: List<LatLng>, isExpanded: Boolean) {
         enter = expandTransition,
         exit = collapseTransition
     ) {
-        plotMap(coords = coords)
+        plotMap(focus = center, coords = coords)
     }
 }

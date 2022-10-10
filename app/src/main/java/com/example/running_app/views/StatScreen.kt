@@ -135,7 +135,7 @@ fun OverviewData() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 20.dp)
-            .border(width = 2.dp, color = Orange1, CutCornerShape(60.dp, 10.dp, 60.dp, 10.dp))
+//            .border(width = 2.dp, color = Orange1, CutCornerShape(60.dp, 10.dp, 60.dp, 10.dp))
             .height(200.dp)
     ) {
         Column {

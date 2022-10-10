@@ -12,13 +12,13 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.sharp.Bluetooth
-import androidx.compose.material.icons.sharp.BluetoothConnected
+import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -29,6 +29,12 @@ import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.ui.theme.Red1
 import com.example.running_app.viewModels.RunningViewModel
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
@@ -38,7 +44,7 @@ fun RunningScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+//            .verticalScroll(rememberScrollState())
     ) {
         CounterDisplay()
         StatsDisplay()
@@ -90,125 +96,244 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
     distanceFormatter.roundingMode = RoundingMode.DOWN
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(start = 30.dp)
-            .padding(vertical = 15.dp)
             .fillMaxWidth()
+            .padding(15.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Column(
+            // Steps
+            Row(
                 modifier = Modifier
-                    .width(150.dp)
+                    .width(170.dp)
             ) {
-                Text(
-                    text = "Total Steps",
-                    style = MaterialTheme.typography.body1
+                Icon(
+                    imageVector = Icons.Sharp.DirectionsRun,
+                    contentDescription = "Localized description",
+                    tint = Orange1,
+                    modifier = Modifier
+                        .size(50.dp)
                 )
-                Text(
-                    text = if (steps != null) "$steps" else "0"
-                    ,
-                    style = MaterialTheme.typography.subtitle2
-                )
+                Column {
+                    Text(
+                        text = stringResource(R.string.total_steps),
+                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colors.onSecondary,
+                    )
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        Text(
+                            text = if (steps != null) "$steps " else "0 ",
+                            style = MaterialTheme.typography.body1,
+                        )
+                        Text(
+                            text = stringResource(R.string.steps),
+                            style = MaterialTheme.typography.body2,
+                        )
+                    }
+                }
             }
-            Column(
+            // Distance
+            Row(
                 modifier = Modifier
-                    .width(150.dp)
+                    .width(170.dp)
             ) {
-                Text(
-                    text = "Total Distance",
-                    style = MaterialTheme.typography.body1
+                Icon(
+                    imageVector = Icons.Sharp.LocationOn,
+                    contentDescription = "Localized description",
+                    tint = Orange1,
+                    modifier = Modifier
+                        .size(50.dp)
                 )
-                Text(
-                    text = if (distance != null) distanceFormatter.format(distance) + " M" else "0 M",
-                    style = MaterialTheme.typography.subtitle2
-                )
+                Column {
+                    Text(
+                        text = stringResource(R.string.total_distance),
+                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colors.onSecondary,
+                    )
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        Text(
+                            text = if (distance != null) distanceFormatter.format(distance) else "0",
+                            style = MaterialTheme.typography.body1,
+                        )
+                        Text(
+                            text = " m",
+                            style = MaterialTheme.typography.body2,
+                        )
+                    }
+                }
             }
         }
-        Row() {
-            Column(
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+        ) {
+            // Speed
+            Row(
+                verticalAlignment = Alignment.Bottom,
                 modifier = Modifier
-                    .width(150.dp)
+                .width(170.dp)
             ) {
-                Text(
-                    text = "Speed",
-                    style = MaterialTheme.typography.body1
+                Icon(
+                    imageVector = Icons.Sharp.Speed,
+                    contentDescription = "Localized description",
+                    tint = Orange1,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(end = 2.dp)
                 )
-                Text(
-                    text = if (velocity != null) velocityFormatter.format(velocity) + " M/S" else "Rest",
-                    style = MaterialTheme.typography.subtitle2
-                )
+                Column {
+                    Text(
+                        text = stringResource(R.string.speed),
+                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colors.onSecondary,
+                    )
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        Text(
+                            text = if (velocity != null) velocityFormatter.format(velocity) else "Rest",
+                            style = MaterialTheme.typography.body1,
+                        )
+                        Text(
+                            text = " m/s",
+                            style = MaterialTheme.typography.body2,
+                        )
+                    }
+                }
             }
-            Column(
+            // Heart beat
+            Row(
+                verticalAlignment = Alignment.Bottom,
                 modifier = Modifier
-                    .width(150.dp)
+                    .width(170.dp),
             ) {
-                Text(
-                    text = "Heart Rate",
-                    style = MaterialTheme.typography.body1
+                Icon(
+                    imageVector = Icons.Sharp.MonitorHeart,
+                    contentDescription = "Localized description",
+                    tint = Orange1,
+                    modifier = Modifier
+                        .size(45.dp)
+                        .padding(start = 4.dp, end = 6.dp)
                 )
-                Row(
+                Column {
+                    Text(
+                        text = stringResource(R.string.heart_rate),
+                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colors.onSecondary,
+                    )
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        if (heartRate != null && heartRate != 0) {
+                            Text(
+                                text = "$heartRate",
+                                style = MaterialTheme.typography.body1,
+                            )
+                            Icon(
+                                Icons.Filled.Favorite,
+                                contentDescription = "Heart",
+                                tint = Red1,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            Text(
+                                text = "bpm",
+                                style = MaterialTheme.typography.body2,
+                            )
+                        } else {
+                            Text(
+                                text = "Not In Use",
+                                style = MaterialTheme.typography.body2,
+                            )
+                        }
 
-                ){
-                    if (heartRate != null && heartRate != 0) {
-                        Text(
-                            text = "$heartRate",
-                            style = MaterialTheme.typography.subtitle2
-                        )
-                        Icon(
-                            Icons.Filled.Favorite,
-                            contentDescription = "My Heart",
-                            tint = Red1,
-                            modifier = Modifier
-                                .size(38.dp)
-                        )
-                        Text(
-                            text = "BPM",
-                            style = MaterialTheme.typography.subtitle2
-                        )
-                    } else {
-                        Text(
-                            text = "Not In Use",
-                            style = MaterialTheme.typography.subtitle2
-                        )
                     }
 
                 }
-
             }
         }
 
-        Row() {
-            Column(
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+        ) {
+            // Stride
+            Row(
+                verticalAlignment = Alignment.Bottom,
                 modifier = Modifier
-                    .width(150.dp)
+                    .width(170.dp)
             ) {
-                Text(
-                    text = "Stride Length",
-                    style = MaterialTheme.typography.body1
+                Icon(
+                    imageVector = Icons.Sharp.Straighten,
+                    contentDescription = "Localized description",
+                    tint = Orange1,
+                    modifier = Modifier
+                        .size(45.dp)
+                        .padding(end = 6.dp)
                 )
-                Text(
-                    text = if (runningViewModel.sLength == null) "${runningViewModel.sLength} M" else "0 M",
-                    style = MaterialTheme.typography.subtitle2
-                )
+                Column {
+                    Text(
+                        text = stringResource(R.string.stride_length),
+                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colors.onSecondary,
+                    )
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        Text(
+                            text = if (runningViewModel.sLength == null) "${runningViewModel.sLength}" else "0",
+                            style = MaterialTheme.typography.body1,
+                        )
+                        Text(
+                            text = " m",
+                            style = MaterialTheme.typography.body2,
+                        )
+                    }
+                }
             }
-            Column(
+            // Calories
+            Row(
+                verticalAlignment = Alignment.Bottom,
                 modifier = Modifier
-                    .width(150.dp)
+                    .width(170.dp)
             ) {
-                Text(
-                    text = "Active Calories",
-                    style = MaterialTheme.typography.body1
+                Icon(
+                    imageVector = Icons.Sharp.LocalFireDepartment,
+                    contentDescription = "Localized description",
+                    tint = Orange1,
+                    modifier = Modifier
+                        .size(45.dp)
                 )
-                Text(
-                    text = "Active Calories",
-                    style = MaterialTheme.typography.subtitle2
-                )
+                Column {
+                    Text(
+                        text = stringResource(R.string.calories),
+                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colors.onSecondary,
+                    )
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        Text(
+                            text = "000",
+                            style = MaterialTheme.typography.body1,
+                        )
+                        Text(
+                            text = " kcal",
+                            style = MaterialTheme.typography.body2,
+                        )
+                    }
+                }
             }
         }
     }
@@ -220,10 +345,12 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
     runningViewModel.isRunning = true
     runningViewModel.startRunning(true)
     Column(
+        verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
+            .height(150.dp)
     ) {
         Button(
             onClick = {

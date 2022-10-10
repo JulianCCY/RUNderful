@@ -404,21 +404,32 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
 }
 
 @Composable
-fun MapView() {
-    val helsinki = LatLng(60.19, 24.94)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(helsinki, 15f)
-    }
-    GoogleMap(
-        modifier = Modifier
-            .height(200.dp)
-            .fillMaxWidth(),
-        cameraPositionState = cameraPositionState
-    ) {
-        Marker(
-            state = MarkerState(position = helsinki),
-            title = "Helsinki",
-            snippet = "Marker in Helsinki",
-        )
+fun MapView(runningViewModel: RunningViewModel = viewModel()) {
+
+    // live update the marker location
+    val getCurrentLat by runningViewModel.runLat.observeAsState()
+    val currentLat = getCurrentLat?.absoluteValue
+
+    val getCurrentLong by runningViewModel.runLong.observeAsState()
+    val currentLong = getCurrentLong?.absoluteValue
+
+    if (getCurrentLat != null && getCurrentLong != null) {
+        val myCurrentLocation = LatLng(currentLat!!, currentLong!!)
+        val cameraPositionState = rememberCameraPositionState {
+            position = CameraPosition.fromLatLngZoom(myCurrentLocation, 15f)
+        }
+        GoogleMap(
+            modifier = Modifier
+                .height(200.dp)
+                .fillMaxWidth(),
+            cameraPositionState = cameraPositionState
+        ) {
+            Marker(
+                state = MarkerState(position = myCurrentLocation),
+                title = runningViewModel.getAddressWhenRunning(currentLat, currentLong),
+                snippet = "You're here",
+            )
+        }
     }
 }
+

@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.running_app.R
 import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.ui.theme.Orange1
@@ -40,7 +41,7 @@ import java.text.DecimalFormat
 import kotlin.math.absoluteValue
 
 @Composable
-fun RunningScreen() {
+fun RunningScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +50,7 @@ fun RunningScreen() {
         CounterDisplay()
         StatsDisplay()
         Spacer(modifier = Modifier.height(10.dp))
-        Buttons()
+        Buttons(navController = navController)
         MapView()
     }
 }
@@ -340,7 +341,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
 }
 
 @Composable
-fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
+fun Buttons(runningViewModel: RunningViewModel = viewModel(), navController: NavController) {
     var pauseResume by remember { mutableStateOf("pause") }
     runningViewModel.isRunning = true
     runningViewModel.startRunning(true)
@@ -352,6 +353,7 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
             .fillMaxWidth()
             .height(150.dp)
     ) {
+        // Pause Resume Button
         Button(
             onClick = {
                 if (pauseResume == "pause") {
@@ -384,11 +386,13 @@ fun Buttons(runningViewModel: RunningViewModel = viewModel()) {
                 )
             }
         }
+        // Finish button
         Button(
             onClick = {
                 runningViewModel.stopRunning()
                 runningViewModel.unregisterStepCounterSensor()
 //                isButtonVisible = true
+                navController.navigate("result")
                 Log.d("steps", "stop")
             },
             modifier = Modifier

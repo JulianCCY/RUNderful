@@ -80,7 +80,10 @@ class MainActivity : ComponentActivity(){
                             GoalsScreen()
                         }
                         composable("startRunning") {
-                            RunningScreen()
+                            RunningScreen(navController)
+                        }
+                        composable("result") {
+                            ResultScreen()
                         }
                     }
                 }

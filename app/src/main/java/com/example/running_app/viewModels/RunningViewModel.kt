@@ -21,6 +21,7 @@ import com.example.running_app.data.weather.WeatherState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -89,8 +90,9 @@ class RunningViewModel(
     val calories: LiveData<Int> = calories_
 
     // Time
-    var startTime: LocalDateTime? = null
-    var endTime: LocalDateTime? = null
+    var startTime: String? = null
+    var endTime: String? = null
+    var duration: String? = null
 
     fun startRunning(StartIsTrueAndPauseIsFalse: Boolean = false) {
 
@@ -101,6 +103,8 @@ class RunningViewModel(
 
         // if click start button -> reload steps count
         if (StartIsTrueAndPauseIsFalse){
+            startTime = LocalDateTime.parse(LocalDateTime.now().toString(), DateTimeFormatter.ISO_DATE_TIME).toString()
+            Log.d(tag, "$startTime")
             loadStepCounter()
             resetSteps()
         }
@@ -149,6 +153,10 @@ class RunningViewModel(
     // finish running
     // stop sensor and save step count
     fun stopRunning() {
+
+        endTime = LocalDateTime.parse(LocalDateTime.now().toString(), DateTimeFormatter.ISO_DATE_TIME).toString()
+        Log.d(tag, "$endTime")
+
         isRunning = false
         unregisterStepCounterSensor()
         stopTrackingRunningLocation()

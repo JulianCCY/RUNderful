@@ -56,6 +56,15 @@ class MainActivity : ComponentActivity(){
         ))
 
 
+        if (settingsViewModel.checkNewUser()) {
+            Log.d("ROOM adsfasdfadsfsadfasdf", "main ${settingsViewModel.checkNewUser()}")
+            settingsViewModel.insert(User(0, "User", 176, 55))
+        }
+
+
+        Log.d("ROOM adsfasdfadsfsadfasdf", "main ${settingsViewModel.checkNewUser()}")
+
+
 //        CoroutineScope(Dispatchers.Main).launch {
 //            Log.d("ROOM", "main ${settingsViewModel.checkNewUser()}")
 //        }

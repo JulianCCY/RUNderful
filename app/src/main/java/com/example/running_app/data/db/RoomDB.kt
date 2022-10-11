@@ -16,7 +16,9 @@ abstract class RoomDB: RoomDatabase() {
         fun get(context: Context): RoomDB {
             if (sInstance == null) { sInstance =
                 Room.databaseBuilder(context.applicationContext,
-                    RoomDB::class.java, "julian_little_world.db").build()
+                    RoomDB::class.java, "julian_little_world.db")
+                    .allowMainThreadQueries()
+                    .build()
             }
             return sInstance!!
         }

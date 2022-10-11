@@ -1,33 +1,26 @@
 package com.example.running_app.views
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Bluetooth
 import androidx.compose.material.icons.sharp.BluetoothConnected
-import androidx.compose.material.icons.sharp.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.R
+import com.example.running_app.data.db.User
 import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.viewModels.SettingsViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun SettingsScreen(bleViewModel: BLEViewModel = viewModel()) {
@@ -37,9 +30,7 @@ fun SettingsScreen(bleViewModel: BLEViewModel = viewModel()) {
             .padding(15.dp)
     ) {
         SettingsTitle()
-        InputSection()
-        BluetoothSection(viewModel = bleViewModel)
-        SettingsSubmit()
+        SettingsSection(bleViewModel = bleViewModel)
     }
 }
 
@@ -58,105 +49,145 @@ fun SettingsTitle() {
 }
 
 @Composable
-fun InputSection(viewModel: SettingsViewModel = viewModel()) {
+fun SettingsSection(viewModel: SettingsViewModel = viewModel(), bleViewModel: BLEViewModel) {
     val nameMaxChar = 15
     val maxChar = 3
-    var nickname by remember { mutableStateOf(viewModel.nickname) }
-    var height by remember { mutableStateOf(viewModel.height.toString()) }
-    var weight by remember { mutableStateOf(viewModel.weight.toString()) }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 50.dp, bottom = 75.dp)
-    ) {
-        // Subtitle
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+    val userInfo = viewModel.getUser().observeAsState()
+    if (userInfo.value != null) {
+    var nickname by remember { mutableStateOf(userInfo.value!!.name) }
+//    var nickname by remember { mutableStateOf("diu") }
+    var height by remember { mutableStateOf(userInfo.value!!.height.toString()) }
+    var weight by remember { mutableStateOf(userInfo.value!!.weight.toString()) }
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 10.dp)
+                .padding(top = 50.dp)
         ) {
-            Text(
-                text = stringResource(R.string.personal_details),
-                style = MaterialTheme.typography.body1
-            )
-            Divider(
-                thickness = 2.dp,
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 10.dp)
-            )
-        }
-        // Nickname
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp)
-        ) {
-            OutlinedTextField(
-                value = nickname,
-                onValueChange = {
-                    if (it.length <= nameMaxChar) nickname = it
-                },
-                label = { Text(text = "Nickname")},
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    .padding(bottom = 75.dp)
+            ) {
+                // Subtitle
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.personal_details),
+                        style = MaterialTheme.typography.body1
+                    )
+                    Divider(
+                        thickness = 2.dp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp)
+                    )
+                }
+                // Nickname
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp)
+                ) {
+//                Text(text = userInfo.value?.name ?: "username")
+                    OutlinedTextField(
+                        value = nickname,
+                        onValueChange = {
+                            if (it.length <= nameMaxChar) nickname = it
+                        },
+                        label = { Text(text = "Nickname")},
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        modifier = Modifier
+                            .width(200.dp)
+                    )
+                }
+                // Height
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = height,
+                        onValueChange = {
+                            if (it.length <= maxChar) height = it
+                        },
+                        label = { Text(text = "Height")},
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        textStyle = TextStyle(
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colors.onSecondary),
+                        modifier = Modifier
+                            .width(150.dp)
+                            .padding(end = 10.dp)
+                    )
+                    Text(
+                        text = "cm",
+                        style = MaterialTheme.typography.body1
+                    )
+                }
+                // Weight
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = weight,
+                        onValueChange = {
+                            if (it.length <= maxChar) weight = it
+                        },
+                        label = { Text(text = "Weight")},
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        textStyle = TextStyle(
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colors.onSecondary),
+                        modifier = Modifier
+                            .width(150.dp)
+                            .padding(end = 10.dp)
+                    )
+                    Text(
+                        text = "kg",
+                        style = MaterialTheme.typography.body1
+                    )
+                }
+            }
+            BluetoothSection(viewModel = bleViewModel)
+//        SettingsSubmit(userInfo.value?.uid, nickname, height.toInt(), weight.toInt())
+            Row(
+                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .width(200.dp)
-            )
-        }
-        // Height
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = height,
-                onValueChange = {
-                    if (it.length <= maxChar) height = it
-                },
-                label = { Text(text = "Height")},
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                textStyle = TextStyle(
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colors.onSecondary),
-                modifier = Modifier
-                    .width(150.dp)
-                    .padding(end = 10.dp)
-            )
-            Text(
-                text = "cm",
-                style = MaterialTheme.typography.body1
-            )
-        }
-        // Weight
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = weight,
-                onValueChange = {
-                    if (it.length <= maxChar) weight = it
-                },
-                label = { Text(text = "Weight")},
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                textStyle = TextStyle(
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colors.onSecondary),
-                modifier = Modifier
-                    .width(150.dp)
-                    .padding(end = 10.dp)
-            )
-            Text(
-                text = "kg",
-                style = MaterialTheme.typography.body1
-            )
+                    .fillMaxWidth()
+                    .padding(top = 100.dp)
+            ) {
+                Button(
+                    onClick = {
+                        println("${userInfo.value}")
+                        println("${userInfo.value?.uid}, $nickname, ${height.toInt()}, ${weight.toInt()}")
+                        if (userInfo.value?.uid != null) {
+                            println("update")
+                            viewModel.update(User(userInfo.value!!.uid, nickname, height.toInt(), weight.toInt()))
+                        } else {
+                            println("insert")
+                            viewModel.insert(User(0, nickname, height.toInt(), weight.toInt()))
+                        }
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.all_set),
+                        style = MaterialTheme.typography.body2,
+                    )
+                }
+            }
         }
     }
 }
@@ -213,27 +244,6 @@ fun BluetoothSection(viewModel: BLEViewModel) {
                     else stringResource(R.string.disconnected),
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun SettingsSubmit() {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 100.dp)
-    ) {
-        Button(
-            onClick = { },
-            modifier = Modifier
-                .width(100.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.all_set),
-                style = MaterialTheme.typography.body2,
-            )
         }
     }
 }

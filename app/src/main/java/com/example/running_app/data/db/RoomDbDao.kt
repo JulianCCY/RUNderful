@@ -11,7 +11,7 @@ interface RunningDao{
 @Dao
 interface UserDao {
     @Query("select * from user")
-    fun getAll(): LiveData<List<User>>
+    fun getUser(): LiveData<User>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User): Long

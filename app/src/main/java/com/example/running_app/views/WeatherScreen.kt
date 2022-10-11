@@ -464,13 +464,14 @@ fun WeekWeather(
                     ) {
                         Row(
                             horizontalArrangement = Arrangement.SpaceAround,
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .width(200.dp)
+                                .width(150.dp)
                         ) {
                             Row(
                                 horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier
-                                    .width(100.dp)
+                                    .width(75.dp)
                             ) {
                                 Text(
                                     text = if(data.date.dayOfYear == LocalDateTime.now().dayOfYear) "Today" else timeFormatter,
@@ -480,7 +481,7 @@ fun WeekWeather(
                             Row(
                                 horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier
-                                    .width(75.dp)
+                                    .width(50.dp)
                             ) {
                                 WeatherIcon(state)
                             }
@@ -488,7 +489,7 @@ fun WeekWeather(
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
-                                .width(150.dp)
+                                .width(100.dp)
                         ) {
                             Text(
                                 text = "${data.temperatureCelsius_min.roundToInt()}° - ${data.temperatureCelsius_max.roundToInt()}°",

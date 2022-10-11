@@ -92,6 +92,9 @@ open class GATTClientCallBack @Inject constructor(
         // update the current heart rate
         model.mBPM_.postValue(bpm)
 
+        // add in the list of average heart rate
+        model.avgBPM_.value?.add(bpm)
+
         // when lowest heart rate is not initialised then let it be the current heart rate
         if (model.lBPM_.value == null) model.lBPM_.postValue(bpm)
         // update the new lowest heart rate if current one is lower

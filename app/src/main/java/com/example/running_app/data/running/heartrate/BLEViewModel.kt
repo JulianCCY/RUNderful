@@ -23,9 +23,10 @@ class BLEViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object{
         const val SCAN_PERIOD: Long = 5000
-        val mBPM_: MutableLiveData<Int> = MutableLiveData(null)
-        val hBPM_: MutableLiveData<Int> = MutableLiveData(null)
-        val lBPM_: MutableLiveData<Int> = MutableLiveData(null)
+        val mBPM_: MutableLiveData<Int> = MutableLiveData(0)
+        val hBPM_: MutableLiveData<Int> = MutableLiveData(0)
+        val lBPM_: MutableLiveData<Int> = MutableLiveData(0)
+        val avgBPM_: MutableLiveData<MutableList<Int>> = MutableLiveData(mutableListOf())
         val isConnected_: MutableLiveData<Boolean> = MutableLiveData(false)
     }
 

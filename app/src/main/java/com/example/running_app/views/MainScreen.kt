@@ -36,12 +36,17 @@ import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.views.utils.FeaturesUI
 import com.example.running_app.ui.theme.*
 import com.example.running_app.viewModels.RunningViewModel
+import com.example.running_app.viewModels.SettingsViewModel
 import com.example.running_app.views.utils.quadFromTo
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun MainScreen(navController: NavController) {
+fun MainScreen(
+    navController: NavController,
+    settingsViewModel: SettingsViewModel = viewModel()
+) {
+    settingsViewModel.getUserWeight()
     Box(
         modifier = Modifier
 //            .background(Light)
@@ -302,7 +307,7 @@ fun FeatureItem(
                     .background(feature.darkColor)
                     .selectable(
                         selected = true,
-                        onClick = {navController.navigate("tracks")}
+                        onClick = { navController.navigate("tracks") }
                     )
             ) {
                 val width = constraints.maxWidth
@@ -479,7 +484,7 @@ fun FeatureItem(
                     .background(feature.darkColor)
                     .selectable(
                         selected = true,
-                        onClick = {navController.navigate("goals")}
+                        onClick = { navController.navigate("goals") }
                     )
             ) {
                 val width = constraints.maxWidth

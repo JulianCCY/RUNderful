@@ -1,6 +1,7 @@
 package com.example.running_app.data.db
 
 import androidx.room.*
+import java.time.LocalDateTime
 
 @Entity
 data class Running(
@@ -10,6 +11,7 @@ data class Running(
     val temperature: Int, // temperature when users start running
     val startTime: String, // when start running
     val endTime: String, // when end running
+    val date: String, // the day
     val duration: String, // total running time
     val distance: Double, // total running distance
     val totalStep: Int, // total steps

@@ -24,10 +24,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.running_app.R
 import com.example.running_app.data.running.heartrate.BLEViewModel
+import com.example.running_app.data.weather.WeatherState
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.ui.theme.Red1
 import com.example.running_app.viewModels.RunningViewModel
 import com.example.running_app.viewModels.SettingsViewModel
+import com.example.running_app.viewModels.WeatherViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -38,9 +40,10 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
 
 @Composable
-fun RunningScreen(navController: NavController) {
+fun RunningScreen(navController: NavController, weatherViewModel: WeatherViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +52,7 @@ fun RunningScreen(navController: NavController) {
         CounterDisplay()
         StatsDisplay()
         Spacer(modifier = Modifier.height(10.dp))
-        Buttons(navController = navController)
+        Buttons(navController = navController, state = weatherViewModel.state)
         MapView()
     }
 }
@@ -357,14 +360,30 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
 
 @Composable
 fun Buttons(
+    state: WeatherState,
     runningViewModel: RunningViewModel = viewModel(),
-    settingsViewModel: SettingsViewModel = viewModel(),
     navController: NavController
 ) {
+
     var pauseResume by remember { mutableStateOf("pause") }
-    settingsViewModel.getWeightForRunning()
+
     runningViewModel.isRunning = true
     runningViewModel.startRunning(true)
+
+    if (state.weatherInfo?.currentWeatherData?.weatherType?.weatherDesc != null){
+        runningViewModel.weather = state.weatherInfo.currentWeatherData.weatherType.weatherDesc
+        runningViewModel.temperature = state.weatherInfo.currentWeatherData.temperatureCelsius.roundToInt()
+    }
+
+
+    val testing = runningViewModel.getAllRecords().observeAsState()
+    Log.d("Room Running", "${testing.value}")
+
+
+    val testing2 = runningViewModel.getAllCoordinates().observeAsState()
+    Log.d("Room Running", "${testing2.value}")
+
+
     Column(
         verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally,

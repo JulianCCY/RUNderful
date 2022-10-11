@@ -55,20 +55,15 @@ class MainActivity : ComponentActivity(){
             Manifest.permission.BLUETOOTH_CONNECT,
         ))
 
-
+        // If it's first time to use, we create a default profile
         if (settingsViewModel.checkNewUser()) {
-            Log.d("ROOM adsfasdfadsfsadfasdf", "main ${settingsViewModel.checkNewUser()}")
+            Log.d("ROOM main", "main ${settingsViewModel.checkNewUser()}")
             settingsViewModel.insert(User(0, "User", 176, 55))
         }
 
-
-        Log.d("ROOM adsfasdfadsfsadfasdf", "main ${settingsViewModel.checkNewUser()}")
-
-
-//        CoroutineScope(Dispatchers.Main).launch {
-//            Log.d("ROOM", "main ${settingsViewModel.checkNewUser()}")
-//        }
-//        settingsViewModel.insert(User(0, "julian", 176, 55))
+        // Get the weight for running screen to calculate active calories
+        settingsViewModel.getUserWeight()
+        Log.d("ROOM", "main ${settingsViewModel.weightForCalories.value}")
 
         setContent {
             val navController = rememberNavController()
@@ -105,7 +100,7 @@ class MainActivity : ComponentActivity(){
                             GoalsScreen()
                         }
                         composable("startRunning") {
-                            RunningScreen(navController)
+                            RunningScreen(navController, weatherViewModel)
                         }
                         composable("result") {
                             ResultScreen()

@@ -12,14 +12,19 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.*
+import com.example.running_app.data.db.Coordinates
 import com.example.running_app.data.db.RoomDB
+import com.example.running_app.data.db.Running
 import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.data.weather.WeatherState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -29,11 +34,16 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class RunningViewModel(
+class RunningViewModel (
     application: Application,
 ) : AndroidViewModel(application), SensorEventListener, LocationListener {
 
     val tag = "running screen"
+    val tag2 = "Finish running"
+    val tag3 = "Room Running"
+
+    // Room
+    private val roomDB = RoomDB.get(application)
 
     // Conditions
     private var coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -46,6 +56,7 @@ class RunningViewModel(
     // Step count
     private val _steps: MutableLiveData<Int> = MutableLiveData(0)
     val steps: LiveData<Int> = _steps
+    var endSteps: Int? = null
     private var prevSteps = 0
     private var totalSteps = 0
 
@@ -68,6 +79,8 @@ class RunningViewModel(
     // Running Velocity
     val velocity_: MutableLiveData<Double> = MutableLiveData(0.0)
     val velocity: LiveData<Double> = velocity_
+    var velocityList: MutableList<Double> = mutableListOf()
+    var avgVelocity: Double? = null
 
     // Running Distance
     var prevLat: Double? = null
@@ -79,20 +92,38 @@ class RunningViewModel(
     val mBPM: LiveData<Int> = BLEViewModel.mBPM_
     val hBPM: LiveData<Int> = BLEViewModel.hBPM_
     val lBPM: LiveData<Int> = BLEViewModel.lBPM_
+    val BPMList: LiveData<MutableList<Int>> = BLEViewModel.avgBPM_
+    var AVGmBPM: Int = 0
+//    var avgHeartRate: LiveData<MutableList<Int>> = BLEViewModel.avgBPM_
 
     // Stride Length
     val sLength_: MutableLiveData<Double> = MutableLiveData(0.0)
     val sLength: LiveData<Double> = sLength_
 
+    // cadence
+    var cadence: Int? = null
+
     // Calories
-    var weight = 0
+    var weight: Int? = SettingsViewModel.weightForCalories_.value
     val calories_: MutableLiveData<Int> = MutableLiveData(0)
     val calories: LiveData<Int> = calories_
 
     // Time
+//    val df = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     var startTime: String? = null
     var endTime: String? = null
+    val sdf1 = SimpleDateFormat("dd-MM-yyyy")
+    val dateTime = sdf1.format(Date())
+//    var dateTime = LocalDateTime.of(LocalDate.parse(LocalDateTime.now().toString(), df), LocalDateTime.MIN.toLocalTime()).toString()
     var duration: String? = null
+
+    // Weather
+    var weather: String? = "Sunny"
+    var temperature: Int? = -1
+
+    // Coordinates
+    var latitude = mutableListOf<Double>()
+    var longitude = mutableListOf<Double>()
 
     fun startRunning(StartIsTrueAndPauseIsFalse: Boolean = false) {
 
@@ -103,8 +134,9 @@ class RunningViewModel(
 
         // if click start button -> reload steps count
         if (StartIsTrueAndPauseIsFalse){
-            startTime = LocalDateTime.parse(LocalDateTime.now().toString(), DateTimeFormatter.ISO_DATE_TIME).toString()
-            Log.d(tag, "$startTime")
+            val starttime = LocalDateTime.parse(LocalDateTime.now().toString(), DateTimeFormatter.ISO_DATE_TIME)
+            startTime = starttime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
             loadStepCounter()
             resetSteps()
         }
@@ -112,6 +144,8 @@ class RunningViewModel(
         registerStepCounterSensor()
         // start update location while running
         startTrackingRunningLocation()
+
+        Log.d("my weight", "$weight")
 
         if (isRunning){
             coroutineScope.launch {
@@ -124,10 +158,10 @@ class RunningViewModel(
                     time.postValue(formatTime(timeMills))
 
 
-                    val calculateCalories = time.value?.slice(0..1)!!.toInt() * (10 * 3.5 * weight) / 200
+                    val calculateCalories = time.value?.slice(0..1)!!.toInt() * (10 * 3.5 * weight!!) / 200
                     calories_.postValue(calculateCalories.roundToInt())
 
-                    Log.d("my weight", "$weight")
+
 
                     if (_steps.value != 0 && distance_.value != 0.0) {
                         val calculateStrideLength = distance_.value?.div(_steps.value!!)
@@ -154,17 +188,24 @@ class RunningViewModel(
     // stop sensor and save step count
     fun stopRunning() {
 
-        endTime = LocalDateTime.parse(LocalDateTime.now().toString(), DateTimeFormatter.ISO_DATE_TIME).toString()
-        Log.d(tag, "$endTime")
+        val endtime = LocalDateTime.parse(LocalDateTime.now().toString(), DateTimeFormatter.ISO_DATE_TIME)
+        endTime = endtime.format(DateTimeFormatter.ofPattern("HH:mm"))
+        duration = time.value
+//        Log.d(tag, "$endTime")
+
+        avgVelocity = velocityList.sum() / velocityList.size
+
+        cadence = if (minutes.value != 0 && minutes.value != null) steps.value?.div(minutes.value!!) else steps.value
+
+        AVGmBPM = if (BPMList.value != null && BPMList.value!!.sum() != 0) BPMList.value?.sum()!! / BPMList.value!!.size else 0
+//            (BPMList.value?.sum() ?: 0) / (BPMList.value?.size ?: 0)
 
         isRunning = false
-        unregisterStepCounterSensor()
         stopTrackingRunningLocation()
         prevLat = null
         prevLong = null
 
-        saveStepCounter()
-        updateStepCounter(0)
+
 
         coroutineScope.cancel()
         coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -172,6 +213,55 @@ class RunningViewModel(
         lastTimeStamp = 0L
 //        time = "00:00:000"
         time.postValue(formatTime(0))
+
+        endSteps = steps.value
+
+
+        // ********************************************* result data *********************************************
+        // weather
+        Log.d(tag2, "weather is $weather")
+        // temp
+        Log.d(tag2, "temperature is $temperature")
+        //date
+        Log.d(tag2, "date $dateTime")
+        // time start
+        Log.d(tag2, "time start $startTime")
+        // time end
+        Log.d(tag2, "end time $endTime")
+        //duration
+        Log.d(tag2, "duration $duration")
+        // total distance
+        Log.d(tag2, "total distance ${distance.value}")
+        // total step
+        Log.d(tag2, "total steps ${steps.value}")
+        // Average Speed
+        Log.d(tag2, "speed list $velocityList")
+        Log.d(tag2, "avg speed $avgVelocity")
+        // Calories
+        Log.d(tag2, "calories ${calories.value}")
+        // Average Heart rate
+        Log.d(tag2, "Heart rate list ${BPMList.value}")
+        Log.d(tag2, "Avg heart rate $AVGmBPM")
+        //Stride Length
+        Log.d(tag2, "stride length ${sLength.value}")
+        // Cadence
+        Log.d(tag2, "cadence $cadence")
+
+        // check coordinate
+        Log.d(tag2, "$latitude")
+        Log.d(tag2, "$longitude")
+
+        Log.d(tag2, "total steps ${steps.value}")
+
+        insertRecords()
+        // wait until finish insert records then insert coordinate then reset steps
+        coroutineScope.launch {
+            Log.d("room step", "2 ${steps.value}")
+            delay(500)
+            insertCoordinates()
+            saveStepCounter()
+            updateStepCounter(0)
+        }
     }
 
     // formatting the time count
@@ -273,6 +363,9 @@ class RunningViewModel(
         runLat_.postValue(location.latitude.toDouble())
         runLong_.postValue(location.longitude.toDouble())
 
+        latitude.add(location.latitude)
+        longitude.add(location.longitude)
+
         // will not update the distance if user doesn't run
         if (location.speed != 0.0f) {
             if (prevLat == null && prevLong == null){
@@ -295,6 +388,7 @@ class RunningViewModel(
         prevLong = location.longitude
 
         velocity_.postValue(location.speed.toDouble())
+        velocityList.add(location.speed.toDouble())
 
         Log.d("Running Speed","Latitude: " + location.latitude + " , Longitude: " + location.longitude + " , Speed: " + location.speed)
     }
@@ -317,7 +411,55 @@ class RunningViewModel(
     }
 
     // Insert data into database after finished running
-    private val roomDB = RoomDB.get(application)
+    private fun insertRecords() {
+        coroutineScope.launch {
+            roomDB.runningDao().addNewRecord(
+                Running(
+                    rid = 0,
+                    weatherDesc = weather.toString(),
+                    temperature = temperature!!,
+                    startTime = startTime.toString(),
+                    endTime = endTime.toString(),
+                    date = dateTime,
+                    duration = duration.toString(),
+                    distance = distance.value!!.toDouble(),
+                    totalStep = endSteps!!.toInt(),
+                    avgSpeed = avgVelocity!!.toDouble(),
+                    calories = calories.value!!.toInt(),
+                    avgHR = AVGmBPM,
+                    avgStrideLength = sLength.value!!.toDouble(),
+                    cadence = cadence!!.toInt()
+                )
+            )
+            val test = roomDB.runningDao().getAllRecords()
+            Log.d(tag3, "newest $test")
+        }
+    }
+
+    private fun insertCoordinates(){
+        val runningId = roomDB.runningDao().getKeyForCoordinate()
+        Log.d(tag3, "key, $runningId")
+        coroutineScope.launch {
+            Log.d(tag3, "$runningId")
+            latitude.forEachIndexed { i, e ->
+                roomDB.coordinatesDao().insertCoordinates(
+                    Coordinates(
+                        cid = 0,
+                        runningId = runningId,
+                        latitude = e,
+                        longitude = longitude[i]
+                    )
+                )
+            }
+        }
+        Log.d(tag3, "cood ${roomDB.coordinatesDao().getALLCoordinates()}")
+    }
+
+    fun getAllRecords(): LiveData<List<Running>> = roomDB.runningDao().getAllRecords()
+
+    fun getAllCoordinates(): LiveData<List<Coordinates>> = roomDB.coordinatesDao().getALLCoordinates()
+
+
 
 
 

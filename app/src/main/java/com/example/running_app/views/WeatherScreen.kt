@@ -462,15 +462,39 @@ fun WeekWeather(
                             .padding(start = 15.dp, end = 15.dp, bottom = 16.dp)
                             .fillMaxWidth()
                     ) {
-                        Text(
-                            text = if(data.date.dayOfYear == LocalDateTime.now().dayOfYear) "Today" else timeFormatter,
-                            style = MaterialTheme.typography.body1
-                        )
-                        WeatherIcon(state)
-                        Text(
-                            text = "${data.temperatureCelsius_min.roundToInt()}° - ${data.temperatureCelsius_max.roundToInt()}°",
-                            style = MaterialTheme.typography.body1,
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            modifier = Modifier
+                                .width(200.dp)
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .width(100.dp)
+                            ) {
+                                Text(
+                                    text = if(data.date.dayOfYear == LocalDateTime.now().dayOfYear) "Today" else timeFormatter,
+                                    style = MaterialTheme.typography.body1
+                                )
+                            }
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .width(75.dp)
+                            ) {
+                                WeatherIcon(state)
+                            }
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .width(150.dp)
+                        ) {
+                            Text(
+                                text = "${data.temperatureCelsius_min.roundToInt()}° - ${data.temperatureCelsius_max.roundToInt()}°",
+                                style = MaterialTheme.typography.body1,
+                            )
+                        }
                     }
                 }
             })

@@ -34,8 +34,6 @@ class RunningViewModel(
 
     val tag = "running screen"
 
-    private lateinit var state: WeatherState
-
     // Conditions
     private var coroutineScope = CoroutineScope(Dispatchers.Main)
     var isRunning = false
@@ -96,7 +94,7 @@ class RunningViewModel(
 
     fun startRunning(StartIsTrueAndPauseIsFalse: Boolean = false) {
 
-        Log.d(tag, state.weatherInfo?.currentWeatherData?.weatherType?.weatherDesc ?: "")
+//        Log.d(tag, state.weatherInfo?.currentWeatherData?.weatherType?.weatherDesc ?: "")
 
         prevLat = null
         prevLong = null

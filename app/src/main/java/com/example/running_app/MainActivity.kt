@@ -56,9 +56,9 @@ class MainActivity : ComponentActivity(){
         ))
 
 
-        CoroutineScope(Dispatchers.Main).launch {
-            Log.d("ROOM", "main ${settingsViewModel.checkNewUser()}")
-        }
+//        CoroutineScope(Dispatchers.Main).launch {
+//            Log.d("ROOM", "main ${settingsViewModel.checkNewUser()}")
+//        }
 //        settingsViewModel.insert(User(0, "julian", 176, 55))
 
         setContent {

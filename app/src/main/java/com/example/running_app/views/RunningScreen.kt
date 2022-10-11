@@ -27,6 +27,7 @@ import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.ui.theme.Red1
 import com.example.running_app.viewModels.RunningViewModel
+import com.example.running_app.viewModels.SettingsViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -355,8 +356,13 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
 }
 
 @Composable
-fun Buttons(runningViewModel: RunningViewModel = viewModel(), navController: NavController) {
+fun Buttons(
+    runningViewModel: RunningViewModel = viewModel(),
+    settingsViewModel: SettingsViewModel = viewModel(),
+    navController: NavController
+) {
     var pauseResume by remember { mutableStateOf("pause") }
+    settingsViewModel.getWeightForRunning()
     runningViewModel.isRunning = true
     runningViewModel.startRunning(true)
     Column(

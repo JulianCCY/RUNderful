@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -53,11 +54,11 @@ fun SettingsSection(viewModel: SettingsViewModel = viewModel(), bleViewModel: BL
     val nameMaxChar = 15
     val maxChar = 3
     val userInfo = viewModel.getUser().observeAsState()
+
     if (userInfo.value != null) {
-    var nickname by remember { mutableStateOf(userInfo.value!!.name) }
-//    var nickname by remember { mutableStateOf("diu") }
-    var height by remember { mutableStateOf(userInfo.value!!.height.toString()) }
-    var weight by remember { mutableStateOf(userInfo.value!!.weight.toString()) }
+        var nickname by remember { mutableStateOf(userInfo.value!!.name) }
+        var height by remember { mutableStateOf(userInfo.value!!.height.toString()) }
+        var weight by remember { mutableStateOf(userInfo.value!!.weight.toString()) }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -221,7 +222,7 @@ fun BluetoothSection(viewModel: BLEViewModel) {
         // Bluetooth button
         OutlinedButton(
             onClick = {
-            viewModel.scanDevices()
+                viewModel.scanDevices()
             },
 //            border = BorderStroke(1.dp, Orange1),
             elevation = ButtonDefaults.elevation(defaultElevation = 1.dp, pressedElevation = 2.dp),
@@ -233,7 +234,7 @@ fun BluetoothSection(viewModel: BLEViewModel) {
                     .fillMaxWidth()
             ) {
                 Icon(
-                if (isConnected == true) Icons.Sharp.BluetoothConnected else Icons.Sharp.Bluetooth,
+                    if (isConnected == true) Icons.Sharp.BluetoothConnected else Icons.Sharp.Bluetooth,
                     contentDescription = "Bluetooth",
                     tint = Orange1,
                     modifier = Modifier

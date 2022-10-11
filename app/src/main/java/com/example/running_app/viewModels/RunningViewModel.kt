@@ -17,17 +17,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.running_app.data.db.RoomDB
 import com.example.running_app.data.running.heartrate.BLEViewModel
+import com.example.running_app.data.weather.WeatherState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class RunningViewModel (
+class RunningViewModel(
     application: Application,
 ) : AndroidViewModel(application), SensorEventListener, LocationListener {
+
+    val tag = "running screen"
+
+    private lateinit var state: WeatherState
 
     // Conditions
     private var coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -79,11 +86,17 @@ class RunningViewModel (
     val sLength: LiveData<Double> = sLength_
 
     // Calories
+    var weight = 0
     val calories_: MutableLiveData<Int> = MutableLiveData(0)
     val calories: LiveData<Int> = calories_
 
+    // Time
+    var startTime: LocalDateTime? = null
+    var endTime: LocalDateTime? = null
 
     fun startRunning(StartIsTrueAndPauseIsFalse: Boolean = false) {
+
+        Log.d(tag, state.weatherInfo?.currentWeatherData?.weatherType?.weatherDesc ?: "")
 
         prevLat = null
         prevLong = null
@@ -109,8 +122,10 @@ class RunningViewModel (
                     time.postValue(formatTime(timeMills))
 
 
-                    val calculateCalories = time.value?.slice(0..1)!!.toInt() * (10 * 3.5 * 55) / 200
+                    val calculateCalories = time.value?.slice(0..1)!!.toInt() * (10 * 3.5 * weight) / 200
                     calories_.postValue(calculateCalories.roundToInt())
+
+                    Log.d("my weight", "$weight")
 
                     if (_steps.value != 0 && distance_.value != 0.0) {
                         val calculateStrideLength = distance_.value?.div(_steps.value!!)
@@ -298,16 +313,6 @@ class RunningViewModel (
     // Insert data into database after finished running
     private val roomDB = RoomDB.get(application)
 
-//    fun insert(runningDB: RunningDB) {
-//        viewModelScope.launch {
-//            roomDB.runningDao().insert(
-//                RunningDB(
-//                    rid = 0,
-//
-//                )
-//            )
-//        }
-//    }
 
 
 }

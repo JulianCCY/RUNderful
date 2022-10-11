@@ -13,6 +13,9 @@ interface UserDao {
     @Query("select * from user")
     fun getUser(): LiveData<User>
 
+    @Query("SELECT (SELECT COUNT(*) FROM user) == 0")
+    fun checkNewUser(): Boolean
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User): Long
 

@@ -2,6 +2,7 @@ package com.example.running_app
 
 import android.Manifest
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -17,12 +18,17 @@ import androidx.compose.material.Surface
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.running_app.data.db.User
 import com.example.running_app.ui.theme.Running_AppTheme
 import com.example.running_app.viewModels.RunningViewModel
+import com.example.running_app.viewModels.SettingsViewModel
 import com.example.running_app.views.RunningScreen
 import com.example.running_app.views.WeatherScreen
 import com.example.running_app.views.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(){
@@ -30,6 +36,7 @@ class MainActivity : ComponentActivity(){
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val dailyWeatherViewModel: DailyWeatherViewModel by viewModels()
     private val runningViewModel: RunningViewModel by viewModels()
+    private val settingsViewModel: SettingsViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +54,12 @@ class MainActivity : ComponentActivity(){
             Manifest.permission.BLUETOOTH_SCAN,
             Manifest.permission.BLUETOOTH_CONNECT,
         ))
+
+
+        CoroutineScope(Dispatchers.Main).launch {
+            Log.d("ROOM", "main ${settingsViewModel.checkNewUser()}")
+        }
+//        settingsViewModel.insert(User(0, "julian", 176, 55))
 
         setContent {
             val navController = rememberNavController()

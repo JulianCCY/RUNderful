@@ -1,10 +1,9 @@
 package com.example.running_app.data.db
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity
-data class RunningDB(
+data class Running(
     @PrimaryKey(autoGenerate = true)
     val rid: Long, // running record id
     val weatherDesc: String, // the weather desc when users start running

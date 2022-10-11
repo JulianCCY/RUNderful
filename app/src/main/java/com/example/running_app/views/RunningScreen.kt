@@ -2,15 +2,12 @@ package com.example.running_app.views
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.*
@@ -89,13 +86,24 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
     val getDistance by runningViewModel.distance.observeAsState()
     val distance = getDistance?.absoluteValue
 
-    val strideLength = runningViewModel.sLength
+    val getCalories by runningViewModel.calories.observeAsState()
+    val calories = getCalories?.absoluteValue
+
+    val getSLength by runningViewModel.sLength.observeAsState()
+    val sLength = getSLength?.absoluteValue
 
     val velocityFormatter = DecimalFormat("#.##")
     velocityFormatter.roundingMode = RoundingMode.DOWN
 
     val distanceFormatter = DecimalFormat("#.##")
     distanceFormatter.roundingMode = RoundingMode.DOWN
+
+    val caloriesFormatter = DecimalFormat("#.#")
+    caloriesFormatter.roundingMode = RoundingMode.DOWN
+
+    val sLengthFormatter = DecimalFormat("#.##")
+    sLengthFormatter.roundingMode = RoundingMode.DOWN
+
 
     Column(
         modifier = Modifier
@@ -134,7 +142,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                         )
                         Text(
                             text = stringResource(R.string.steps),
-                            style = MaterialTheme.typography.body2,
+                            style = MaterialTheme.typography.body1,
                         )
                     }
                 }
@@ -166,8 +174,9 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                         )
                         Text(
                             text = " m",
-                            style = MaterialTheme.typography.body2,
+                            style = MaterialTheme.typography.body1,
                         )
+
                     }
                 }
             }
@@ -205,10 +214,12 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                             text = if (velocity != null) velocityFormatter.format(velocity) else "Rest",
                             style = MaterialTheme.typography.body1,
                         )
-                        Text(
-                            text = " m/s",
-                            style = MaterialTheme.typography.body2,
-                        )
+                        if (velocity != null) {
+                            Text(
+                                text = " m/s",
+                                style = MaterialTheme.typography.body2,
+                            )
+                        }
                     }
                 }
             }
@@ -294,7 +305,7 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                         verticalAlignment = Alignment.Bottom,
                     ) {
                         Text(
-                            text = if (runningViewModel.sLength == null) "${runningViewModel.sLength}" else "0",
+                            text = if (sLength != null) sLengthFormatter.format(sLength) else "0",
                             style = MaterialTheme.typography.body1,
                         )
                         Text(
@@ -327,11 +338,13 @@ fun StatsDisplay(runningViewModel: RunningViewModel = viewModel(), bleViewModel:
                         verticalAlignment = Alignment.Bottom,
                     ) {
                         Text(
-                            text = "000",
+                            text = if (calories != null && calories < 1000) "$calories"
+                            else if (calories!= null && calories > 1000) caloriesFormatter.format(calories/1000)
+                            else "0",
                             style = MaterialTheme.typography.body1,
                         )
                         Text(
-                            text = " kcal",
+                            text = if (calories != null && calories < 1000) " cal" else " kcal",
                             style = MaterialTheme.typography.body2,
                         )
                     }

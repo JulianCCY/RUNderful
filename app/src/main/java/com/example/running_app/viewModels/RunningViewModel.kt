@@ -15,9 +15,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.running_app.data.db.RoomDB
-import com.example.running_app.data.db.RunningDB
 import com.example.running_app.data.running.heartrate.BLEViewModel
 import kotlinx.coroutines.*
 import java.time.Instant
@@ -25,6 +23,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.math.roundToInt
 
 class RunningViewModel (
     application: Application,
@@ -54,9 +53,11 @@ class RunningViewModel (
     val runLong: LiveData<Double> = runLong_
 
     // Time
-    var time = MutableLiveData("00:00:00")
+    var time: MutableLiveData<String> = MutableLiveData("00:00:00")
     private var timeMills = 0L
     private var lastTimeStamp = 0L
+    val minutes_: MutableLiveData<Int> = MutableLiveData(0)
+    val minutes: LiveData<Int> = minutes_
 
     // Running Velocity
     val velocity_: MutableLiveData<Double> = MutableLiveData(0.0)
@@ -74,9 +75,13 @@ class RunningViewModel (
     val lBPM: LiveData<Int> = BLEViewModel.lBPM_
 
     // Stride Length
-    val sLength: Double? = distance.value?.div(steps.value?.toDouble()!!)
+    val sLength_: MutableLiveData<Double> = MutableLiveData(0.0)
+    val sLength: LiveData<Double> = sLength_
 
     // Calories
+    val calories_: MutableLiveData<Int> = MutableLiveData(0)
+    val calories: LiveData<Int> = calories_
+
 
     fun startRunning(StartIsTrueAndPauseIsFalse: Boolean = false) {
 
@@ -102,8 +107,18 @@ class RunningViewModel (
                     timeMills += System.currentTimeMillis() - lastTimeStamp
                     lastTimeStamp = System.currentTimeMillis()
                     time.postValue(formatTime(timeMills))
+
+
+                    val calculateCalories = time.value?.slice(0..1)!!.toInt() * (10 * 3.5 * 55) / 200
+                    calories_.postValue(calculateCalories.roundToInt())
+
+                    if (_steps.value != 0 && distance_.value != 0.0) {
+                        val calculateStrideLength = distance_.value?.div(_steps.value!!)
+                        sLength_.postValue(calculateStrideLength)
+                    }
                 }
             }
+
         }
     }
 
@@ -160,6 +175,7 @@ class RunningViewModel (
     // function to stop step counter sensor to make changes
     fun unregisterStepCounterSensor(){
         sm.unregisterListener(this, stepCounter)
+        isRunning = false
     }
 
     // update the step counter to UI
@@ -196,12 +212,17 @@ class RunningViewModel (
 
     // To update step count when the sensor is working
     override fun onSensorChanged(event: SensorEvent?) {
+
+        if (!isRunning){
+            unregisterStepCounterSensor()
+        }
+
         // if user is running
         if (isRunning) {
             Log.d("steps", "${event!!.values[0].toInt()}")
             totalSteps = event.values[0].toInt()
 
-            if (prevSteps == 0){
+            if (prevSteps == 0) {
                 loadStepCounter()
                 resetSteps()
             }
@@ -209,10 +230,6 @@ class RunningViewModel (
             val currentSteps = totalSteps - prevSteps
             Log.d("currentSteps", "$currentSteps")
             updateStepCounter(currentSteps)
-        } else {
-            // if user is not running, make sure the step counter sensor is off
-            isRunning = false
-            unregisterStepCounterSensor()
         }
     }
 

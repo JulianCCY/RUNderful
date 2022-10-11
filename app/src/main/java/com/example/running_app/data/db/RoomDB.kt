@@ -5,10 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [(RunningDB::class), (UserDB::class)], version = 3)
+@Database(entities = [(User::class), (Running::class)], version = 3)
 abstract class RoomDB: RoomDatabase() {
-    abstract fun runningDao(): RunningDao
     abstract fun userDao(): UserDao
+    abstract fun runningDao(): RunningDao
 
     companion object{
         private var sInstance: RoomDB? = null
@@ -16,8 +16,9 @@ abstract class RoomDB: RoomDatabase() {
         fun get(context: Context): RoomDB {
             if (sInstance == null) { sInstance =
                 Room.databaseBuilder(context.applicationContext,
-                    RoomDB::class.java, "julian.db").build()
+                    RoomDB::class.java, "julian_little_world.db").build()
             }
-            return sInstance!! }
+            return sInstance!!
+        }
     }
 }

@@ -18,4 +18,10 @@
     <string name="connected">connected</string>
     <string name="disconnected">disconnected</string>
     <string name="all_set">All set</string>
+    <string name="hi">Hello</string>
+    <string name="number_of_exercises_recorded">Number of exercises recorded:</string>
+    <string name="total_steps_recorded">Total steps recorded:</string>
+    <string name="total_distance_exercised">Total distance exercised:</string>
+    <string name="avg_speed_of_past_five_exercises">Average speed of past 5 exercises:</string>
+    <string name="avg_heart_of_past_five_exercises">Average heart rate of past 5 exercises:</string>
 </resources>

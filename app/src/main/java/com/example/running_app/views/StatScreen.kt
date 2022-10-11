@@ -20,20 +20,66 @@ import com.example.running_app.R
 import com.example.running_app.ui.theme.*
 import com.example.running_app.viewModels.StatViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.gms.maps.model.LatLng
 import com.madrapps.plot.line.DataPoint
 import com.madrapps.plot.line.LineGraph
 import com.madrapps.plot.line.LinePlot
 
+data class StatOverviewForUI(
+    val userName: String,
+    val numOfExercises: Int,
+    val totalSteps: Int,
+    val totalDistance: Int,
+    val speedOfLastFive: List<Double>,
+    val heartOfLastFive: List<Int>,
+)
+
+//Move to backend file / database file later
+data class RunRecordForUI(
+    val id: Long,
+    // Date of the record
+    val date: String,
+    // Starting time of the record
+    val startTime: String,
+    // Ending time of the record
+    val endTime: String,
+    // Total time spend of the record
+    val timeSpent: String,
+    // Temperature of the record starting time
+    val temp: Int,
+    // Weather desc for icon
+    val weatherDesc: String,
+    // Total number of steps
+    val steps: Int,
+    // Total distance ran in the record
+    val distance: Int,
+    // Average velocity (m/s)
+    val avgSpeed: Double,
+    // Average heart rate (bpm)
+    val avgHeart: Double,
+    // Calories
+    val calories: Int,
+    // Stride
+    val stride: Double,
+    // List of coordinates --- Eg. [(Lat, Long), (60.1234, 25.4321), (60.1236, 25.4322)]
+    // For creating track on map...
+    val coordinates: List<LatLng>
+)
+
 @Composable
 fun StatScreen(navController: NavController) {
+    // Fake data for UI
+    val overViewFakeData = StatOverviewForUI(
+        "username", 5, 12345, 8102, listOf(3.0,2.5,1.4,3.5,2.4), listOf(160, 164, 183, 172, 178)
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         StatTitle()
-        OverviewBox()
-        GraphSection()
+        OverviewBox(overViewFakeData)
+        GraphSection(overViewFakeData)
         Histories(navController = navController)
     }
 }
@@ -53,7 +99,7 @@ fun StatTitle() {
 }
 
 @Composable
-fun OverviewBox() {
+fun OverviewBox(data: StatOverviewForUI) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,7 +137,7 @@ fun OverviewBox() {
                 )
             }
         }
-        OverviewData()
+        OverviewData(data)
         Box(
             modifier = Modifier
                 .size(75.dp)
@@ -128,7 +174,7 @@ fun OverviewBox() {
 }
 
 @Composable
-fun OverviewData() {
+fun OverviewData(data: StatOverviewForUI) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -139,79 +185,85 @@ fun OverviewData() {
             .height(200.dp)
     ) {
         Column {
-            Text(
-                text = "You have joined XXXX",
-                style = MaterialTheme.typography.body1,
-            )
-            Text(
-                text = "since xx/xx/xxxx. (xx days)",
-                style = MaterialTheme.typography.body1,
-            )
-            ExercisesCount()
-            Steps()
-            Distance()
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.hi),
+                    style = MaterialTheme.typography.body2,
+                )
+                Text(
+                    text = " ${data.userName}!",
+                    style = MaterialTheme.typography.body1,
+                )
+            }
+            ExercisesCount(data)
+            Steps(data)
+            Distance(data)
         }
     }
 }
 
 @Composable
-fun ExercisesCount() {
+fun ExercisesCount(data: StatOverviewForUI) {
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier = Modifier
             .padding(bottom = 2.dp)
     ) {
         Text(
-            text = "Number of exercises recorded: ",
+            text = stringResource(R.string.number_of_exercises_recorded),
             style = MaterialTheme.typography.body2,
         )
         Text(
-            text = "x ",
+            text = " ${data.numOfExercises}",
             style = MaterialTheme.typography.body1,
         )
     }
 }
 
 @Composable
-fun Steps() {
+fun Steps(data: StatOverviewForUI) {
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier = Modifier
             .padding(bottom = 2.dp)
     ) {
         Text(
-            text = "Total steps recorded: ",
+            text = stringResource(R.string.total_steps_recorded),
             style = MaterialTheme.typography.body2,
         )
         Text(
-            text = "xxxx ",
+            text = " ${data.totalSteps}",
             style = MaterialTheme.typography.body1,
         )
     }
 }
 
 @Composable
-fun Distance() {
+fun Distance(data: StatOverviewForUI) {
     Row(
         verticalAlignment = Alignment.Bottom,
     ) {
         Text(
-            text = "Total distance exercised: ",
+            text = stringResource(R.string.total_distance_exercised),
             style = MaterialTheme.typography.body2,
         )
         Text(
-            text = "xxxx ",
+            text = " ${data.totalDistance}",
             style = MaterialTheme.typography.body1,
         )
         Text(
-            text = "m",
+            text = " m",
             style = MaterialTheme.typography.body2,
         )
     }
 }
 
 @Composable
-fun AVGraph(lines: List<List<DataPoint>>) {
+fun PlotGraph(lines: List<List<DataPoint>>) {
     LineGraph(
         plot = LinePlot(
             listOf(
@@ -234,123 +286,96 @@ fun AVGraph(lines: List<List<DataPoint>>) {
 }
 
 @Composable
-fun GraphSection() {
+fun GraphSection(data: StatOverviewForUI) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(15.dp)
     ) {
-        AvgVelocity()
-        AvgHeartRate()
+        AvgVelocity(data)
+        AvgHeartRate(data)
     }
 }
 
 @Composable
-fun AvgVelocity() {
-        val testData = listOf(
-        DataPoint(1.toFloat(), 3.toFloat()),
-        DataPoint(2.toFloat(), 2.5.toFloat()),
-        DataPoint(3.toFloat(), 1.7.toFloat()),
-        DataPoint(4.toFloat(), 3.5.toFloat()),
-        DataPoint(5.toFloat(), 2.4.toFloat()),
+fun AvgVelocity(data: StatOverviewForUI) {
+    val graphData = listOf(
+        DataPoint(1.toFloat(), data.speedOfLastFive[0].toFloat()),
+        DataPoint(2.toFloat(), data.speedOfLastFive[1].toFloat()),
+        DataPoint(3.toFloat(), data.speedOfLastFive[2].toFloat()),
+        DataPoint(4.toFloat(), data.speedOfLastFive[3].toFloat()),
+        DataPoint(5.toFloat(), data.speedOfLastFive[4].toFloat()),
     )
+    val calculated = (data.speedOfLastFive.sum() / 5)
+
     Column {
         Row(
             verticalAlignment = Alignment.Bottom,
         ) {
             Text(
-                text = "Average velocity of past 5 exercises: ",
+                text = stringResource(R.string.avg_speed_of_past_five_exercises),
                 style = MaterialTheme.typography.body2,
             )
             Text(
-                text = "xxxx ",
+                text = " $calculated",
                 style = MaterialTheme.typography.body1,
             )
             Text(
-                text = "m/s",
+                text = " m/s",
                 style = MaterialTheme.typography.body2,
             )
         }
     }
-    AVGraph(lines = listOf(testData))
+    PlotGraph(lines = listOf(graphData))
 }
 
 @Composable
-fun AvgHeartRate() {
+fun AvgHeartRate(data: StatOverviewForUI) {
     val testData = listOf(
-        DataPoint(1.toFloat(), 160.toFloat()),
-        DataPoint(2.toFloat(), 167.toFloat()),
-        DataPoint(3.toFloat(), 182.toFloat()),
-        DataPoint(4.toFloat(), 173.toFloat()),
-        DataPoint(5.toFloat(), 187.toFloat()),
+        DataPoint(1.toFloat(), data.heartOfLastFive[0].toFloat()),
+        DataPoint(2.toFloat(), data.heartOfLastFive[1].toFloat()),
+        DataPoint(3.toFloat(), data.heartOfLastFive[2].toFloat()),
+        DataPoint(4.toFloat(), data.heartOfLastFive[3].toFloat()),
+        DataPoint(5.toFloat(), data.heartOfLastFive[4].toFloat()),
     )
+    val calculated = (data.heartOfLastFive.sum() / 5)
     Column {
         Row(
             verticalAlignment = Alignment.Bottom,
         ) {
             Text(
-                text = "Average heart rate of past 5 exercises: ",
+                text = stringResource(R.string.avg_heart_of_past_five_exercises),
                 style = MaterialTheme.typography.body2,
             )
             Text(
-                text = "xx ",
+                text = " $calculated",
                 style = MaterialTheme.typography.body1,
             )
             Text(
-                text = "bpm",
+                text = " bpm",
                 style = MaterialTheme.typography.body2,
             )
         }
     }
-    AVGraph(lines = listOf(testData))
+    PlotGraph(lines = listOf(testData))
 }
-
-//Move to backend file / database file later
-data class RunRecord(
-    // ID for database ?? idk if it is needed or not
-    val id: Int,
-    // Date of the record
-    val date: String,
-    // Temperature of the record starting time (Int/Float) I prefer metres but u can use km if u want
-    val temp: Int,
-    // Total number of steps
-    val steps: Int,
-    // Total distance ran in the record (Int/Float)
-    val totalDistance: Int,
-    // Starting time of the record (Float/String/any time format) I can toString everything cuz this is for display only
-    val startTime: String,
-    // Ending time of the record (Float/String/any time format)
-    val endTime: String,
-    // Total time spend of the record (Float?/wtever u store, .tostring)
-    val timeSpent: String,
-    // Average velocity (m/s)
-    val avgVelocity: Double,
-    // List of average velocity with TimeStamp or StopwatchStamp --- Eg. [(velocity, minute:seconds), (2.3, 01:00), (2.5, 01:30), (3.1, 02:00)]
-    // Or with metres... record once every 100 metres? --- Eg. [(2.1, 100), (2.6, 200), (2.4, 300)]
-    // Record every 30 second after the first 1 minute?? (just suggestions)
-    // I put Int for temporary use
-    // These list r for graphs, if too complicated then we cut it.
-    val avgVelocityList: List<Int>,
-    // Average heart rate (bpm)
-    val avgHeart: Double,
-    // List of average heart rate for graph, similar to avgVelocity
-    val avgHeartList: List<Int>,
-    // Calories
-    val calories: Int,
-    // List of coordinates --- Eg. [(Lat, Long), (60.1234, 25.4321), (60.1236, 25.4322)]
-    // Those recorded one by one during the run, so we dont need time... i guess...
-    // For creating track on map... idk how 0.0
-    val coordinates: List<Int>
-)
 
 @Composable
 fun Histories(viewModel: StatViewModel = viewModel(), navController: NavController) {
 //    val historyList = viewModel.getAll().observeAsState(listOf())
     val historyList = listOf(
-        RunRecord(1, "05/10/2022", 10, 10000, 948, "10:00", "10:48", "48", 8.0, listOf(8,9,8,7,8,6,9,8), 175.0, listOf(171,172,173,174,175), 475, listOf(1,2,3,4,5,6)),
-        RunRecord(2, "06/10/2022", 11, 9000, 848, "10:00", "10:48", "48", 8.0, listOf(8,9,8,7,8,6,9,8), 175.0, listOf(171,172,173,174,175), 475, listOf(1,2,3,4,5,6)),
-        RunRecord(3, "07/10/2022", 12, 8888, 666, "10:00", "10:48", "48", 8.0, listOf(8,9,8,7,8,6,9,8), 175.0, listOf(171,172,173,174,175), 475, listOf(1,2,3,4,5,6)),
-        RunRecord(4, "08/10/2022", 13, 8787, 487, "10:00", "10:48", "48", 8.0, listOf(8,9,8,7,8,6,9,8), 175.0, listOf(171,172,173,174,175), 475, listOf(1,2,3,4,5,6)),
+        RunRecordForUI(1, "05-10-2022", "10:00", "10:48", "00:15:31", 13, "Foggy", 9876, 4, 8.0,175.0, 3, 0.52, listOf(
+            LatLng(60.178152, 24.989714),
+            LatLng(60.178347, 24.991572),
+            LatLng(60.178559, 24.992468),
+            LatLng(60.178808, 24.993152),
+            LatLng(60.178970, 24.994139),
+            LatLng(60.179276, 24.996648),
+            LatLng(60.179540, 24.997403),
+            LatLng(60.180113, 24.998110),
+            LatLng(60.180294, 24.999510),
+            LatLng(60.180373, 25.000382),
+        )),
     )
     LazyColumn(
         modifier = Modifier
@@ -392,7 +417,7 @@ fun Histories(viewModel: StatViewModel = viewModel(), navController: NavControll
                             },
                     )
                 }
-                // Temperature
+                // Temperature / weather icon later
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -443,12 +468,12 @@ fun Histories(viewModel: StatViewModel = viewModel(), navController: NavControll
                             )
                         }
                     }
-                    //
+                    // Distance
                     Row(
                         verticalAlignment = Alignment.Bottom,
                     ) {
                         Text(
-                            text = it.totalDistance.toString(),
+                            text = it.distance.toString(),
                             style = MaterialTheme.typography.body2,
                             color = MaterialTheme.colors.onSecondary,
                             fontWeight = FontWeight.Bold,

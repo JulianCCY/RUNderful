@@ -191,21 +191,17 @@ class RunningViewModel (
         val endtime = LocalDateTime.parse(LocalDateTime.now().toString(), DateTimeFormatter.ISO_DATE_TIME)
         endTime = endtime.format(DateTimeFormatter.ofPattern("HH:mm"))
         duration = time.value
-//        Log.d(tag, "$endTime")
 
-        avgVelocity = velocityList.sum() / velocityList.size
+        avgVelocity = if (velocityList.isNotEmpty()) velocityList.sum() / velocityList.size else 0.0
 
         cadence = if (minutes.value != 0 && minutes.value != null) steps.value?.div(minutes.value!!) else steps.value
 
         AVGmBPM = if (BPMList.value != null && BPMList.value!!.sum() != 0) BPMList.value?.sum()!! / BPMList.value!!.size else 0
-//            (BPMList.value?.sum() ?: 0) / (BPMList.value?.size ?: 0)
 
         isRunning = false
         stopTrackingRunningLocation()
         prevLat = null
         prevLong = null
-
-
 
         coroutineScope.cancel()
         coroutineScope = CoroutineScope(Dispatchers.Main)

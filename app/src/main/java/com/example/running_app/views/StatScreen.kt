@@ -1,5 +1,6 @@
 package com.example.running_app.views
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.DeleteForever
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -20,16 +22,23 @@ import com.example.running_app.R
 import com.example.running_app.ui.theme.*
 import com.example.running_app.viewModels.StatViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.running_app.viewModels.RunningViewModel
+import com.example.running_app.viewModels.SettingsViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.madrapps.plot.line.DataPoint
 import com.madrapps.plot.line.LineGraph
 import com.madrapps.plot.line.LinePlot
+import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
 
-data class StatOverviewForUI(
+data class StatGeneral(
     val userName: String,
     val numOfExercises: Int,
     val totalSteps: Int,
     val totalDistance: Int,
+)
+
+data class StatGraph(
     val speedOfLastFive: List<Double>,
     val heartOfLastFive: List<Int>,
 )
@@ -67,19 +76,54 @@ data class RunRecordForUI(
 )
 
 @Composable
-fun StatScreen(navController: NavController) {
-    // Fake data for UI
-    val overViewFakeData = StatOverviewForUI(
-        "username", 5, 12345, 8102, listOf(3.0,2.5,1.4,3.5,2.4), listOf(160, 164, 183, 172, 178)
+fun StatScreen(
+    navController: NavController,
+    running: RunningViewModel = viewModel(),
+    settings: SettingsViewModel = viewModel(),
+) {
+    val TAG = "stats screen"
+    // get username
+    val userName = settings.getUser().observeAsState().value?.name
+    Log.d(TAG, "username: $userName")
+    // get num of exercise, total steps of all time, total distance of all time'
+    val numOfExercises = running.getNumExe().absoluteValue
+    Log.d(TAG, "exercise: $numOfExercises")
+    val totalSteps = running.getTS().absoluteValue
+    Log.d(TAG, "total steps: $totalSteps")
+    val totalDistance = running.getTD().absoluteValue.roundToInt()
+    Log.d(TAG, "distance: $totalDistance")
+
+    // average speed of last 5 record
+//    val lastFiveAvgSpeed = if(!running.getL5AS().observeAsState().value.isNullOrEmpty()) running.getL5AS().observeAsState().value!! else listOf<Double>()
+//    Log.d(TAG, "l5avg speed, $lastFiveAvgSpeed")
+//
+//    // average heart rate of last 5 record
+//    val lastFiveAvgHR = if(!running.getL5HR().observeAsState().value.isNullOrEmpty())running.getL5HR().observeAsState().value!! else listOf<Int>()
+//    Log.d(TAG, "l5avg heart $lastFiveAvgHR")
+
+
+    val generalData = StatGeneral(
+        userName ?: "Username",
+        numOfExercises,
+        totalSteps,
+        totalDistance,
+//        listOf(3.0,2.5,1.4,3.5,2.4),
+//        listOf(160, 164, 183, 172, 178)
     )
+
+//    val graphData = StatGraph(
+//        lastFiveAvgSpeed,
+//        lastFiveAvgHR,
+//    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         StatTitle()
-        OverviewBox(overViewFakeData)
-        GraphSection(overViewFakeData)
+        OverviewBox(generalData)
+//        GraphSection(graphData)
         Histories(navController = navController)
     }
 }
@@ -99,7 +143,7 @@ fun StatTitle() {
 }
 
 @Composable
-fun OverviewBox(data: StatOverviewForUI) {
+fun OverviewBox(data: StatGeneral) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -173,8 +217,9 @@ fun OverviewBox(data: StatOverviewForUI) {
     }
 }
 
+// number of exe, total steps, total distance
 @Composable
-fun OverviewData(data: StatOverviewForUI) {
+fun OverviewData(data: StatGeneral) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -207,7 +252,7 @@ fun OverviewData(data: StatOverviewForUI) {
 }
 
 @Composable
-fun ExercisesCount(data: StatOverviewForUI) {
+fun ExercisesCount(data: StatGeneral) {
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier = Modifier
@@ -225,7 +270,7 @@ fun ExercisesCount(data: StatOverviewForUI) {
 }
 
 @Composable
-fun Steps(data: StatOverviewForUI) {
+fun Steps(data: StatGeneral) {
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier = Modifier
@@ -243,7 +288,7 @@ fun Steps(data: StatOverviewForUI) {
 }
 
 @Composable
-fun Distance(data: StatOverviewForUI) {
+fun Distance(data: StatGeneral) {
     Row(
         verticalAlignment = Alignment.Bottom,
     ) {
@@ -286,7 +331,7 @@ fun PlotGraph(lines: List<List<DataPoint>>) {
 }
 
 @Composable
-fun GraphSection(data: StatOverviewForUI) {
+fun GraphSection(data: StatGraph) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -298,84 +343,133 @@ fun GraphSection(data: StatOverviewForUI) {
 }
 
 @Composable
-fun AvgVelocity(data: StatOverviewForUI) {
-    val graphData = listOf(
-        DataPoint(1.toFloat(), data.speedOfLastFive[0].toFloat()),
-        DataPoint(2.toFloat(), data.speedOfLastFive[1].toFloat()),
-        DataPoint(3.toFloat(), data.speedOfLastFive[2].toFloat()),
-        DataPoint(4.toFloat(), data.speedOfLastFive[3].toFloat()),
-        DataPoint(5.toFloat(), data.speedOfLastFive[4].toFloat()),
-    )
-    val calculated = (data.speedOfLastFive.sum() / 5)
+fun AvgVelocity(data: StatGraph) {
+    if (data.speedOfLastFive.isEmpty()) {
 
-    Column {
-        Row(
-            verticalAlignment = Alignment.Bottom,
-        ) {
-            Text(
-                text = stringResource(R.string.avg_speed_of_past_five_exercises),
-                style = MaterialTheme.typography.body2,
-            )
-            Text(
-                text = " $calculated",
-                style = MaterialTheme.typography.body1,
-            )
-            Text(
-                text = " m/s",
-                style = MaterialTheme.typography.body2,
-            )
+        val graphData = data.speedOfLastFive.toList().mapIndexed{ i, e -> DataPoint(i.toFloat(), e.toFloat()) }
+//        val graphData = listOf(
+//            DataPoint(1.toFloat(), data.speedOfLastFive[0].toFloat()),
+//            DataPoint(2.toFloat(), data.speedOfLastFive[1].toFloat()),
+//            DataPoint(3.toFloat(), data.speedOfLastFive[2].toFloat()),
+//            DataPoint(4.toFloat(), data.speedOfLastFive[3].toFloat()),
+//            DataPoint(5.toFloat(), data.speedOfLastFive[4].toFloat()),
+//        )
+        val calculated = (data.speedOfLastFive.sum() / data.speedOfLastFive.size)
+
+        Column {
+            Row(
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Text(
+                    text = stringResource(R.string.avg_speed_of_past_five_exercises),
+                    style = MaterialTheme.typography.body2,
+                )
+                Text(
+                    text = " $calculated",
+                    style = MaterialTheme.typography.body1,
+                )
+                Text(
+                    text = " m/s",
+                    style = MaterialTheme.typography.body2,
+                )
+            }
         }
+        PlotGraph(lines = listOf(graphData))
     }
-    PlotGraph(lines = listOf(graphData))
 }
 
 @Composable
-fun AvgHeartRate(data: StatOverviewForUI) {
-    val testData = listOf(
-        DataPoint(1.toFloat(), data.heartOfLastFive[0].toFloat()),
-        DataPoint(2.toFloat(), data.heartOfLastFive[1].toFloat()),
-        DataPoint(3.toFloat(), data.heartOfLastFive[2].toFloat()),
-        DataPoint(4.toFloat(), data.heartOfLastFive[3].toFloat()),
-        DataPoint(5.toFloat(), data.heartOfLastFive[4].toFloat()),
-    )
-    val calculated = (data.heartOfLastFive.sum() / 5)
-    Column {
-        Row(
-            verticalAlignment = Alignment.Bottom,
-        ) {
-            Text(
-                text = stringResource(R.string.avg_heart_of_past_five_exercises),
-                style = MaterialTheme.typography.body2,
-            )
-            Text(
-                text = " $calculated",
-                style = MaterialTheme.typography.body1,
-            )
-            Text(
-                text = " bpm",
-                style = MaterialTheme.typography.body2,
-            )
+fun AvgHeartRate(data: StatGraph) {
+
+    if (data.heartOfLastFive.isEmpty()) {
+        val graphData = data.heartOfLastFive.toList().mapIndexed { i, e -> DataPoint(i.toFloat(), e.toFloat()) }
+
+//        val testData = listOf(
+//            DataPoint(1.toFloat(), data.heartOfLastFive[0].toFloat()),
+//            DataPoint(2.toFloat(), data.heartOfLastFive[1].toFloat()),
+//            DataPoint(3.toFloat(), data.heartOfLastFive[2].toFloat()),
+//            DataPoint(4.toFloat(), data.heartOfLastFive[3].toFloat()),
+//            DataPoint(5.toFloat(), data.heartOfLastFive[4].toFloat()),
+//        )
+        val calculated = (data.heartOfLastFive.sum() / data.heartOfLastFive.size)
+        Column {
+            Row(
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Text(
+                    text = stringResource(R.string.avg_heart_of_past_five_exercises),
+                    style = MaterialTheme.typography.body2,
+                )
+                Text(
+                    text = " $calculated",
+                    style = MaterialTheme.typography.body1,
+                )
+                Text(
+                    text = " bpm",
+                    style = MaterialTheme.typography.body2,
+                )
+            }
         }
+        PlotGraph(lines = listOf(graphData))
     }
-    PlotGraph(lines = listOf(testData))
 }
 
+//listOf(
+//            LatLng(60.178152, 24.989714),
+//            LatLng(60.178347, 24.991572),
+//            LatLng(60.178559, 24.992468),
+//            LatLng(60.178808, 24.993152),
+//            LatLng(60.178970, 24.994139),
+//            LatLng(60.179276, 24.996648),
+//            LatLng(60.179540, 24.997403),
+//            LatLng(60.180113, 24.998110),
+//            LatLng(60.180294, 24.999510),
+//            LatLng(60.180373, 25.000382),
+
+
 @Composable
-fun Histories(viewModel: StatViewModel = viewModel(), navController: NavController) {
-//    val historyList = viewModel.getAll().observeAsState(listOf())
+fun Histories(viewModel: RunningViewModel = viewModel(), navController: NavController) {
+
+    val tag = "history"
+
+    val getAllRecord = viewModel.getAllRecords().observeAsState().value?.toList()?.map {
+        RunRecordForUI(
+            it.rid,
+            it.date,
+            it.startTime,
+            it.endTime,
+            it.duration,
+            it.temperature,
+            it.weatherDesc,
+            it.totalStep,
+            it.distance.roundToInt(),
+            it.avgSpeed,
+            it.avgHR,
+            it.calories,
+            it.avgStrideLength,
+            // avoid unnecessary data flow
+            listOf()
+        )
+    }
+    Log.d(tag, "record $getAllRecord")
+
     val historyList = listOf(
-        RunRecordForUI(1, "05-10-2022", "10:00", "10:48", "00:15:31", 13, "Foggy", 9876, 4, 8.0,175, 3, 0.52, listOf(
-            LatLng(60.178152, 24.989714),
-            LatLng(60.178347, 24.991572),
-            LatLng(60.178559, 24.992468),
-            LatLng(60.178808, 24.993152),
-            LatLng(60.178970, 24.994139),
-            LatLng(60.179276, 24.996648),
-            LatLng(60.179540, 24.997403),
-            LatLng(60.180113, 24.998110),
-            LatLng(60.180294, 24.999510),
-            LatLng(60.180373, 25.000382),
-        )),
+        RunRecordForUI(1,
+            "05-10-2022",
+            "10:00",
+            "10:48",
+            "00:15:31",
+            13,
+            "Foggy",
+            9876,
+            4,
+            8.0,
+            175,
+            3,
+            0.52,
+
+            listOf()
+        ),
     )
     LazyColumn(
         modifier = Modifier
@@ -391,99 +485,107 @@ fun Histories(viewModel: StatViewModel = viewModel(), navController: NavControll
                 )
             }
         }
-        items(historyList) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp)
-                    .border(2.dp, Orange1, CutCornerShape(15.dp, 8.dp, 15.dp, 8.dp))
-                    .padding(vertical = 8.dp, horizontal = 16.dp)
-                    .clickable {
-                        navController.navigate("statsDetail/${it.id}")
-                    }
-            ) {
-                // Delete button
+
+        if (getAllRecord != null) {
+            items(getAllRecord) {
                 Box(
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp)
+                        .border(2.dp, Orange1, CutCornerShape(15.dp, 8.dp, 15.dp, 8.dp))
+                        .padding(vertical = 8.dp, horizontal = 16.dp)
+                        .clickable {
+                            navController.navigate("statsDetail/${it.id}")
+                        }
                 ) {
-                    Icon(
-                        imageVector = Icons.Sharp.DeleteForever,
-                        contentDescription = "Localized description",
-                        tint = Orange2,
+                    // Delete button
+                    Box(
                         modifier = Modifier
-                            .clickable {
+                            .align(Alignment.TopEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Sharp.DeleteForever,
+                            contentDescription = "Localized description",
+                            tint = Orange2,
+                            modifier = Modifier
+                                .clickable {
 //                                viewModel.delete(it.id)
-                            },
-                    )
-                }
-                // Temperature / weather icon later
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.Bottom,
-                        modifier = Modifier
-                            .padding(end = 10.dp)
-                    ) {
-                        Text(
-                            text = it.temp.toString(),
-                            style = MaterialTheme.typography.body2,
-                        )
-                        Text(
-                            text = "°c  ",
-                            style = MaterialTheme.typography.body2,
-                        )
-                        WeatherIconByDesc(it.weatherDesc)
-                    }
-                }
-                Column {
-                    // Date
-                    Row {
-                        Text(
-                            text = it.date,
-                            style = MaterialTheme.typography.body1,
-                            fontWeight = FontWeight.Bold,
+                                },
                         )
                     }
-                    // Time and Duration
-                    Row(
+                    // Temperature / weather icon later
+                    Box(
                         modifier = Modifier
-                            .padding(top = 5.dp, bottom = 2.dp)
+                            .align(Alignment.BottomEnd)
                     ) {
-                        Text(
-                            text = it.startTime,
-                            style = MaterialTheme.typography.body2,
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
+                        Row(
+                            verticalAlignment = Alignment.Bottom,
+                            modifier = Modifier
+                                .padding(end = 10.dp)
+                        ) {
+                            Text(
+                                text = it.temp.toString(),
+                                style = MaterialTheme.typography.body2,
+                            )
+                            Text(
+                                text = "°c  ",
+                                style = MaterialTheme.typography.body2,
+                            )
+                            WeatherIconByDesc(it.weatherDesc)
+                        }
+                    }
+                    Column {
+                        // Date
+                        Row {
+                            Text(
+                                text = it.date,
+                                style = MaterialTheme.typography.body1,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                        // Time and Duration
+                        Row(
+                            modifier = Modifier
+                                .padding(top = 5.dp, bottom = 2.dp)
+                        ) {
+                            Text(
+                                text = it.startTime,
+                                style = MaterialTheme.typography.body2,
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Row(
+                                verticalAlignment = Alignment.Bottom,
+                            ) {
+                                val timeController = it.timeSpent.split(":")
+                                val minute = timeController[0].toInt()
+                                val second = timeController[1].toInt()
+                                val hour = String.format("%.1f", minute.toDouble() / 60)
+
+                                Text(
+                                    text = if (minute > 60) hour else if (minute < 1) "$second" else "$minute",
+                                    style = MaterialTheme.typography.body2,
+                                )
+                                Text(
+                                    text = if (minute > 60) " hour(s)" else if (minute < 1) " second(s)" else " minute(s)",
+                                    style = MaterialTheme.typography.body2,
+                                )
+                            }
+                        }
+                        // Distance
                         Row(
                             verticalAlignment = Alignment.Bottom,
                         ) {
                             Text(
-                                text = it.timeSpent,
+                                text = it.distance.toString(),
                                 style = MaterialTheme.typography.body2,
+                                color = MaterialTheme.colors.onSecondary,
+                                fontWeight = FontWeight.Bold,
                             )
                             Text(
-                                text = " mins",
+                                text = " meters",
                                 style = MaterialTheme.typography.body2,
                             )
                         }
-                    }
-                    // Distance
-                    Row(
-                        verticalAlignment = Alignment.Bottom,
-                    ) {
-                        Text(
-                            text = it.distance.toString(),
-                            style = MaterialTheme.typography.body2,
-                            color = MaterialTheme.colors.onSecondary,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = " meters",
-                            style = MaterialTheme.typography.body2,
-                        )
                     }
                 }
             }

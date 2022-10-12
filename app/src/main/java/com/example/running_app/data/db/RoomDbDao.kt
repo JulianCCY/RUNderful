@@ -19,6 +19,10 @@ interface RunningDao{
     @Query("SELECT * FROM running ORDER BY rid DESC")
     fun getAllRecords(): LiveData<List<Running>>
 
+    // get record by rid
+    @Query("SELECT * FROM running WHERE rid = :id")
+    fun getRecordByRID(id: Long): LiveData<Running>
+
     // get latest record
     @Query("SELECT * FROM running ORDER BY rid DESC LIMIT 1")
     fun getLatestRecord(): LiveData<Running>

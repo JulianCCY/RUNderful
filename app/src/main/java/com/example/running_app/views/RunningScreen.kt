@@ -378,9 +378,9 @@ fun Buttons(
     val testing = runningViewModel.getAllRecords().observeAsState()
     Log.d("Room Running", "${testing.value}")
 
-
-    val testing2 = runningViewModel.getAllCoordinates().observeAsState()
-    Log.d("Room Running", "${testing2.value}")
+//
+//    val testing2 = runningViewModel.getAllCoordinates().observeAsState()
+//    Log.d("Room Running", "${testing2.value}")
 
 
     Column(

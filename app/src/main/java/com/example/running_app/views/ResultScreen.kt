@@ -18,8 +18,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.ui.theme.Orange1
 import com.google.android.gms.maps.model.LatLng
 import com.example.running_app.R
-import com.example.running_app.data.weather.location.LocationTracker
-import com.example.running_app.viewModels.DailyWeatherViewModel
 import com.example.running_app.viewModels.RunningViewModel
 import kotlin.math.roundToInt
 
@@ -29,30 +27,17 @@ fun ResultScreen(
     viewModel: RunningViewModel = viewModel(),
 ) {
 
-    val TAG = "result screen"
+    val tag = "result screen"
     val record = viewModel.getRecordForResult().observeAsState().value
-
-//    val route = if (record != null) viewModel.getRouteForResult(record.rid).observeAsState().value?.toList()?.map { LatLng(it.latitude, it.longitude) }
-//                else listOf(LatLng(currentLocation!!.latitude, currentLocation.longitude))
-
-
-    Log.d(TAG, "record $record")
+    Log.d(tag, "record $record")
 
 
     if (record != null){
 
-        var route  = viewModel.getRouteForResult(record.rid).observeAsState().value?.toList()?.map { LatLng(it.latitude, it.longitude) }
-
-        if (route?.isEmpty() == true) {
-            listOf(LatLng(60.178152, 24.989714), LatLng(60.178347, 24.991572),
-                LatLng(60.178559, 24.992468), LatLng(60.178808, 24.993152),
-                LatLng(60.178970, 24.994139), LatLng(60.179276, 24.996648),
-                LatLng(60.179540, 24.997403), LatLng(60.180113, 24.998110),
-                LatLng(60.180294, 24.999510), LatLng(60.180373, 25.000382),)
-        }
+        val route  = viewModel.getRouteForResult(record.rid).observeAsState().value?.toList()?.map { LatLng(it.latitude, it.longitude) }
 
         if (!route.isNullOrEmpty()) {
-            Log.d(TAG, "route 1 $route")
+            Log.d(tag, "route 1 $route")
 
             val data = RunRecordForUI(
                 record.rid,
@@ -71,7 +56,7 @@ fun ResultScreen(
                 route
             )
 
-            Log.d(TAG, "route 2 $route")
+            Log.d(tag, "route 2 $route")
 
             Column(
                 modifier = Modifier

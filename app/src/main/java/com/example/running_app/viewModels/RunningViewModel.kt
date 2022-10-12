@@ -450,19 +450,40 @@ class RunningViewModel (
         Log.d(tag3, "cood ${roomDB.coordinatesDao().getALLCoordinates()}")
     }
 
-    fun getAllRecords(): LiveData<List<Running>> = roomDB.runningDao().getAllRecords()
+//    ********************************** Result screen **********************************
 
-    fun getAllCoordinates(): LiveData<List<Coordinates>> = roomDB.coordinatesDao().getALLCoordinates()
-
+    // get the latest record for result screen after running
     fun getRecordForResult(): LiveData<Running> = roomDB.runningDao().getLatestRecord()
 
-
+    // get the running route for google map on result screen
     fun getRouteForResult(rid: Long): LiveData<List<Coordinates>> {
         return roomDB.coordinatesDao().getAllRelatedCoordinates(rid)
     }
 
 
+    //********************************** Stats **********************************
 
+    // get a record by the running id
+    fun getRecordById(rid: Long): LiveData<Running> {
+        return roomDB.runningDao().getRecordByRID(rid)
+    }
 
+    // get all records
+    fun getAllRecords(): LiveData<List<Running>> = roomDB.runningDao().getAllRecords()
+
+    // get number of exercise
+    fun getNumExe(): Int = roomDB.runningDao().getNoOfRecords()
+
+    // get total steps of all time
+    fun getTS(): Int = roomDB.runningDao().getTotalSteps()
+
+    // get total distance of all time
+    fun getTD(): Double = roomDB.runningDao().getTotalDistance()
+
+    // get average speed of last five records
+    fun getL5AS(): LiveData<List<Double>> = roomDB.runningDao().getLastFiveAverageSpeed()
+
+    // get average heart rate of last five records
+    fun getL5HR(): LiveData<List<Int>> = roomDB.runningDao().getLastFiveAverageHeartRate()
 
 }

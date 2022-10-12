@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -19,27 +20,56 @@ import com.example.running_app.viewModels.StatDetailViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.R
+import com.example.running_app.viewModels.RunningViewModel
+import com.google.android.gms.maps.model.LatLng
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import kotlin.math.roundToInt
 
 @Composable
-fun StatDetail(dataId: Long, viewModel: StatDetailViewModel = viewModel()) {
-    val data = viewModel.getDataById(dataId)
-    Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .fillMaxSize()
-    ) {
-        DateDisplay(data)
-        Divider(
-            thickness = 2.dp,
-            color = Orange1,
-            modifier = Modifier
-                .padding(horizontal = 15.dp)
-                .fillMaxWidth()
-        )
-        PlotMapWithStartEnd(startCoord = data.coordinates.first(), endCoord = data.coordinates.last(), coords = data.coordinates)
-        StatDisplay(data)
+fun StatDetail(runningId: Long, running: RunningViewModel = viewModel()) {
+//    val data = viewModel.getDataById(dataId)
+
+    val singleRecord = running.getRecordById(runningId).observeAsState().value
+
+    if (singleRecord != null) {
+        val route = running.getRouteForResult(runningId).observeAsState().value?.toList()?.map { LatLng(it.latitude, it.longitude) }
+
+        if (!route.isNullOrEmpty()) {
+            val data = RunRecordForUI(
+                singleRecord.rid,
+                singleRecord.date,
+                singleRecord.startTime,
+                singleRecord.endTime,
+                singleRecord.duration,
+                singleRecord.temperature,
+                singleRecord.weatherDesc,
+                singleRecord.totalStep,
+                singleRecord.distance.roundToInt(),
+                singleRecord.avgSpeed,
+                singleRecord.avgHR,
+                singleRecord.calories,
+                singleRecord.avgStrideLength,
+                route,
+            )
+
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
+            ) {
+                DateDisplay(data)
+                Divider(
+                    thickness = 2.dp,
+                    color = Orange1,
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .fillMaxWidth()
+                )
+                PlotMapWithStartEnd(startCoord = route.first(), endCoord = route.last(), coords = route)
+                StatDisplay(data)
+            }
+        }
     }
 }
 

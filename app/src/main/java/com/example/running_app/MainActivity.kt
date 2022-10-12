@@ -88,11 +88,11 @@ class MainActivity : ComponentActivity(){
                             TrackSuggestionScreen()
                         }
                         composable("stats") {
-                            StatScreen(navController)
+                            StatScreen(navController, runningViewModel, settingsViewModel)
                         }
                         composable("statsDetail/{dataId}") {
                             val dataId = it.arguments?.getString("dataId")?.toLong() ?: 0
-                            StatDetail(dataId = dataId)
+                            StatDetail(runningId = dataId)
                         }
                         composable("goals") {
                             GoalsScreen()

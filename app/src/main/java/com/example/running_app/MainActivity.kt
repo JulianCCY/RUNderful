@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity(){
                             StatScreen(navController)
                         }
                         composable("statsDetail/{dataId}") {
-                            val dataId = it.arguments?.getString("dataId")?.toInt() ?: 0
+                            val dataId = it.arguments?.getString("dataId")?.toLong() ?: 0
                             StatDetail(dataId = dataId)
                         }
                         composable("goals") {
@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity(){
                             RunningScreen(navController, weatherViewModel)
                         }
                         composable("result") {
-                            ResultScreen()
+                            ResultScreen(navController)
                         }
                     }
                 }

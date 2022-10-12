@@ -563,3 +563,64 @@ fun WeatherIcon(dailyState: DailyWeatherState) {
         }
     }
 }
+
+@Composable
+fun WeatherIconByDesc(desc: String) {
+    // Weather Icon
+    when (desc) {
+        "Clear sky", "Mainly clear" -> {
+            Icon(
+                Icons.Sharp.WbSunny,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.primaryVariant,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+        "Partly cloudy", "Overcast", "Foggy", "Depositing rime fog" -> {
+            Icon(
+                Icons.Sharp.Cloud,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.primaryVariant,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+        "Slight snow fall", "Moderate snow fall", "Snow grains", "Light snow showers" -> {
+            Icon(
+                Icons.Filled.AcUnit,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.primaryVariant,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+        "Heavy snow fall", "Heavy snow showers" -> {
+            Icon(
+                Icons.Filled.SevereCold,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.primaryVariant,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+        "Moderate thunderstorm", "Thunderstorm with slight hail", "Thunderstorm with heavy hail" -> {
+            Icon(
+                Icons.Sharp.Thunderstorm,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.primaryVariant,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+        else -> {
+            Icon(
+                Icons.Sharp.Umbrella,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.primaryVariant,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+    }
+}

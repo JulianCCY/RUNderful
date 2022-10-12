@@ -8,7 +8,9 @@
     <string name="steps">steps</string>
     <string name="total_distance">Total distance</string>
     <string name="speed">Speed</string>
+    <string name="avg_speed">Avg. speed</string>
     <string name="heart_rate">Heart rate</string>
+    <string name="avg_heart_rate">Avg. heart rate</string>
     <string name="stride_length">Stride length</string>
     <string name="calories">Calories</string>
     <string name="settings">Settings</string>
@@ -24,4 +26,5 @@
     <string name="total_distance_exercised">Total distance exercised:</string>
     <string name="avg_speed_of_past_five_exercises">Average speed of past 5 exercises:</string>
     <string name="avg_heart_of_past_five_exercises">Average heart rate of past 5 exercises:</string>
+    <string name="summary">Summary</string>
 </resources>

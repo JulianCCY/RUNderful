@@ -36,7 +36,7 @@ data class StatOverviewForUI(
 
 //Move to backend file / database file later
 data class RunRecordForUI(
-    val id: Long,
+    var id: Long,
     // Date of the record
     val date: String,
     // Starting time of the record
@@ -423,6 +423,7 @@ fun Histories(viewModel: StatViewModel = viewModel(), navController: NavControll
                         .align(Alignment.BottomEnd)
                 ) {
                     Row(
+                        verticalAlignment = Alignment.Bottom,
                         modifier = Modifier
                             .padding(end = 10.dp)
                     ) {
@@ -431,9 +432,10 @@ fun Histories(viewModel: StatViewModel = viewModel(), navController: NavControll
                             style = MaterialTheme.typography.body2,
                         )
                         Text(
-                            text = "°c",
+                            text = "°c  ",
                             style = MaterialTheme.typography.body2,
                         )
+                        WeatherIconByDesc(it.weatherDesc)
                     }
                 }
                 Column {

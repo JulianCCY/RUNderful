@@ -49,7 +49,7 @@ fun plotMapWithStartEnd(startCoord: LatLng, endCoord: LatLng, coords: List<LatLn
             compassEnabled = true,
         ),
         modifier = Modifier
-            .height(400.dp)
+            .height(500.dp)
             .fillMaxWidth()
             .padding(15.dp)
     ) {

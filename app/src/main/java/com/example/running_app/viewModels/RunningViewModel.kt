@@ -463,27 +463,4 @@ class RunningViewModel (
 
     //********************************** Stats **********************************
 
-    // get a record by the running id
-    fun getRecordById(rid: Long): LiveData<Running> {
-        return roomDB.runningDao().getRecordByRID(rid)
-    }
-
-    // get all records
-    fun getAllRecords(): LiveData<List<Running>> = roomDB.runningDao().getAllRecords()
-
-    // get number of exercise
-    fun getNumExe(): Int = roomDB.runningDao().getNoOfRecords()
-
-    // get total steps of all time
-    fun getTS(): Int = roomDB.runningDao().getTotalSteps()
-
-    // get total distance of all time
-    fun getTD(): Double = roomDB.runningDao().getTotalDistance()
-
-    // get average speed of last five records
-    fun getL5AS(): LiveData<List<Double>> = roomDB.runningDao().getLastFiveAverageSpeed()
-
-    // get average heart rate of last five records
-    fun getL5HR(): LiveData<List<Int>> = roomDB.runningDao().getLastFiveAverageHeartRate()
-
 }

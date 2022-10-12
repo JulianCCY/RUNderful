@@ -22,7 +22,9 @@ import com.example.running_app.R
 import com.example.running_app.ui.theme.*
 import com.example.running_app.viewModels.StatViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.running_app.viewModels.RunningViewModel
+import com.example.running_app.data.result.RunRecordForUI
+import com.example.running_app.data.stats.GraphStatsData
+import com.example.running_app.data.stats.StatGeneral
 import com.example.running_app.viewModels.SettingsViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.madrapps.plot.line.DataPoint
@@ -31,54 +33,13 @@ import com.madrapps.plot.line.LinePlot
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
-data class StatGeneral(
-    val userName: String,
-    val numOfExercises: Int,
-    val totalSteps: Int,
-    val totalDistance: Int,
-)
-
-data class StatGraph(
-    val speedOfLastFive: List<Double>,
-    val heartOfLastFive: List<Int>,
-)
-
 //Move to backend file / database file later
-data class RunRecordForUI(
-    var id: Long,
-    // Date of the record
-    val date: String,
-    // Starting time of the record
-    val startTime: String,
-    // Ending time of the record
-    val endTime: String,
-    // Total time spend of the record
-    val timeSpent: String,
-    // Temperature of the record starting time
-    val temp: Int,
-    // Weather desc for icon
-    val weatherDesc: String,
-    // Total number of steps
-    val steps: Int,
-    // Total distance ran in the record
-    val distance: Int,
-    // Average velocity (m/s)
-    val avgSpeed: Double,
-    // Average heart rate (bpm)
-    val avgHeart: Int,
-    // Calories
-    val calories: Int,
-    // Stride
-    val stride: Double,
-    // List of coordinates --- Eg. [(Lat, Long), (60.1234, 25.4321), (60.1236, 25.4322)]
-    // For creating track on map...
-    val coordinates: List<LatLng>
-)
+// Moved your data class to data folder -> result and stats
 
 @Composable
 fun StatScreen(
     navController: NavController,
-    running: RunningViewModel = viewModel(),
+    stats: StatViewModel = viewModel(),
     settings: SettingsViewModel = viewModel(),
 ) {
     val TAG = "stats screen"
@@ -86,11 +47,11 @@ fun StatScreen(
     val userName = settings.getUser().observeAsState().value?.name
     Log.d(TAG, "username: $userName")
     // get num of exercise, total steps of all time, total distance of all time'
-    val numOfExercises = running.getNumExe().absoluteValue
+    val numOfExercises = stats.getNumExe().absoluteValue
     Log.d(TAG, "exercise: $numOfExercises")
-    val totalSteps = running.getTS().absoluteValue
+    val totalSteps = stats.getTS().absoluteValue
     Log.d(TAG, "total steps: $totalSteps")
-    val totalDistance = running.getTD().absoluteValue.roundToInt()
+    val totalDistance = stats.getTD().absoluteValue.roundToInt()
     Log.d(TAG, "distance: $totalDistance")
 
     // average speed of last 5 record
@@ -331,7 +292,7 @@ fun PlotGraph(lines: List<List<DataPoint>>) {
 }
 
 @Composable
-fun GraphSection(data: StatGraph) {
+fun GraphSection(data: GraphStatsData) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -343,7 +304,7 @@ fun GraphSection(data: StatGraph) {
 }
 
 @Composable
-fun AvgVelocity(data: StatGraph) {
+fun AvgVelocity(data: GraphStatsData) {
     if (data.speedOfLastFive.isEmpty()) {
 
         val graphData = data.speedOfLastFive.toList().mapIndexed{ i, e -> DataPoint(i.toFloat(), e.toFloat()) }
@@ -379,7 +340,7 @@ fun AvgVelocity(data: StatGraph) {
 }
 
 @Composable
-fun AvgHeartRate(data: StatGraph) {
+fun AvgHeartRate(data: GraphStatsData) {
 
     if (data.heartOfLastFive.isEmpty()) {
         val graphData = data.heartOfLastFive.toList().mapIndexed { i, e -> DataPoint(i.toFloat(), e.toFloat()) }
@@ -428,7 +389,7 @@ fun AvgHeartRate(data: StatGraph) {
 
 
 @Composable
-fun Histories(viewModel: RunningViewModel = viewModel(), navController: NavController) {
+fun Histories(viewModel: StatViewModel = viewModel(), navController: NavController) {
 
     val tag = "history"
 
@@ -442,7 +403,7 @@ fun Histories(viewModel: RunningViewModel = viewModel(), navController: NavContr
             it.temperature,
             it.weatherDesc,
             it.totalStep,
-            it.distance.roundToInt(),
+            it.distance,
             it.avgSpeed,
             it.avgHR,
             it.calories,
@@ -453,24 +414,6 @@ fun Histories(viewModel: RunningViewModel = viewModel(), navController: NavContr
     }
     Log.d(tag, "record $getAllRecord")
 
-    val historyList = listOf(
-        RunRecordForUI(1,
-            "05-10-2022",
-            "10:00",
-            "10:48",
-            "00:15:31",
-            13,
-            "Foggy",
-            9876,
-            4,
-            8.0,
-            175,
-            3,
-            0.52,
-
-            listOf()
-        ),
-    )
     LazyColumn(
         modifier = Modifier
             .height(500.dp)
@@ -507,10 +450,7 @@ fun Histories(viewModel: RunningViewModel = viewModel(), navController: NavContr
                             imageVector = Icons.Sharp.DeleteForever,
                             contentDescription = "Localized description",
                             tint = Orange2,
-                            modifier = Modifier
-                                .clickable {
-//                                viewModel.delete(it.id)
-                                },
+                            modifier = Modifier.clickable { viewModel.delARecord(it.id) },
                         )
                     }
                     // Temperature / weather icon later
@@ -566,7 +506,7 @@ fun Histories(viewModel: RunningViewModel = viewModel(), navController: NavContr
                                     style = MaterialTheme.typography.body2,
                                 )
                                 Text(
-                                    text = if (minute > 60) " hour(s)" else if (minute < 1) " second(s)" else " minute(s)",
+                                    text = if (minute > 60) " hour(s)" else if (minute < 1) " seconds" else " minutes",
                                     style = MaterialTheme.typography.body2,
                                 )
                             }
@@ -576,13 +516,13 @@ fun Histories(viewModel: RunningViewModel = viewModel(), navController: NavContr
                             verticalAlignment = Alignment.Bottom,
                         ) {
                             Text(
-                                text = it.distance.toString(),
+                                text = if (it.distance < 1000.0) String.format("%.2f", it.distance) else String.format("%.2f", it.distance / 1000.0),
                                 style = MaterialTheme.typography.body2,
                                 color = MaterialTheme.colors.onSecondary,
                                 fontWeight = FontWeight.Bold,
                             )
                             Text(
-                                text = " meters",
+                                text = if (it.distance > 1000.0) " kilometers" else " meters",
                                 style = MaterialTheme.typography.body2,
                             )
                         }

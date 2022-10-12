@@ -55,6 +55,14 @@ interface RunningDao{
     @Query("SELECT * FROM running ORDER BY rid DESC LIMIT 2")
     fun getLatestAndPreviousRunningRecord(): LiveData<List<Running>>
 
+    // delete record by rid
+    @Query("DELETE FROM running WHERE rid = :id")
+    fun deleteRecordByRID(id: Long)
+
+    // delete all record
+    @Query("DELETE FROM running")
+    fun deleteAllRecords()
+
     //********************************** StatOverViewForUI **********************************
 
     // number of running records
@@ -93,8 +101,13 @@ interface CoordinatesDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCoordinates(coordinates: Coordinates): Long
 
-//    @Query("select * from employee join company on employee.company = company.cid where company.cid = :company_id")
-//    fun getAllEmployees(company_id: Long): LiveData<List<Employee>>
+    // delete all coordinates
+    @Query("DELETE FROM coordinates")
+    fun deleteAllCoordinates()
+
+    // delete route of a single record
+    @Query("DELETE FROM coordinates where runningId = :id")
+    fun deleteRelatedCoordinates(id: Long)
 
 }
 

@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.ui.theme.Orange1
 import com.google.android.gms.maps.model.LatLng
 import com.example.running_app.R
+import com.example.running_app.data.result.RunRecordForUI
 import com.example.running_app.viewModels.RunningViewModel
 import kotlin.math.roundToInt
 
@@ -48,7 +49,7 @@ fun ResultScreen(
                 record.temperature,
                 record.weatherDesc,
                 record.totalStep,
-                record.distance.roundToInt(),
+                record.distance,
                 record.avgSpeed,
                 record.avgHR,
                 record.calories,

@@ -10,8 +10,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import com.example.running_app.viewModels.DailyWeatherViewModel
-import com.example.running_app.viewModels.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -21,8 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.running_app.data.db.User
 import com.example.running_app.data.weather.location.LocationTracker
 import com.example.running_app.ui.theme.Running_AppTheme
-import com.example.running_app.viewModels.RunningViewModel
-import com.example.running_app.viewModels.SettingsViewModel
+import com.example.running_app.viewModels.*
 import com.example.running_app.views.RunningScreen
 import com.example.running_app.views.WeatherScreen
 import com.example.running_app.views.*
@@ -35,6 +32,7 @@ class MainActivity : ComponentActivity(){
     private val dailyWeatherViewModel: DailyWeatherViewModel by viewModels()
     private val runningViewModel: RunningViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
+    private val statViewModel: StatViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +86,7 @@ class MainActivity : ComponentActivity(){
                             TrackSuggestionScreen()
                         }
                         composable("stats") {
-                            StatScreen(navController, runningViewModel, settingsViewModel)
+                            StatScreen(navController, statViewModel, settingsViewModel)
                         }
                         composable("statsDetail/{dataId}") {
                             val dataId = it.arguments?.getString("dataId")?.toLong() ?: 0

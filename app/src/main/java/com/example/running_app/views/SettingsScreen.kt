@@ -188,6 +188,18 @@ fun SettingsSection(viewModel: SettingsViewModel = viewModel(), bleViewModel: BL
                     )
                 }
             }
+            // required an alert message 30000 thanks!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            Button(
+                onClick = {viewModel.cleanAppData()},
+                modifier = Modifier
+                    .width(100.dp)
+            ) {
+                Text(
+                    text = "Clean data",
+                    style = MaterialTheme.typography.body2,
+                )
+            }
+
         }
     }
 }

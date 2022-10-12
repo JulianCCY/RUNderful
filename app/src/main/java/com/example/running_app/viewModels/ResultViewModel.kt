@@ -3,7 +3,6 @@ package com.example.running_app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.running_app.data.db.RoomDB
-import com.example.running_app.views.RunRecordForUI
 
 class ResultViewModel: ViewModel() {
 

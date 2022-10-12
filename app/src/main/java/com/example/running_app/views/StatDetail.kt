@@ -16,21 +16,22 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.running_app.viewModels.StatDetailViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.R
+import com.example.running_app.data.result.RunRecordForUI
 import com.example.running_app.viewModels.RunningViewModel
+import com.example.running_app.viewModels.StatDetailViewModel
 import com.google.android.gms.maps.model.LatLng
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
 @Composable
-fun StatDetail(runningId: Long, running: RunningViewModel = viewModel()) {
+fun StatDetail(runningId: Long, statD: StatDetailViewModel = viewModel(), running: RunningViewModel = viewModel()) {
 //    val data = viewModel.getDataById(dataId)
 
-    val singleRecord = running.getRecordById(runningId).observeAsState().value
+    val singleRecord = statD.getRecordById(runningId).observeAsState().value
 
     if (singleRecord != null) {
         val route = running.getRouteForResult(runningId).observeAsState().value?.toList()?.map { LatLng(it.latitude, it.longitude) }
@@ -45,7 +46,7 @@ fun StatDetail(runningId: Long, running: RunningViewModel = viewModel()) {
                 singleRecord.temperature,
                 singleRecord.weatherDesc,
                 singleRecord.totalStep,
-                singleRecord.distance.roundToInt(),
+                singleRecord.distance,
                 singleRecord.avgSpeed,
                 singleRecord.avgHR,
                 singleRecord.calories,
@@ -247,7 +248,7 @@ fun DistanceDisplay(data: RunRecordForUI) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "${data.distance}",
+                    text = String.format("%.2f", data.distance),
                     style = MaterialTheme.typography.body1,
                 )
                 Text(

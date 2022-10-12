@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.data.db.RoomDB
 import com.example.running_app.data.db.User
 import kotlinx.coroutines.CoroutineScope
@@ -62,5 +63,12 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
         Log.d(TAG, "get from db 2${weight}")
         weightForCalories_.value = weight
         Log.d(TAG, "after post, ${weightForCalories_.value}")
+    }
+
+    fun cleanAppData() {
+        viewModelScope.launch {
+            roomDB.runningDao().deleteAllRecords()
+            roomDB.coordinatesDao().getALLCoordinates()
+        }
     }
 }

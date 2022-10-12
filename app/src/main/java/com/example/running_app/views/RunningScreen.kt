@@ -427,11 +427,13 @@ fun Buttons(
         // Finish button
         Button(
             onClick = {
-                runningViewModel.stopRunning()
-                runningViewModel.unregisterStepCounterSensor()
+                if (runningViewModel.latitude.isNotEmpty() && runningViewModel.longitude.isNotEmpty()) {
+                    runningViewModel.stopRunning()
+                    runningViewModel.unregisterStepCounterSensor()
 //                isButtonVisible = true
-                navController.navigate("result")
-                Log.d("steps", "stop")
+                    navController.navigate("result")
+                    Log.d("steps", "stop")
+                }
             },
             modifier = Modifier
                 .clip(CutCornerShape(10.dp))

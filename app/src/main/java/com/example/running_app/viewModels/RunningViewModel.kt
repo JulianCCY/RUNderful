@@ -427,19 +427,24 @@ class RunningViewModel (
 
             Log.d(tag3, "$runningId")
 
-            if (latitude.size == 0 || longitude.size == 0) {
-                roomDB.coordinatesDao().insertCoordinates(Coordinates(0, runningId, 39.90868086934968, 116.39743190616134))
-            } else {
-                latitude.forEachIndexed { i, e ->
-                    roomDB.coordinatesDao().insertCoordinates(
-                        Coordinates(
-                            cid = 0,
-                            runningId = runningId,
-                            latitude = e,
-                            longitude = longitude[i]
-                        )
+//            val chlat = listOf(39.915499485214696, 39.91528369965235, 39.9134599729653, 39.91119965045904, 39.90893934917637, 39.90765494295471,
+//                39.9066606674469, 39.90513265732545, 39.90419009152418, 39.90487301431289, 39.904287941921396, 39.904515628329285, 39.906531341493185,
+//                39.908904609878135, 39.91400886567836, 39.91533944744445, 39.91540886416355, 39.91480418305796
+//            )
+//            val chlong = listOf(116.39719795033322,116.39883553383524,116.39994041993818, 116.40027500765676, 116.40047563891909, 116.40248454418219,
+//                116.40268428914682, 116.40255684545879, 116.40005616927874, 116.39772529391956, 116.3957333195003, 116.393232864636, 116.39200389579304, 116.39327549581009,
+//                116.39344534678946, 116.39472048212771, 116.39677082838156,  116.397131204287)
+
+
+            latitude.forEachIndexed { i, e ->
+                roomDB.coordinatesDao().insertCoordinates(
+                    Coordinates(
+                        cid = 0,
+                        runningId = runningId,
+                        latitude = e,
+                        longitude = longitude[i]
                     )
-                }
+                )
             }
         }
         Log.d(tag3, "cood ${roomDB.coordinatesDao().getALLCoordinates()}")

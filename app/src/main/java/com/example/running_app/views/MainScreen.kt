@@ -79,7 +79,7 @@ fun Setting(navController: NavController, bleViewModel: BLEViewModel = viewModel
         verticalAlignment = Alignment.Top,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(end = 18.dp)
+            .padding(top = 10.dp, end = 18.dp)
     ) {
         IconButton(
             onClick = {
@@ -93,7 +93,7 @@ fun Setting(navController: NavController, bleViewModel: BLEViewModel = viewModel
                 contentDescription = "Settings",
                 tint = Orange1,
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(35.dp)
             )
         }
     }

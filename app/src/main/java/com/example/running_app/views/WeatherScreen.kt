@@ -418,18 +418,43 @@ fun HourWeather(
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .padding(start = 30.dp, end = 30.dp, bottom = 10.dp)
+                            .padding(start = 20.dp, end = 25.dp, bottom = 16.dp)
                             .fillMaxWidth()
                     ) {
-                        Text(
-                            text = if (data.time.hour == LocalDateTime.now().hour && data.time.dayOfMonth == LocalDateTime.now().dayOfMonth) "Current"
-                            else timeFormatter,
-                            style = MaterialTheme.typography.body1,
-                        )
-                        Text(
-                            text = "${data.temperatureCelsius.roundToInt()}°",
-                            style = MaterialTheme.typography.body1
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .width(150.dp)
+                        ){
+                            Row(horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .width(75.dp)
+                            ){
+                                Text(
+                                    text = if (data.time.hour == LocalDateTime.now().hour && data.time.dayOfMonth == LocalDateTime.now().dayOfMonth) "Current"
+                                    else timeFormatter,
+                                    style = MaterialTheme.typography.body1,
+                                )
+                            }
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .width(50.dp)
+                            ) {
+                                WeatherIconHourly(state)
+                            }
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier
+                                .width(100.dp)
+                        ){
+                            Text(
+                                text = "${data.temperatureCelsius.roundToInt()}°",
+                                style = MaterialTheme.typography.body1
+                            )
+                        }
                     }
                 }
             })
@@ -615,6 +640,67 @@ fun WeatherIconByDesc(desc: String) {
                 Icons.Sharp.Umbrella,
                 contentDescription = "WeatherIcon",
                 tint = MaterialTheme.colors.primaryVariant,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun WeatherIconHourly(state: WeatherState) {
+    // Weather Icon
+    when (state.weatherInfo?.currentWeatherData?.weatherType?.weatherDesc) {
+        "Clear sky", "Mainly clear" -> {
+            Icon(
+                Icons.Sharp.WbSunny,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSecondary,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+        "Partly cloudy", "Overcast", "Foggy", "Depositing rime fog" -> {
+            Icon(
+                Icons.Sharp.Cloud,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSecondary,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+        "Slight snow fall", "Moderate snow fall", "Snow grains", "Light snow showers" -> {
+            Icon(
+                Icons.Filled.AcUnit,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSecondary,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+        "Heavy snow fall", "Heavy snow showers" -> {
+            Icon(
+                Icons.Filled.SevereCold,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSecondary,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+        "Moderate thunderstorm", "Thunderstorm with slight hail", "Thunderstorm with heavy hail" -> {
+            Icon(
+                Icons.Sharp.Thunderstorm,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSecondary,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+        else -> {
+            Icon(
+                Icons.Sharp.Umbrella,
+                contentDescription = "WeatherIcon",
+                tint = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .size(20.dp)
             )

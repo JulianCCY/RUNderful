@@ -424,16 +424,22 @@ class RunningViewModel (
         val runningId = roomDB.runningDao().getKeyForCoordinate()
         Log.d(tag3, "key, $runningId")
         coroutineScope.launch {
+
             Log.d(tag3, "$runningId")
-            latitude.forEachIndexed { i, e ->
-                roomDB.coordinatesDao().insertCoordinates(
-                    Coordinates(
-                        cid = 0,
-                        runningId = runningId,
-                        latitude = e,
-                        longitude = longitude[i]
+
+            if (latitude.size == 0 || longitude.size == 0) {
+                roomDB.coordinatesDao().insertCoordinates(Coordinates(0, runningId, 39.90868086934968, 116.39743190616134))
+            } else {
+                latitude.forEachIndexed { i, e ->
+                    roomDB.coordinatesDao().insertCoordinates(
+                        Coordinates(
+                            cid = 0,
+                            runningId = runningId,
+                            latitude = e,
+                            longitude = longitude[i]
+                        )
                     )
-                )
+                }
             }
         }
         Log.d(tag3, "cood ${roomDB.coordinatesDao().getALLCoordinates()}")

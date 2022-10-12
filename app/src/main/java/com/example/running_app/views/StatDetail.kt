@@ -19,6 +19,8 @@ import com.example.running_app.viewModels.StatDetailViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.R
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 @Composable
 fun StatDetail(dataId: Long, viewModel: StatDetailViewModel = viewModel()) {
@@ -229,6 +231,8 @@ fun DistanceDisplay(data: RunRecordForUI) {
 
 @Composable
 fun AVDisplay(data: RunRecordForUI) {
+    val velocityFormatter = DecimalFormat("#.##")
+    velocityFormatter.roundingMode = RoundingMode.DOWN
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier = Modifier
@@ -252,7 +256,7 @@ fun AVDisplay(data: RunRecordForUI) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "${data.avgSpeed}",
+                    text = velocityFormatter.format(data.avgSpeed),
                     style = MaterialTheme.typography.body1,
                 )
                 Text(
@@ -289,11 +293,11 @@ fun AHDisplay(data: RunRecordForUI) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "${data.avgHeart}",
+                    text = if (data.avgHeart != 0) "${data.avgHeart}" else "Not In Use",
                     style = MaterialTheme.typography.body1,
                 )
                 Text(
-                    text = " bpm",
+                    text = if (data.avgHeart != 0) " bpm" else "",
                     style = MaterialTheme.typography.body2,
                 )
             }
@@ -303,6 +307,8 @@ fun AHDisplay(data: RunRecordForUI) {
 
 @Composable
 fun StrideDisplay(data: RunRecordForUI) {
+    val sLengthFormatter = DecimalFormat("#.##")
+    sLengthFormatter.roundingMode = RoundingMode.DOWN
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier = Modifier
@@ -326,11 +332,11 @@ fun StrideDisplay(data: RunRecordForUI) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = data.stride.toString(),
+                    text = sLengthFormatter.format(data.stride).toString(),
                     style = MaterialTheme.typography.body1,
                 )
                 Text(
-                    text = " bpm",
+                    text = " m",
                     style = MaterialTheme.typography.body2,
                 )
             }

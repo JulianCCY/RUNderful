@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.running_app.data.db.User
+import com.example.running_app.data.weather.location.LocationTracker
 import com.example.running_app.ui.theme.Running_AppTheme
 import com.example.running_app.viewModels.RunningViewModel
 import com.example.running_app.viewModels.SettingsViewModel
@@ -100,7 +101,7 @@ class MainActivity : ComponentActivity(){
                             RunningScreen(navController, weatherViewModel)
                         }
                         composable("result") {
-                            ResultScreen(navController)
+                            ResultScreen(navController, runningViewModel)
                         }
                     }
                 }

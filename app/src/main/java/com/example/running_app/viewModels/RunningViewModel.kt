@@ -12,26 +12,18 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.example.running_app.data.db.Coordinates
 import com.example.running_app.data.db.RoomDB
 import com.example.running_app.data.db.Running
 import com.example.running_app.data.running.heartrate.BLEViewModel
-import com.example.running_app.data.weather.WeatherState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableSharedFlow
 import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class RunningViewModel (
@@ -394,19 +386,15 @@ class RunningViewModel (
         var address = ""
 
         if (Build.VERSION.SDK_INT >= 33) {
-            geocoder.getFromLocation(lat, long, 1)?.let{
-                address = it.first().getAddressLine(0)
-            }
-
+            geocoder.getFromLocation(lat, long, 1)?.let{ address = it.first().getAddressLine(0) }
         } else {
-//            address = geocoder.getFromLocation(lat, long, 1)?.first()?.getAddressLine(0)?: ""
             address = geocoder.getFromLocation(lat, long, 1)?.first()?.getAddressLine(0) ?: "Unknown Place"
         }
 
         return address
     }
 
-    // Insert data into database after finished running
+    // ************************************************* ROOM DATABASE *************************************************
     private fun insertRecords() {
         coroutineScope.launch {
             roomDB.runningDao().addNewRecord(
@@ -454,6 +442,13 @@ class RunningViewModel (
     fun getAllRecords(): LiveData<List<Running>> = roomDB.runningDao().getAllRecords()
 
     fun getAllCoordinates(): LiveData<List<Coordinates>> = roomDB.coordinatesDao().getALLCoordinates()
+
+    fun getRecordForResult(): LiveData<Running> = roomDB.runningDao().getLatestRecord()
+
+
+    fun getRouteForResult(rid: Long): LiveData<List<Coordinates>> {
+        return roomDB.coordinatesDao().getAllRelatedCoordinates(rid)
+    }
 
 
 

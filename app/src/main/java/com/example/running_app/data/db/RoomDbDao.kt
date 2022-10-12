@@ -16,12 +16,12 @@ interface RunningDao{
     fun getKeyForCoordinate(): Long
 
     // Getting all running records
-    @Query("SELECT * FROM running")
+    @Query("SELECT * FROM running ORDER BY rid DESC")
     fun getAllRecords(): LiveData<List<Running>>
 
     // get latest record
     @Query("SELECT * FROM running ORDER BY rid DESC LIMIT 1")
-    fun getLatestRecord(): LiveData<List<Running>>
+    fun getLatestRecord(): LiveData<Running>
 
     // get latest step
     @Query("SELECT totalStep FROM running ORDER BY rid DESC LIMIT 1")

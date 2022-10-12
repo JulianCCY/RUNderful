@@ -56,7 +56,7 @@ data class RunRecordForUI(
     // Average velocity (m/s)
     val avgSpeed: Double,
     // Average heart rate (bpm)
-    val avgHeart: Double,
+    val avgHeart: Int,
     // Calories
     val calories: Int,
     // Stride
@@ -364,7 +364,7 @@ fun AvgHeartRate(data: StatOverviewForUI) {
 fun Histories(viewModel: StatViewModel = viewModel(), navController: NavController) {
 //    val historyList = viewModel.getAll().observeAsState(listOf())
     val historyList = listOf(
-        RunRecordForUI(1, "05-10-2022", "10:00", "10:48", "00:15:31", 13, "Foggy", 9876, 4, 8.0,175.0, 3, 0.52, listOf(
+        RunRecordForUI(1, "05-10-2022", "10:00", "10:48", "00:15:31", 13, "Foggy", 9876, 4, 8.0,175, 3, 0.52, listOf(
             LatLng(60.178152, 24.989714),
             LatLng(60.178347, 24.991572),
             LatLng(60.178559, 24.992468),

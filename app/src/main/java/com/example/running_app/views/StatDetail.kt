@@ -36,7 +36,7 @@ fun StatDetail(dataId: Long, viewModel: StatDetailViewModel = viewModel()) {
                 .padding(horizontal = 15.dp)
                 .fillMaxWidth()
         )
-        plotMapWithStartEnd(startCoord = data.coordinates.first(), endCoord = data.coordinates.last(), coords = data.coordinates)
+        PlotMapWithStartEnd(startCoord = data.coordinates.first(), endCoord = data.coordinates.last(), coords = data.coordinates)
         StatDisplay(data)
     }
 }

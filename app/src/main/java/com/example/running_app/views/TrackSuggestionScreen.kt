@@ -2,7 +2,6 @@ package com.example.running_app.views
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -20,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.running_app.data.TrackSuggestionStructure
-import com.example.running_app.ui.theme.LightViolet1
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.viewModels.TrackSuggestionViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -122,6 +120,6 @@ fun ExpandableView(center: LatLng, coords: List<LatLng>, isExpanded: Boolean) {
         enter = expandTransition,
         exit = collapseTransition
     ) {
-        plotMap(focus = center, coords = coords)
+        PlotMap(focus = center, coords = coords)
     }
 }

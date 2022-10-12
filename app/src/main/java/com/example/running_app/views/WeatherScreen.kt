@@ -1,7 +1,6 @@
 package com.example.running_app.views
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,7 +25,6 @@ import com.example.running_app.data.weather.WeatherState
 import com.example.running_app.ui.theme.*
 import com.example.running_app.viewModels.DailyWeatherViewModel
 import com.example.running_app.viewModels.WeatherViewModel
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
@@ -453,7 +451,6 @@ fun WeekWeather(
             LazyColumn(content = {
                 items(it) { data ->
                     val timeFormatter = remember(data) {
-//                        data.date.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase)
                         data.date.dayOfWeek.name.uppercase().slice(0..2)
                     }
                     Row(

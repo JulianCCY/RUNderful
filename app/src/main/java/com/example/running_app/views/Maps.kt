@@ -13,10 +13,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 
 @Composable
-fun plotMap(focus: LatLng, coords: List<LatLng>) {
+fun PlotMap(focus: LatLng, coords: List<LatLng>) {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(focus, 15f)
     }
+
     GoogleMap(
         cameraPositionState = cameraPositionState,
         uiSettings = MapUiSettings(
@@ -39,7 +40,7 @@ fun plotMap(focus: LatLng, coords: List<LatLng>) {
 }
 
 @Composable
-fun plotMapWithStartEnd(startCoord: LatLng, endCoord: LatLng, coords: List<LatLng>) {
+fun PlotMapWithStartEnd(startCoord: LatLng, endCoord: LatLng, coords: List<LatLng>) {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(startCoord, 15f)
     }

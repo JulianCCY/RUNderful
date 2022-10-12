@@ -26,9 +26,6 @@ import com.example.running_app.views.RunningScreen
 import com.example.running_app.views.WeatherScreen
 import com.example.running_app.views.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(){

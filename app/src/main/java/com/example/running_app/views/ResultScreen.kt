@@ -22,7 +22,7 @@ import com.example.running_app.R
 fun ResultScreen(navController: NavController, viewModel: ResultViewModel = viewModel()) {
 //    val data = viewModel.getSummary().observeAsState()
     // fake data
-    val data: RunRecordForUI = RunRecordForUI(1, "05-10-2022", "10:00", "10:48", "00:15:31", 13, "Foggy", 9876, 4, 8.0,175.0, 3, 0.52, listOf(
+    val data = RunRecordForUI(1, "05-10-2022", "10:00", "10:48", "00:15:31", 13, "Foggy", 9876, 4, 8.0,175.0, 3, 0.52, listOf(
         LatLng(60.178152, 24.989714),
         LatLng(60.178347, 24.991572),
         LatLng(60.178559, 24.992468),
@@ -48,7 +48,7 @@ fun ResultScreen(navController: NavController, viewModel: ResultViewModel = view
                 .padding(horizontal = 15.dp)
                 .fillMaxWidth()
         )
-        plotMapWithStartEnd(startCoord = data.coordinates.first(), endCoord = data.coordinates.last(), coords = data.coordinates)
+        PlotMapWithStartEnd(startCoord = data.coordinates.first(), endCoord = data.coordinates.last(), coords = data.coordinates)
         StatDisplay(data)
         MainScreenButton(navController)
     }

@@ -28,7 +28,6 @@ import com.example.running_app.data.weather.WeatherState
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.ui.theme.Red1
 import com.example.running_app.viewModels.RunningViewModel
-import com.example.running_app.viewModels.SettingsViewModel
 import com.example.running_app.viewModels.WeatherViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition

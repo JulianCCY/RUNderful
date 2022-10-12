@@ -2,7 +2,6 @@ package com.example.running_app.views
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator

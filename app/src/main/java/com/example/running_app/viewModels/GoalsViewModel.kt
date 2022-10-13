@@ -26,7 +26,7 @@ class GoalsViewModel(application: Application) : AndroidViewModel(application) {
 
     @SuppressLint("SuspiciousIndentation")
     fun get_highest_velocity(): Float{
-        var result = 32.1f
+        var result = roomDB.runningDao().getHighestSpeed().toFloat()
         if(result >= max_list[1]){
             level_list[1] = floor(result/max_list[1]).toInt()
         }

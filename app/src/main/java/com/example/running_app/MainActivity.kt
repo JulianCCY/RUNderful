@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -94,7 +95,7 @@ class MainActivity : ComponentActivity(){
                             MainScreen(navController)
                         }
                         composable("settings") {
-                            SettingsScreen()
+                            SettingsScreen(navController)
                         }
                         composable("weather") {
                             WeatherScreen(weatherViewModel, dailyWeatherViewModel)
@@ -116,6 +117,9 @@ class MainActivity : ComponentActivity(){
                             RunningScreen(navController, weatherViewModel)
                         }
                         composable("result") {
+                            BackHandler(true) {
+                                // disable back button after finish running
+                            }
                             ResultScreen(navController, runningViewModel)
                         }
                     }

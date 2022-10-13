@@ -449,7 +449,7 @@ fun Buttons(
                 }
             }
         }
-        Spacer(modifier = Modifier.width(50.dp))
+        Spacer(modifier = Modifier.width(30.dp))
         // Finish button
         Button(
             onClick = {

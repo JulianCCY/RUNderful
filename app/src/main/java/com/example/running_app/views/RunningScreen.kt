@@ -428,13 +428,11 @@ fun Buttons(
             },
             modifier = Modifier
                 .clip(CutCornerShape(10.dp))
-                .size(125.dp)
+                .size(100.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
             ) {
                 if (pauseResume == "pause") {
                     Text(
@@ -448,6 +446,7 @@ fun Buttons(
                     )
                 }
             }
+            Spacer(modifier = Modifier.width(50.dp))
             // Finish button
             Button(
                 onClick = {
@@ -461,13 +460,11 @@ fun Buttons(
                 },
                 modifier = Modifier
                     .clip(CutCornerShape(10.dp))
-                    .size(125.dp)
+                    .size(100.dp)
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
                 ) {
                     Text(
                         text = "Finish",

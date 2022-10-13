@@ -433,6 +433,8 @@ fun Buttons(
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
                 if (pauseResume == "pause") {
                     Text(
@@ -446,34 +448,35 @@ fun Buttons(
                     )
                 }
             }
-            Spacer(modifier = Modifier.width(50.dp))
-            // Finish button
-            Button(
-                onClick = {
-                    if (runningViewModel.latitude.isNotEmpty() && runningViewModel.longitude.isNotEmpty()) {
-                        runningViewModel.stopRunning()
-                        runningViewModel.unregisterStepCounterSensor()
-                        navController.navigate("result")
-                        Log.d("steps", "stop")
-                        NotificationManagerCompat.from(context).notify(123,notify)
-                    }
-                },
-                modifier = Modifier
-                    .clip(CutCornerShape(10.dp))
-                    .size(100.dp)
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        text = "Finish",
-                        style = MaterialTheme.typography.body1
-                    )
+        }
+        Spacer(modifier = Modifier.width(50.dp))
+        // Finish button
+        Button(
+            onClick = {
+                if (runningViewModel.latitude.isNotEmpty() && runningViewModel.longitude.isNotEmpty()) {
+                    runningViewModel.stopRunning()
+                    runningViewModel.unregisterStepCounterSensor()
+                    navController.navigate("result")
+                    Log.d("steps", "stop")
+                    NotificationManagerCompat.from(context).notify(123,notify)
                 }
+            },
+            modifier = Modifier
+                .clip(CutCornerShape(10.dp))
+                .size(100.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Finish",
+                    style = MaterialTheme.typography.body1
+                )
             }
         }
-
     }
 //    Column(
 //        verticalArrangement = Arrangement.SpaceAround,

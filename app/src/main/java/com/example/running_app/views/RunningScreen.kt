@@ -1,5 +1,7 @@
 package com.example.running_app.views
 
+import android.app.PendingIntent
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CutCornerShape
@@ -15,13 +17,18 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.running_app.CHANNEL_ID
+import com.example.running_app.MainActivity
 import com.example.running_app.R
 import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.data.weather.WeatherState
@@ -381,7 +388,18 @@ fun Buttons(
 //
 //    val testing2 = runningViewModel.getAllCoordinates().observeAsState()
 //    Log.d("Room Running", "${testing2.value}")
+    val context = LocalContext.current
+    val intent = Intent(context, MainActivity::class.java)
+    val pendingIntent = PendingIntent.getActivity(context, 0 , intent, 0)
 
+    val notify = NotificationCompat.Builder(context, CHANNEL_ID)
+        .setSmallIcon(R.drawable.ic_launcher_foreground)
+        .setContentTitle("Exercise complete!")
+        .setContentText("Good job! Stay hydrated and take a rest.")
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setContentIntent(pendingIntent)
+        .setAutoCancel(true)
+        .build()
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -438,6 +456,7 @@ fun Buttons(
                         runningViewModel.unregisterStepCounterSensor()
                         navController.navigate("result")
                         Log.d("steps", "stop")
+                        NotificationManagerCompat.from(context).notify(123,notify)
                     }
                 },
                 modifier = Modifier

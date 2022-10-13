@@ -14,6 +14,7 @@
     <string name="stride_length">Stride length</string>
     <string name="calories">Calories</string>
     <string name="settings">Settings</string>
+    <string name="notification">Notification</string>
     <string name="personal_details">Personal details</string>
     <string name="bluetooth_connection">Bluetooth connection</string>
     <string name="application_data">Application data</string>
@@ -32,4 +33,6 @@
     <string name="avg_speed_of_past_five_exercises">Average speed of past 5 exercises:</string>
     <string name="avg_heart_of_past_five_exercises">Average heart rate of past 5 exercises:</string>
     <string name="summary">Summary</string>
+    <string name="channel_name">Channel123</string>
+    <string name="channel_description">Channel Description 123</string>
 </resources>

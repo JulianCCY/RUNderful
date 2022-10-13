@@ -1,5 +1,7 @@
 package com.example.running_app.views
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -11,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,6 +27,7 @@ import com.example.running_app.ui.theme.Blue1
 import com.example.running_app.ui.theme.Blue2
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.viewModels.SettingsViewModel
+import com.example.running_app.views.utils.NotificationService
 
 @Composable
 fun SettingsScreen(bleViewModel: BLEViewModel = viewModel()) {
@@ -40,7 +44,8 @@ fun SettingsScreen(bleViewModel: BLEViewModel = viewModel()) {
 @Composable
 fun SettingsTitle() {
     Row(
-        horizontalArrangement = Arrangement.Start,
+        horizontalArrangement = Arrangement.SpaceBetween,
+//        verticalAlignment = Alignment.Bottom,
         modifier = Modifier
             .fillMaxWidth()
     ) {
@@ -48,7 +53,36 @@ fun SettingsTitle() {
             text = stringResource(R.string.settings),
             style = MaterialTheme.typography.h1,
         )
+//        NotificationSwitch(context = LocalContext.current)
     }
+}
+
+@Composable
+fun NotificationSwitch(context: Context) {
+    val state = remember { mutableStateOf(false) }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .padding(top = 5.dp, end = 40.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.notification),
+            style = MaterialTheme.typography.caption,
+        )
+        Switch(
+            checked = state.value,
+            onCheckedChange = {
+                state.value = it
+                if (state.value) {
+                    context.startService(Intent(context, NotificationService::class.java))
+                } else {
+                    context.stopService(Intent(context, NotificationService::class.java))
+                }
+            },
+        )
+    }
+
 }
 
 @Composable

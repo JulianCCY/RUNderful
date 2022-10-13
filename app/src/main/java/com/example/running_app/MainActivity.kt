@@ -1,6 +1,8 @@
 package com.example.running_app
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -24,6 +26,8 @@ import com.example.running_app.views.RunningScreen
 import com.example.running_app.views.WeatherScreen
 import com.example.running_app.views.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+
+const val CHANNEL_ID = "123"
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(){

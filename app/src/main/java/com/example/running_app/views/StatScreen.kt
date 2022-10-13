@@ -55,12 +55,12 @@ fun StatScreen(
     Log.d(TAG, "distance: $totalDistance")
 
     // average speed of last 5 record
-//    val lastFiveAvgSpeed = if(!running.getL5AS().observeAsState().value.isNullOrEmpty()) running.getL5AS().observeAsState().value!! else listOf<Double>()
-//    Log.d(TAG, "l5avg speed, $lastFiveAvgSpeed")
-//
-//    // average heart rate of last 5 record
-//    val lastFiveAvgHR = if(!running.getL5HR().observeAsState().value.isNullOrEmpty())running.getL5HR().observeAsState().value!! else listOf<Int>()
-//    Log.d(TAG, "l5avg heart $lastFiveAvgHR")
+    val lastFiveAvgSpeed = if (!stats.getL5AS().observeAsState().value.isNullOrEmpty()) stats.getL5AS().observeAsState().value else listOf(0.0)
+    Log.d(TAG, "l5avg speed, $lastFiveAvgSpeed")
+
+    // average heart rate of last 5 record
+    val lastFiveAvgHR = if(!stats.getL5HR().observeAsState().value.isNullOrEmpty()) stats.getL5HR().observeAsState().value else listOf(0)
+    Log.d(TAG, "l5avg heart $lastFiveAvgHR")
 
 
     val generalData = StatGeneral(
@@ -68,14 +68,15 @@ fun StatScreen(
         numOfExercises ?: 0,
         totalSteps ?: 0,
         totalDistance ?: 0,
-//        listOf(3.0,2.5,1.4,3.5,2.4),
-//        listOf(160, 164, 183, 172, 178)
     )
 
-//    val graphData = StatGraph(
-//        lastFiveAvgSpeed,
-//        lastFiveAvgHR,
-//    )
+    //        listOf(3.0,2.5,1.4,3.5,2.4),
+//        listOf(160, 164, 183, 172, 178)
+
+    val graphData = GraphStatsData(
+        lastFiveAvgSpeed ?: listOf(0.0),
+        lastFiveAvgHR ?: listOf(0),
+    )
 
     Column(
         modifier = Modifier
@@ -84,7 +85,7 @@ fun StatScreen(
     ) {
         StatTitle()
         OverviewBox(generalData)
-//        GraphSection(graphData)
+        GraphSection(graphData)
         Histories(navController = navController)
     }
 }
@@ -198,7 +199,7 @@ fun OverviewData(data: StatGeneral) {
             ) {
                 Text(
                     text = stringResource(R.string.hi),
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.body1,
                 )
                 Text(
                     text = " ${data.userName}!",
@@ -221,7 +222,7 @@ fun ExercisesCount(data: StatGeneral) {
     ) {
         Text(
             text = stringResource(R.string.number_of_exercises_recorded),
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.body1,
         )
         Text(
             text = " ${data.numOfExercises}",
@@ -239,7 +240,7 @@ fun Steps(data: StatGeneral) {
     ) {
         Text(
             text = stringResource(R.string.total_steps_recorded),
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.body1,
         )
         Text(
             text = " ${data.totalSteps}",
@@ -255,14 +256,14 @@ fun Distance(data: StatGeneral) {
     ) {
         Text(
             text = stringResource(R.string.total_distance_exercised),
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.body1,
         )
         Text(
             text = " ${data.totalDistance}",
             style = MaterialTheme.typography.body1,
         )
         Text(
-            text = " m",
+            text = " M",
             style = MaterialTheme.typography.body2,
         )
     }
@@ -278,10 +279,12 @@ fun PlotGraph(lines: List<List<DataPoint>>) {
                     LinePlot.Connection(color = MaterialTheme.colors.onSecondary),
                     LinePlot.Intersection(color = MaterialTheme.colors.primary),
                     LinePlot.Highlight(color = Blue1),
-                )
+                    LinePlot.AreaUnderLine(color = Red1, 0.3f),
+                ),
             ),
+
             xAxis = LinePlot.XAxis(steps = 5, unit = 0.35f, roundToInt = true),
-            yAxis = LinePlot.YAxis(steps = 4, roundToInt = false),
+            yAxis = LinePlot.YAxis(steps = 3, roundToInt = false),
             grid = LinePlot.Grid(Gray, steps = 4),
         ),
         modifier = Modifier
@@ -305,33 +308,27 @@ fun GraphSection(data: GraphStatsData) {
 
 @Composable
 fun AvgVelocity(data: GraphStatsData) {
-    if (data.speedOfLastFive.isEmpty()) {
-
-        val graphData = data.speedOfLastFive.toList().mapIndexed{ i, e -> DataPoint(i.toFloat(), e.toFloat()) }
-//        val graphData = listOf(
-//            DataPoint(1.toFloat(), data.speedOfLastFive[0].toFloat()),
-//            DataPoint(2.toFloat(), data.speedOfLastFive[1].toFloat()),
-//            DataPoint(3.toFloat(), data.speedOfLastFive[2].toFloat()),
-//            DataPoint(4.toFloat(), data.speedOfLastFive[3].toFloat()),
-//            DataPoint(5.toFloat(), data.speedOfLastFive[4].toFloat()),
-//        )
+    if (data.speedOfLastFive.size >= 5 && data.speedOfLastFive.sum() != 0.0) {
+        val graphData = data.speedOfLastFive.toList().reversed().mapIndexed{ i, e -> DataPoint(i.toFloat(), e.toFloat()) }
         val calculated = (data.speedOfLastFive.sum() / data.speedOfLastFive.size)
 
-        Column {
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally
+                ){
             Row(
                 verticalAlignment = Alignment.Bottom,
             ) {
                 Text(
                     text = stringResource(R.string.avg_speed_of_past_five_exercises),
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.body1,
                 )
                 Text(
-                    text = " $calculated",
+                    text = " ${String.format("%.2f", calculated)}",
                     style = MaterialTheme.typography.body1,
                 )
                 Text(
                     text = " m/s",
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.body1,
                 )
             }
         }
@@ -341,17 +338,8 @@ fun AvgVelocity(data: GraphStatsData) {
 
 @Composable
 fun AvgHeartRate(data: GraphStatsData) {
-
-    if (data.heartOfLastFive.isEmpty()) {
-        val graphData = data.heartOfLastFive.toList().mapIndexed { i, e -> DataPoint(i.toFloat(), e.toFloat()) }
-
-//        val testData = listOf(
-//            DataPoint(1.toFloat(), data.heartOfLastFive[0].toFloat()),
-//            DataPoint(2.toFloat(), data.heartOfLastFive[1].toFloat()),
-//            DataPoint(3.toFloat(), data.heartOfLastFive[2].toFloat()),
-//            DataPoint(4.toFloat(), data.heartOfLastFive[3].toFloat()),
-//            DataPoint(5.toFloat(), data.heartOfLastFive[4].toFloat()),
-//        )
+    if (data.heartOfLastFive.size >= 5 && data.heartOfLastFive.sum() != 0) {
+        val graphData = data.heartOfLastFive.toList().reversed().mapIndexed { i, e -> DataPoint(i.toFloat(), e.toFloat()) }
         val calculated = (data.heartOfLastFive.sum() / data.heartOfLastFive.size)
         Column {
             Row(
@@ -362,32 +350,18 @@ fun AvgHeartRate(data: GraphStatsData) {
                     style = MaterialTheme.typography.body2,
                 )
                 Text(
-                    text = " $calculated",
+                    text = " ${calculated.toInt()}",
                     style = MaterialTheme.typography.body1,
                 )
                 Text(
-                    text = " bpm",
-                    style = MaterialTheme.typography.body2,
+                    text = " BPM",
+                    style = MaterialTheme.typography.body1,
                 )
             }
         }
         PlotGraph(lines = listOf(graphData))
     }
 }
-
-//listOf(
-//            LatLng(60.178152, 24.989714),
-//            LatLng(60.178347, 24.991572),
-//            LatLng(60.178559, 24.992468),
-//            LatLng(60.178808, 24.993152),
-//            LatLng(60.178970, 24.994139),
-//            LatLng(60.179276, 24.996648),
-//            LatLng(60.179540, 24.997403),
-//            LatLng(60.180113, 24.998110),
-//            LatLng(60.180294, 24.999510),
-//            LatLng(60.180373, 25.000382),
-
-
 @Composable
 fun Histories(viewModel: StatViewModel = viewModel(), navController: NavController) {
 

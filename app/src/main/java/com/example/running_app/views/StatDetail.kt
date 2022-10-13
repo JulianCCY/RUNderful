@@ -25,11 +25,9 @@ import com.example.running_app.viewModels.StatDetailViewModel
 import com.google.android.gms.maps.model.LatLng
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import kotlin.math.roundToInt
 
 @Composable
 fun StatDetail(runningId: Long, statD: StatDetailViewModel = viewModel(), running: RunningViewModel = viewModel()) {
-//    val data = viewModel.getDataById(dataId)
 
     val singleRecord = statD.getRecordById(runningId).observeAsState().value
 

@@ -3,51 +3,75 @@ package com.example.running_app.viewModels
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.Context
-import android.util.Log
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import com.example.running_app.data.db.RoomDB
 import kotlin.math.floor
 
 class GoalsViewModel(application: Application) : AndroidViewModel(application) {
     private val roomDB = RoomDB.get(application)
-    var level_list = arrayOf(0,0,0,0)
-    var max_list = arrayOf(30,5,1000,50)
+    // total distance, total steps, total hours, average speed, average stride length, kcal, record
+    var level = arrayOf(0,0,0,0,0,0,0)
+    var target = arrayOf(30,10000,200,5,3,10000,500)
 
-    fun get_total_distance(): Float{
+    fun getTotalDistance(): Float{
         var result = (roomDB.runningDao().getTotaldistance()/1000.0).toFloat()
-        if(result >= max_list[0]){
-            level_list[0] = floor(result/max_list[0]).toInt()
-            result = result % max_list[0]
+        if(result >= target[0]){
+            level[0] = floor(result/target[0]).toInt()
+            result = result % target[0]
+        }
+        return result
+    }
+
+    fun getTotalSteps(): Int{
+        var result = roomDB.runningDao().getTotalStepsForGoal()
+        if (result >= target[1]) {
+            level[1] = result/target[1]
+            result %= target[1]
+        }
+        return result
+    }
+
+    fun getTotalHours(): Int{
+        var result = roomDB.runningDao().getTotalDuration().value?.toList()?.sumOf { it.slice(0..1).toInt() } ?: 0
+        if (result >= target[2]) {
+            level[2] = result/target[2]
+            result %= target[2]
         }
         return result
     }
 
     @SuppressLint("SuspiciousIndentation")
-    fun get_highest_velocity(): Float{
+    fun getHighestVelocity(): Float{
         var result = roomDB.runningDao().getHighestSpeed().toFloat()
-        if(result >= max_list[1]){
-            level_list[1] = floor(result/max_list[1]).toInt()
+        if(result >= target[3]){
+            level[3] = floor(result/target[3]).toInt()
         }
         return result
-
     }
 
-    fun get_calories_burnt(): Int{
+    fun getHighestStrideLength(): Float{
+        var result = roomDB.runningDao().getHighestStrideLength().toFloat()
+        if (result >= target[4]) {
+            level[4] = floor(result/target[4]).toInt()
+        }
+        return result
+    }
+
+    fun getCaloriesBurnt(): Int{
         var result = roomDB.runningDao().get_calories_burnt()
-        if(result >= max_list[2]){
-            level_list[2] = (result/max_list[2])
-            result = result % max_list[2]
+        if(result >= target[5]){
+            level[5] = (result/target[5])
+            result = result % target[5]
         }
         return result
     }
 
-    fun get_total_record(): Int{
+    fun getTotalRecord(): Int{
         var result = roomDB.runningDao().getNumberOfRecords()
-        if(result >= max_list[3]){
-            level_list[3] = (result/max_list[3])
-            result = result % max_list[3]
+        if(result >= target[6]){
+            level[6] = (result/target[6])
+            result = result % target[6]
         }
         return result
     }

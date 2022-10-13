@@ -1,6 +1,5 @@
 package com.example.running_app.data.db
 
-import androidx.core.view.WindowInsetsCompat.Type.InsetsType
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
@@ -41,11 +40,11 @@ interface RunningDao{
 
     // get average distance
     @Query("SELECT ROUND(AVG(distance), 2) from running")
-    fun getAverageDistance(): Double
+    fun getAverageDistance(): LiveData<Double>
 
     // get latest speed
     @Query("SELECT avgSpeed FROM running ORDER BY rid DESC LIMIT 1")
-    fun getLatestSpeed(): Double
+    fun getLatestSpeed(): LiveData<Double>
 
     // get average speed
     @Query("SELECT ROUND(AVG(avgSpeed), 2) from running")
@@ -54,6 +53,14 @@ interface RunningDao{
     // get latest and second last to compare
     @Query("SELECT * FROM running ORDER BY rid DESC LIMIT 2")
     fun getLatestAndPreviousRunningRecord(): LiveData<List<Running>>
+
+    // get all the duration
+    @Query("SELECT duration FROM running")
+    fun getTotalDuration(): LiveData<List<String>>
+
+    // get highest stride length
+    @Query("SELECT MAX(avgStrideLength) from running")
+    fun getHighestStrideLength(): Double
 
     // delete record by rid
     @Query("DELETE FROM running WHERE rid = :id")
@@ -82,7 +89,7 @@ interface RunningDao{
     fun getLastFiveAverageSpeed(): LiveData<List<Double>>
 
     // Average heart rate of last five records
-    @Query("SELECT avgHR FROM running WHERE avgHR <> 0 ORDER BY rid LIMIT 5")
+    @Query("SELECT avgHR FROM running WHERE avgHR <> 0 ORDER BY rid DESC LIMIT 5")
     fun getLastFiveAverageHeartRate(): LiveData<List<Int>>
 
     @Query("SELECT MAX(avgSpeed) FROM running")
@@ -96,6 +103,9 @@ interface RunningDao{
 
     @Query("SELECT SUM(distance) FROM running")
     fun getTotaldistance(): Double
+
+    @Query("SELECT SUM(totalStep) FROM running")
+    fun getTotalStepsForGoal(): Int
 }
 
 @Dao

@@ -18,7 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.running_app.data.TrackSuggestionStructure
+import com.example.running_app.data.trackSuggestion.TrackSuggestionStructure
 import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.viewModels.TrackSuggestionViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -50,7 +50,7 @@ fun SuggestionContainer(model: TrackSuggestionStructure, onClickItem: () -> Unit
     Box {
         Column {
             SuggestionHeader(title = model.title, distance = model.distance, onClickItem = onClickItem)
-            ExpandableView(center = model.center, coords = model.coords, isExpanded = expanded)
+            ExpandableView(center = model.center, coordinates = model.coords, isExpanded = expanded)
         }
     }
 }
@@ -98,7 +98,7 @@ fun SuggestionHeader(title: String, distance: Int, onClickItem: () -> Unit) {
 }
 
 @Composable
-fun ExpandableView(center: LatLng, coords: List<LatLng>, isExpanded: Boolean) {
+fun ExpandableView(center: LatLng, coordinates: List<LatLng>, isExpanded: Boolean) {
     val expandTransition = remember {
         expandVertically(
             expandFrom = Alignment.Top,
@@ -120,6 +120,6 @@ fun ExpandableView(center: LatLng, coords: List<LatLng>, isExpanded: Boolean) {
         enter = expandTransition,
         exit = collapseTransition
     ) {
-        PlotMap(focus = center, coords = coords)
+        PlotMap(focus = center, coords = coordinates)
     }
 }

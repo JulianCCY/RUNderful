@@ -13,7 +13,7 @@ import kotlin.math.floor
 class GoalsViewModel(application: Application) : AndroidViewModel(application) {
     private val roomDB = RoomDB.get(application)
     var level_list = arrayOf(0,0,0,0)
-    var max_list = arrayOf(25,5,1000,50)
+    var max_list = arrayOf(30,5,1000,50)
 
     fun get_total_distance(): Float{
         var result = (roomDB.runningDao().getTotaldistance()/1000.0).toFloat()

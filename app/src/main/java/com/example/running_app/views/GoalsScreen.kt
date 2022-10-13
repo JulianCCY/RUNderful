@@ -83,7 +83,7 @@ fun TotalDistanceGoal(viewModel: GoalsViewModel) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Total running distance[lv.${viewModel.level_list[0]}]",
+                text = "Total running distance[Lv.${viewModel.level_list[0]}]",
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
@@ -135,7 +135,7 @@ fun VelocityGoal(viewModel: GoalsViewModel) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Reach 5 meters per second once[lv.${viewModel.level_list[1]}]",
+                text = "Reach 5 meters per second [Lv.${viewModel.level_list[1]}]",
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
@@ -174,7 +174,7 @@ fun ContinuousGoal(viewModel: GoalsViewModel) {
             .padding(5.dp)
     ) {
         Icon(
-            Icons.Sharp.CalendarMonth,
+            Icons.Sharp.LocalFireDepartment,
             contentDescription = "Calories",
             tint = Orange1,
             modifier = Modifier
@@ -187,7 +187,7 @@ fun ContinuousGoal(viewModel: GoalsViewModel) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Burn 1000 kcal calories[lv.${viewModel.level_list[2]}]",
+                text = "Burn 1000 kcal calories[Lv.${viewModel.level_list[2]}]",
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
@@ -239,7 +239,7 @@ fun ExercisesGoal(viewModel: GoalsViewModel) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Record for a total of 50 times[lv.${viewModel.level_list[3]}]" ,
+                text = "Record for a total of 50 times[Lv.${viewModel.level_list[3]}]" ,
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(

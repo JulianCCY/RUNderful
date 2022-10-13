@@ -2,8 +2,8 @@ package com.example.running_app.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.running_app.data.TrackSuggestionData
-import com.example.running_app.data.TrackSuggestionStructure
+import com.example.running_app.data.trackSuggestion.TrackSuggestionData
+import com.example.running_app.data.trackSuggestion.TrackSuggestionStructure
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,4 +1,4 @@
-package com.example.running_app.data
+package com.example.running_app.data.trackSuggestion
 
 import com.google.android.gms.maps.model.LatLng
 

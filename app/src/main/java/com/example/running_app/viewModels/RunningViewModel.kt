@@ -30,9 +30,8 @@ class RunningViewModel (
     application: Application,
 ) : AndroidViewModel(application), SensorEventListener, LocationListener {
 
-    val tag = "running screen"
-    val tag2 = "Finish running"
-    val tag3 = "Room Running"
+    private val tag2 = "Finish running"
+    private val tag3 = "Room Running"
 
     // Room
     private val roomDB = RoomDB.get(application)
@@ -82,11 +81,8 @@ class RunningViewModel (
 
     // Heart rate
     val mBPM: LiveData<Int> = BLEViewModel.mBPM_
-    val hBPM: LiveData<Int> = BLEViewModel.hBPM_
-    val lBPM: LiveData<Int> = BLEViewModel.lBPM_
     val BPMList: LiveData<MutableList<Int>> = BLEViewModel.avgBPM_
     var AVGmBPM: Int = 0
-//    var avgHeartRate: LiveData<MutableList<Int>> = BLEViewModel.avgBPM_
 
     // Stride Length
     val sLength_: MutableLiveData<Double> = MutableLiveData(0.0)
@@ -101,12 +97,10 @@ class RunningViewModel (
     val calories: LiveData<Int> = calories_
 
     // Time
-//    val df = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     var startTime: String? = null
     var endTime: String? = null
     val sdf1 = SimpleDateFormat("dd-MM-yyyy")
     val dateTime = sdf1.format(Date())
-//    var dateTime = LocalDateTime.of(LocalDate.parse(LocalDateTime.now().toString(), df), LocalDateTime.MIN.toLocalTime()).toString()
     var duration: String? = null
 
     // Weather
@@ -119,8 +113,6 @@ class RunningViewModel (
 
     fun startRunning(StartIsTrueAndPauseIsFalse: Boolean = false) {
 
-//        Log.d(tag, state.weatherInfo?.currentWeatherData?.weatherType?.weatherDesc ?: "")
-
         prevLat = null
         prevLong = null
 
@@ -131,6 +123,8 @@ class RunningViewModel (
 
             loadStepCounter()
             resetSteps()
+            // reset list of heart rate
+            BLEViewModel.avgBPM_.value?.clear()
         }
         // start sensor monitoring
         registerStepCounterSensor()
@@ -440,23 +434,7 @@ class RunningViewModel (
                 }
             }
 
-//            if (latitude.size == longitude.size){
-//                for (i in 0 until latitude.size) {
-//                    roomDB.coordinatesDao().insertCoordinates(
-//                        Coordinates(
-//                            cid = 0,
-//                            runningId = runningId,
-//                            latitude = latitude[i],
-//                            longitude = longitude[i]
-//                        )
-//                    )
-//                }
-//            }
-//            latitude.forEachIndexed { i, e ->
-//
-//            }
         }
-        Log.d(tag3, "cood ${roomDB.coordinatesDao().getALLCoordinates()}")
     }
 
 //    ********************************** Result screen **********************************

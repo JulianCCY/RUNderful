@@ -18,15 +18,16 @@ import com.example.running_app.R
 import com.example.running_app.viewModels.GoalsViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.running_app.ui.theme.Orange1
+import kotlin.math.roundToInt
 
 @Composable
-fun GoalsScreen() {
+fun GoalsScreen(goalsViewModel: GoalsViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         GoalsTitle()
-        GoalsSection()
+        GoalsSection(goalsViewModel)
     }
 }
 
@@ -51,15 +52,15 @@ fun GoalsSection(viewModel: GoalsViewModel = viewModel()) {
             .fillMaxWidth()
             .padding(15.dp)
     ) {
-        TotalDistanceGoal()
-        VelocityGoal()
-        ContinuousGoal()
-        ExercisesGoal()
+        TotalDistanceGoal(viewModel)
+        VelocityGoal(viewModel)
+        ContinuousGoal(viewModel)
+        ExercisesGoal(viewModel)
     }
 }
 
 @Composable
-fun TotalDistanceGoal() {
+fun TotalDistanceGoal(viewModel: GoalsViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -82,11 +83,11 @@ fun TotalDistanceGoal() {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Total running distance",
+                text = "Total running distance[lv.${viewModel.level_list[0]}]",
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
-                progress = 0.1f,
+                progress = ((viewModel.get_total_distance()*1000).roundToInt()/1000.0/viewModel.max_list[0].toFloat()).toFloat(),
                 color = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .padding(5.dp)
@@ -98,7 +99,7 @@ fun TotalDistanceGoal() {
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "0.1/1 ",
+                    text = ((viewModel.get_total_distance()*1000).roundToInt()/1000.0).toString()+ "/"+ viewModel.max_list[0] + " ",
                     style = MaterialTheme.typography.body1,
                 )
                 Text(
@@ -111,7 +112,7 @@ fun TotalDistanceGoal() {
 }
 
 @Composable
-fun VelocityGoal() {
+fun VelocityGoal(viewModel: GoalsViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -134,11 +135,11 @@ fun VelocityGoal() {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Reach 5 meters per second once",
+                text = "Reach 5 meters per second once[lv.${viewModel.level_list[1]}]",
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
-                progress = 0.54f,
+                progress = (((viewModel.get_highest_velocity()*100).roundToInt())/100.0/(viewModel.max_list[1]*(viewModel.level_list[1]+1)).toFloat()).toFloat(),
                 color = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .padding(5.dp)
@@ -150,7 +151,7 @@ fun VelocityGoal() {
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "2.7/5 ",
+                    text = (((viewModel.get_highest_velocity()*100).roundToInt())/100.0).toString() + "/"+ viewModel.max_list[1]*(viewModel.level_list[1]+1) + " ",
                     style = MaterialTheme.typography.body1,
                 )
                 Text(
@@ -163,7 +164,7 @@ fun VelocityGoal() {
 }
 
 @Composable
-fun ContinuousGoal() {
+fun ContinuousGoal(viewModel: GoalsViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -174,7 +175,7 @@ fun ContinuousGoal() {
     ) {
         Icon(
             Icons.Sharp.CalendarMonth,
-            contentDescription = "Calendar",
+            contentDescription = "Calories",
             tint = Orange1,
             modifier = Modifier
                 .size(60.dp)
@@ -186,11 +187,11 @@ fun ContinuousGoal() {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Exercise for 5 days continuously",
+                text = "Burn 1000 kcal calories[lv.${viewModel.level_list[2]}]",
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
-                progress = 0.2f,
+                progress = (viewModel.get_calories_burnt()/viewModel.max_list[2].toFloat()).toFloat(),
                 color = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .padding(5.dp)
@@ -202,11 +203,11 @@ fun ContinuousGoal() {
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "1/5 ",
+                    text = viewModel.get_calories_burnt().toString() +"/" + viewModel.max_list[2] + " ",
                     style = MaterialTheme.typography.body1,
                 )
                 Text(
-                    text = "days",
+                    text = "kcal",
                     style = MaterialTheme.typography.body2,
                 )
             }
@@ -215,7 +216,7 @@ fun ContinuousGoal() {
 }
 
 @Composable
-fun ExercisesGoal() {
+fun ExercisesGoal(viewModel: GoalsViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -238,11 +239,11 @@ fun ExercisesGoal() {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Record for a total of 50 times",
+                text = "Record for a total of 50 times[lv.${viewModel.level_list[3]}]" ,
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
-                progress = 0.02f,
+                progress = (viewModel.get_total_record()/viewModel.max_list[3].toFloat()).toFloat(),
                 color = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .padding(5.dp)
@@ -254,7 +255,7 @@ fun ExercisesGoal() {
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "1/50 ",
+                    text = viewModel.get_total_record().toString()+ "/"+ viewModel.max_list[3] + " ",
                     style = MaterialTheme.typography.body1,
                 )
                 Text(

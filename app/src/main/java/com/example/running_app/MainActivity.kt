@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity(){
     private val runningViewModel: RunningViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val statViewModel: StatViewModel by viewModels()
+    private val goalsViewModel: GoalsViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +95,7 @@ class MainActivity : ComponentActivity(){
                             StatDetail(runningId = dataId)
                         }
                         composable("goals") {
-                            GoalsScreen()
+                            GoalsScreen(goalsViewModel)
                         }
                         composable("startRunning") {
                             RunningScreen(navController, weatherViewModel)

@@ -84,6 +84,18 @@ interface RunningDao{
     // Average heart rate of last five records
     @Query("SELECT avgHR FROM running WHERE avgHR <> 0 ORDER BY rid LIMIT 5")
     fun getLastFiveAverageHeartRate(): LiveData<List<Int>>
+
+    @Query("SELECT MAX(avgSpeed) FROM running")
+    fun getHighestSpeed(): Double
+
+    @Query("SELECT SUM(calories) FROM running")
+    fun get_calories_burnt(): Int
+
+    @Query("SELECT COUNT(*) FROM running")
+    fun getNumberOfRecords(): Int
+
+    @Query("SELECT SUM(distance) FROM running")
+    fun getTotaldistance(): Double
 }
 
 @Dao

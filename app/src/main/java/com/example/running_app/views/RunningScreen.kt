@@ -383,11 +383,11 @@ fun Buttons(
 //    Log.d("Room Running", "${testing2.value}")
 
 
-    Column(
-        verticalArrangement = Arrangement.SpaceAround,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(10.dp)
+            .padding(15.dp)
             .fillMaxWidth()
             .height(150.dp)
     ) {
@@ -410,41 +410,117 @@ fun Buttons(
             },
             modifier = Modifier
                 .clip(CutCornerShape(10.dp))
-                .width(200.dp)
+                .size(125.dp)
         ) {
-            if (pauseResume == "pause") {
-                Text(
-                    text = "Pause",
-                    style = MaterialTheme.typography.body1,
-                )
-            } else if (pauseResume == "resume") {
-                Text(
-                    text = "Resume",
-                    style = MaterialTheme.typography.body1,
-                )
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                if (pauseResume == "pause") {
+                    Text(
+                        text = "Pause",
+                        style = MaterialTheme.typography.body1,
+                    )
+                } else if (pauseResume == "resume") {
+                    Text(
+                        text = "Resume",
+                        style = MaterialTheme.typography.body1,
+                    )
+                }
+            }
+            // Finish button
+            Button(
+                onClick = {
+                    if (runningViewModel.latitude.isNotEmpty() && runningViewModel.longitude.isNotEmpty()) {
+                        runningViewModel.stopRunning()
+                        runningViewModel.unregisterStepCounterSensor()
+                        navController.navigate("result")
+                        Log.d("steps", "stop")
+                    }
+                },
+                modifier = Modifier
+                    .clip(CutCornerShape(10.dp))
+                    .size(125.dp)
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Finish",
+                        style = MaterialTheme.typography.body1
+                    )
+                }
             }
         }
-        // Finish button
-        Button(
-            onClick = {
-                if (runningViewModel.latitude.isNotEmpty() && runningViewModel.longitude.isNotEmpty()) {
-                    runningViewModel.stopRunning()
-                    runningViewModel.unregisterStepCounterSensor()
-//                isButtonVisible = true
-                    navController.navigate("result")
-                    Log.d("steps", "stop")
-                }
-            },
-            modifier = Modifier
-                .clip(CutCornerShape(10.dp))
-                .width(200.dp)
-        ) {
-            Text(
-                text = "Finish",
-                style = MaterialTheme.typography.body1
-            )
-        }
+
     }
+//    Column(
+//        verticalArrangement = Arrangement.SpaceAround,
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//        modifier = Modifier
+//            .padding(10.dp)
+//            .fillMaxWidth()
+//            .height(150.dp)
+//    ) {
+//        // Pause Resume Button
+//        Button(
+//            onClick = {
+//                if (pauseResume == "pause") {
+//                    runningViewModel.isRunning = false
+//                    runningViewModel.pauseRunning()
+//                    runningViewModel.unregisterStepCounterSensor()
+//                    pauseResume = "resume"
+//                    Log.d("steps", "pause")
+//                } else if (pauseResume == "resume") {
+//                    runningViewModel.isRunning = true
+//                    runningViewModel.startRunning()
+//                    runningViewModel.registerStepCounterSensor()
+//                    pauseResume = "pause"
+//                    Log.d("steps", "resume")
+//                }
+//            },
+//            modifier = Modifier
+//                .clip(CutCornerShape(10.dp))
+//                .width(200.dp)
+//        ) {
+//            if (pauseResume == "pause") {
+//                Text(
+//                    text = "Pause",
+//                    style = MaterialTheme.typography.body1,
+//                )
+//            } else if (pauseResume == "resume") {
+//                Text(
+//                    text = "Resume",
+//                    style = MaterialTheme.typography.body1,
+//                )
+//            }
+//        }
+//        // Finish button
+//        Button(
+//            onClick = {
+//                if (runningViewModel.latitude.isNotEmpty() && runningViewModel.longitude.isNotEmpty()) {
+//                    runningViewModel.stopRunning()
+//                    runningViewModel.unregisterStepCounterSensor()
+////                isButtonVisible = true
+//                    navController.navigate("result")
+//                    Log.d("steps", "stop")
+//                }
+//            },
+//            modifier = Modifier
+//                .clip(CutCornerShape(10.dp))
+//                .width(200.dp)
+//        ) {
+//            Text(
+//                text = "Finish",
+//                style = MaterialTheme.typography.body1
+//            )
+//        }
+//    }
 }
 
 @Composable

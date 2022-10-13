@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Bluetooth
 import androidx.compose.material.icons.sharp.BluetoothConnected
 import androidx.compose.material.icons.sharp.CleaningServices
-import androidx.compose.material.icons.sharp.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment

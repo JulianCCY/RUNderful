@@ -67,15 +67,15 @@ interface RunningDao{
 
     // number of running records
     @Query("SELECT COUNT(*) FROM running")
-    fun getNoOfRecords(): Int
+    fun getNoOfRecords(): LiveData<Int>
 
     // total steps
     @Query("SELECT SUM(totalStep) FROM running")
-    fun getTotalSteps(): Int
+    fun getTotalSteps(): LiveData<Int>
 
     // total distance user runs
     @Query("SELECT SUM(distance) FROM running")
-    fun getTotalDistance(): Double
+    fun getTotalDistance(): LiveData<Double>
 
     // Average speed of last five records
     @Query("SELECT avgSpeed FROM running ORDER BY rid DESC LIMIT 5")

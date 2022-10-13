@@ -47,11 +47,11 @@ fun StatScreen(
     val userName = settings.getUser().observeAsState().value?.name
     Log.d(TAG, "username: $userName")
     // get num of exercise, total steps of all time, total distance of all time'
-    val numOfExercises = stats.getNumExe().absoluteValue
+    val numOfExercises = stats.getNumExe().observeAsState().value
     Log.d(TAG, "exercise: $numOfExercises")
-    val totalSteps = stats.getTS().absoluteValue
+    val totalSteps = stats.getTS().observeAsState().value
     Log.d(TAG, "total steps: $totalSteps")
-    val totalDistance = stats.getTD().absoluteValue.roundToInt()
+    val totalDistance = stats.getTD().observeAsState().value?.roundToInt()
     Log.d(TAG, "distance: $totalDistance")
 
     // average speed of last 5 record
@@ -65,9 +65,9 @@ fun StatScreen(
 
     val generalData = StatGeneral(
         userName ?: "Username",
-        numOfExercises,
-        totalSteps,
-        totalDistance,
+        numOfExercises ?: 0,
+        totalSteps ?: 0,
+        totalDistance ?: 0,
 //        listOf(3.0,2.5,1.4,3.5,2.4),
 //        listOf(160, 164, 183, 172, 178)
     )
@@ -450,7 +450,9 @@ fun Histories(viewModel: StatViewModel = viewModel(), navController: NavControll
                             imageVector = Icons.Sharp.DeleteForever,
                             contentDescription = "Localized description",
                             tint = Orange2,
-                            modifier = Modifier.clickable { viewModel.delARecord(it.id) },
+                            modifier = Modifier.clickable {
+                                viewModel.delARecord(it.id)
+                            },
                         )
                     }
                     // Temperature / weather icon later

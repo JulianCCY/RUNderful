@@ -32,8 +32,8 @@ import kotlin.math.roundToInt
 
 @Composable
 fun WeatherScreen(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: DailyWeatherViewModel) {
-//    weatherViewModel.loadWeatherInfo()
-//    dailyWeatherViewModel.loadDailyWeatherInfo()
+    weatherViewModel.loadWeatherInfo()
+    dailyWeatherViewModel.loadDailyWeatherInfo()
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -1,6 +1,11 @@
 package com.example.running_app.views
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.Intent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -29,8 +34,12 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.running_app.CHANNEL_ID
+import com.example.running_app.MainActivity
 import com.example.running_app.R
 import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.views.utils.FeaturesUI
@@ -88,7 +97,6 @@ fun Setting(navController: NavController, bleViewModel: BLEViewModel = viewModel
             }
         ) {
             Icon(
-//                if (isConnected == true) Icons.Sharp.BluetoothConnected else Icons.Sharp.Bluetooth,
                 Icons.Sharp.Settings,
                 contentDescription = "Settings",
                 tint = Orange1,
@@ -147,6 +155,18 @@ fun Quotes() {
 fun FeatureSection(features: List<FeaturesUI>, navController: NavController) {
     val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
+    val intent = Intent(context, MainActivity::class.java)
+    val pendingIntent = PendingIntent.getActivity(context, 0 , intent, 0)
+
+    val notify = NotificationCompat.Builder(context, CHANNEL_ID)
+        .setSmallIcon(R.drawable.ic_launcher_foreground)
+        .setContentTitle("Exercise begun!")
+        .setContentText("Started collecting exercise data.")
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setContentIntent(pendingIntent)
+        .setAutoCancel(true)
+        .build()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -171,6 +191,7 @@ fun FeatureSection(features: List<FeaturesUI>, navController: NavController) {
                         onClick = {
                             navController.navigate("startRunning")
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            NotificationManagerCompat.from(context).notify(123,notify)
                         }
                     )
             ) {

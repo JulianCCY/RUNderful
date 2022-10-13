@@ -36,6 +36,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCJgO4YlKtqL8bDP01HJMzXKHLmeKzxMVM" />
+        <service android:name=".views.utils.NotificationService" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

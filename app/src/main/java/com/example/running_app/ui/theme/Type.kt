@@ -70,6 +70,11 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 20.sp
     ),
+    caption = TextStyle(
+        fontFamily = Font1,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    ),
 
     /* Other default text styles to override
     button = TextStyle(

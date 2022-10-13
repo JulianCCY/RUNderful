@@ -39,7 +39,7 @@ fun WeatherScreen(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: Dai
             .fillMaxSize()
     ) {
         CurrentWeather(weatherViewModel.state, dailyWeatherViewModel.dailyState, weatherViewModel)
-        Switch(weatherViewModel)
+        ForecastSwitch(weatherViewModel)
         Forecast(weatherViewModel, dailyWeatherViewModel)
     }
 }
@@ -340,7 +340,7 @@ fun CurrentWeather(
 }
 
 @Composable
-fun Switch(weatherViewModel: WeatherViewModel) {
+fun ForecastSwitch(weatherViewModel: WeatherViewModel) {
     val switch by remember { weatherViewModel.switch }
     Column (
         modifier = Modifier

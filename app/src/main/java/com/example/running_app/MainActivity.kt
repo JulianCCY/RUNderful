@@ -1,6 +1,8 @@
 package com.example.running_app
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -26,6 +28,8 @@ import com.example.running_app.views.WeatherScreen
 import com.example.running_app.views.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+const val CHANNEL_ID = "123"
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(){
 
@@ -36,8 +40,21 @@ class MainActivity : ComponentActivity(){
     private val statViewModel: StatViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
+    private fun createNotificationChannel() {
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            getString(R.string.channel_name),
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = getString(R.string.channel_description)
+        }
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        createNotificationChannel()
         permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ){

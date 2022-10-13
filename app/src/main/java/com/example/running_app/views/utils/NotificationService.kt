@@ -15,21 +15,7 @@ import java.util.*
 
 class NotificationService: Service() {
 
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            getString(R.string.channel_name),
-            NotificationManager.IMPORTANCE_DEFAULT
-        ).apply {
-            description = getString(R.string.channel_description)
-        }
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
-    }
-
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-
-        createNotificationChannel()
 
         val sdf = SimpleDateFormat("HH:mm")
         val current = mutableStateOf("")

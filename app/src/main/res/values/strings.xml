@@ -18,9 +18,9 @@
     <string name="personal_details">Personal details</string>
     <string name="bluetooth_connection">Bluetooth connection</string>
     <string name="application_data">Application data</string>
-    <string name="connecting">connecting</string>
-    <string name="connected">connected</string>
-    <string name="disconnected">disconnected</string>
+    <string name="connecting">Connecting</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
     <string name="clear_data">Clear data</string>
     <string name="are_you_sure">Are you sure you want to clear all your records?</string>
     <string name="confirm">Confirm</string>
@@ -35,4 +35,5 @@
     <string name="summary">Summary</string>
     <string name="channel_name">Channel123</string>
     <string name="channel_description">Channel Description 123</string>
+    <string name="failed">Device Not Found</string>
 </resources>

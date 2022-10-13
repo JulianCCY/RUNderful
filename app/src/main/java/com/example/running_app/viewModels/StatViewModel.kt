@@ -18,13 +18,13 @@ class StatViewModel(application: Application): AndroidViewModel(application) {
     fun getAllRecords(): LiveData<List<Running>> = roomDB.runningDao().getAllRecords()
 
     // get number of exercise
-    fun getNumExe(): Int = roomDB.runningDao().getNoOfRecords()
+    fun getNumExe(): LiveData<Int> = roomDB.runningDao().getNoOfRecords()
 
     // get total steps of all time
-    fun getTS(): Int = roomDB.runningDao().getTotalSteps()
+    fun getTS(): LiveData<Int> = roomDB.runningDao().getTotalSteps()
 
     // get total distance of all time
-    fun getTD(): Double = roomDB.runningDao().getTotalDistance()
+    fun getTD(): LiveData<Double> = roomDB.runningDao().getTotalDistance()
 
     // get average speed of last five records
     fun getL5AS(): LiveData<List<Double>> = roomDB.runningDao().getLastFiveAverageSpeed()

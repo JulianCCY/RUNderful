@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.running_app.R
 import com.example.running_app.data.db.User
 import com.example.running_app.data.running.heartrate.BLEViewModel
@@ -28,14 +29,14 @@ import com.example.running_app.ui.theme.Orange1
 import com.example.running_app.viewModels.SettingsViewModel
 
 @Composable
-fun SettingsScreen(bleViewModel: BLEViewModel = viewModel()) {
+fun SettingsScreen(navController: NavController, bleViewModel: BLEViewModel = viewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(15.dp)
     ) {
         SettingsTitle()
-        SettingsSection(bleViewModel = bleViewModel)
+        SettingsSection(navController = navController, bleViewModel = bleViewModel)
     }
 }
 
@@ -55,7 +56,11 @@ fun SettingsTitle() {
 }
 
 @Composable
-fun SettingsSection(viewModel: SettingsViewModel = viewModel(), bleViewModel: BLEViewModel) {
+fun SettingsSection(
+    viewModel: SettingsViewModel = viewModel(),
+    bleViewModel: BLEViewModel,
+    navController: NavController
+) {
     val nameMaxChar = 15
     val maxChar = 3
     val userInfo = viewModel.getUser().observeAsState()
@@ -188,6 +193,7 @@ fun SettingsSection(viewModel: SettingsViewModel = viewModel(), bleViewModel: BL
                             println("insert")
                             viewModel.insert(User(0, nickname, height.toInt(), weight.toInt()))
                         }
+                        navController.navigate("main")
                     },
                     modifier = Modifier
                         .width(100.dp)
@@ -244,15 +250,19 @@ fun BluetoothSection(viewModel: BLEViewModel) {
                     .fillMaxWidth()
             ) {
                 Icon(
-                    if (isConnected == true) Icons.Sharp.BluetoothConnected else Icons.Sharp.Bluetooth,
+                    if (isConnected == 1) Icons.Sharp.BluetoothConnected else Icons.Sharp.Bluetooth,
                     contentDescription = "Bluetooth",
                     tint = Orange1,
                     modifier = Modifier
                         .size(24.dp)
                 )
                 Text(
-                    text = if (isConnected == true) stringResource(R.string.connected)
-                    else stringResource(R.string.disconnected),
+                    text = when (isConnected) {
+                        1 -> stringResource(R.string.connected)
+                        2 -> stringResource(R.string.connecting)
+                        3 -> stringResource(R.string.failed)
+                        else -> stringResource(R.string.disconnected)
+                    },
                 )
             }
         }

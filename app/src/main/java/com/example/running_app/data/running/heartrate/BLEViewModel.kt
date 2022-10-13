@@ -27,7 +27,7 @@ class BLEViewModel(application: Application) : AndroidViewModel(application) {
         val hBPM_: MutableLiveData<Int> = MutableLiveData(0)
         val lBPM_: MutableLiveData<Int> = MutableLiveData(0)
         val avgBPM_: MutableLiveData<MutableList<Int>> = MutableLiveData(mutableListOf())
-        val isConnected_: MutableLiveData<Boolean> = MutableLiveData(false)
+        val isConnected_: MutableLiveData<Int> = MutableLiveData(0)
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -44,7 +44,11 @@ class BLEViewModel(application: Application) : AndroidViewModel(application) {
     val gattClientCallback = GATTClientCallBack(BLEViewModel)
 
     // Connection condition
-    val isConnected: LiveData<Boolean> = isConnected_
+    // 0 -> disconnected
+    // 1 -> connected
+    // 2 -> loading
+    // 3 -> device not found
+    val isConnected: LiveData<Int> = isConnected_
 
     private fun checkBLEPermission(): Boolean {
         if (mBluetoothAdapter == null || !mBluetoothAdapter!!.isEnabled) {
@@ -60,6 +64,7 @@ class BLEViewModel(application: Application) : AndroidViewModel(application) {
         mBluetoothAdapter = bluetoothManager.adapter
         if (checkBLEPermission()){
             viewModelScope.launch(Dispatchers.IO) {
+                isConnected_.postValue(2)
                 val scanner = mBluetoothAdapter!!.bluetoothLeScanner
                 fScanning.postValue(true)
                 val settings = ScanSettings.Builder()
@@ -77,13 +82,14 @@ class BLEViewModel(application: Application) : AndroidViewModel(application) {
                 // if the device is not found
                 if (scanResults.value?.isEmpty() == true) {
                     Log.e(TAG, "Polar Sensor not found")
+                    isConnected_.postValue(3)
                     return@launch
                 }
 
                 // connect to the device if it is detected
                 val tar = scanResults.value?.get(0)?.device
                 tar?.connectGatt(context, false, gattClientCallback)
-                isConnected_.postValue(true)
+                isConnected_.postValue(1)
             }
         }
     }

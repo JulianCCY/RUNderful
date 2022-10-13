@@ -30,9 +30,11 @@ open class GATTClientCallBack @Inject constructor(
         super.onConnectionStateChange(gatt, status, newState)
         if (status == BluetoothGatt.GATT_FAILURE) {
             Log.d(TAG, "GATT connection failure")
+//            model.isConnected_.postValue(3)
             return
         } else if (status == BluetoothGatt.GATT_SUCCESS) {
             Log.d(TAG, "GATT connection success")
+//            model.isConnected_.postValue(2)
             gatt.discoverServices()
             onServicesDiscovered(gatt, status)
             return
@@ -40,10 +42,10 @@ open class GATTClientCallBack @Inject constructor(
         if (newState == BluetoothGatt.STATE_CONNECTED) {
             Log.d(TAG, "Connected GATT service")
             gatt.discoverServices()
-            model.isConnected_.postValue(true)
+            model.isConnected_.postValue(1)
         } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
             Log.d(TAG, "Disconnected GATT service")
-            model.isConnected_.postValue(false)
+            model.isConnected_.postValue(0)
         }
     }
 

@@ -16,9 +16,14 @@
     <string name="settings">Settings</string>
     <string name="personal_details">Personal details</string>
     <string name="bluetooth_connection">Bluetooth connection</string>
+    <string name="application_data">Application data</string>
     <string name="connecting">connecting</string>
     <string name="connected">connected</string>
     <string name="disconnected">disconnected</string>
+    <string name="clear_data">Clear data</string>
+    <string name="are_you_sure">Are you sure you want to clear all your records?</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
     <string name="all_set">All set</string>
     <string name="hi">Hello</string>
     <string name="number_of_exercises_recorded">Number of exercises recorded:</string>

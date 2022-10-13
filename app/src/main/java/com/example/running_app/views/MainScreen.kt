@@ -88,7 +88,6 @@ fun Setting(navController: NavController, bleViewModel: BLEViewModel = viewModel
             }
         ) {
             Icon(
-//                if (isConnected == true) Icons.Sharp.BluetoothConnected else Icons.Sharp.Bluetooth,
                 Icons.Sharp.Settings,
                 contentDescription = "Settings",
                 tint = Orange1,

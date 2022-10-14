@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.roundToInt
 
+// To collect running, location, heart rate, internal sensor data during a run
 class RunningViewModel (
     application: Application,
 ) : AndroidViewModel(application), SensorEventListener, LocationListener {

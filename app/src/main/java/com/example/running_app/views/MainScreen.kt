@@ -57,7 +57,6 @@ fun MainScreen(
     settingsViewModel.getUserWeight()
     Box(
         modifier = Modifier
-//            .background(Light)
             .fillMaxSize()
     ) {
         Column {

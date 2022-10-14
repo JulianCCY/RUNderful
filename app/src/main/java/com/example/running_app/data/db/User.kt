@@ -2,6 +2,7 @@ package com.example.running_app.data.db
 
 import androidx.room.*
 
+// A data class for Setting screen and store user data
 @Entity
 data class User(
     @PrimaryKey

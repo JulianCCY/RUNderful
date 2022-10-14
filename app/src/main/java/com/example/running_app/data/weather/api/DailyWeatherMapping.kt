@@ -7,7 +7,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 // mapping for daily forecasting
-
 private data class IndexedDailyWeatherData(
     val index: Int,
     val data: DailyWeatherData

@@ -2,6 +2,7 @@ package com.example.running_app.data.result
 
 import com.google.android.gms.maps.model.LatLng
 
+// A data class for result screen and the collected data for a run
 data class RunRecordForUI(
     var id: Long,
     // Date of the record

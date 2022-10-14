@@ -3,6 +3,7 @@ package com.example.running_app.data.db
 import androidx.room.*
 import java.time.LocalDateTime
 
+// A data class for result screen
 @Entity
 data class Running(
     @PrimaryKey(autoGenerate = true)
@@ -19,5 +20,5 @@ data class Running(
     val calories: Int, // calories burned
     val avgHR: Int, // average heart rate
     val avgStrideLength: Double, // average length of one step, unit in meter
-    val cadence: Int, // steps per minute, unit in spm
+    val cadence: Int, // steps per minute, unit in spm (didn't use at last)
 )

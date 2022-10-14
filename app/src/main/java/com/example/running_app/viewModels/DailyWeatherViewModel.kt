@@ -14,7 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+// call functions to get daily weather data
 @HiltViewModel
 class DailyWeatherViewModel @Inject constructor(
     private val repository: DailyWeatherRepository,

@@ -9,6 +9,7 @@ import java.lang.Integer.min
 import java.util.*
 import javax.inject.Inject
 
+// CallBack function to connect to the heart rate senor device
 open class GATTClientCallBack @Inject constructor(
     private val model: BLEViewModel.Companion
 ): BluetoothGattCallback() {
@@ -30,11 +31,9 @@ open class GATTClientCallBack @Inject constructor(
         super.onConnectionStateChange(gatt, status, newState)
         if (status == BluetoothGatt.GATT_FAILURE) {
             Log.d(TAG, "GATT connection failure")
-//            model.isConnected_.postValue(3)
             return
         } else if (status == BluetoothGatt.GATT_SUCCESS) {
             Log.d(TAG, "GATT connection success")
-//            model.isConnected_.postValue(2)
             gatt.discoverServices()
             onServicesDiscovered(gatt, status)
             return

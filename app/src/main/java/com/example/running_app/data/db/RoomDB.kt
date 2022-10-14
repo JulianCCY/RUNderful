@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
+// set up room database for this app
 @Database(entities = [(User::class), (Running::class), (Coordinates::class)], version = 4)
 abstract class RoomDB: RoomDatabase() {
     abstract fun userDao(): UserDao

@@ -10,7 +10,7 @@ import com.example.running_app.data.db.RoomDB
 import com.example.running_app.data.db.Running
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
+// access room database queries for the stats screen
 class StatViewModel(application: Application): AndroidViewModel(application) {
 
     val switch = mutableStateOf("records")

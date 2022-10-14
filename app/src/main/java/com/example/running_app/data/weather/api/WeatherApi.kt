@@ -9,7 +9,6 @@ import retrofit2.http.*
 interface WeatherApi {
 
     //base uri: https://api.open-meteo.com
-
     @GET("v1/forecast?hourly=" +
             "temperature_2m,relativehumidity_2m,apparent_temperature,rain,snowfall,weathercode,pressure_msl,windspeed_10m" +
             "&timezone=auto")

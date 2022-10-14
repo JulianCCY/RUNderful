@@ -3,6 +3,8 @@ package com.example.running_app.data.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
+// Running Dao, Coordinate Dao, User Dao
+// using SQLite queries to implement CRUD operation
 @Dao
 interface RunningDao{
 
@@ -123,10 +125,6 @@ interface RunningDao{
 @Dao
 interface CoordinatesDao{
 
-    // useless
-    @Query("SELECT * FROM coordinates")
-    fun getALLCoordinates(): LiveData<List<Coordinates>>
-
     // get all related coordinate for a running record
     @Query("select * from coordinates join running on coordinates.runningId = running.rid where running.rid = :running_id")
     fun getAllRelatedCoordinates(running_id: Long): LiveData<List<Coordinates>>
@@ -161,8 +159,4 @@ interface UserDao {
 
     @Update
     suspend fun update(user: User)
-
-    //Delete is not an option in our app
-//    @Delete
-//    suspend fun delete(user: User)
 }

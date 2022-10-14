@@ -20,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// load data of current user location and the weather
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val repository: WeatherRepository,
@@ -78,6 +79,5 @@ class WeatherViewModel @Inject constructor(
                 _address.postValue(it.first()?.locality)
             }
         else _address.postValue(geocoder.getFromLocation(lat, long, 1)?.first()?.locality ?: "")
-//        Log.d("current address", "${address.value}")
     }
 }

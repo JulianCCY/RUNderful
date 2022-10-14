@@ -1,5 +1,6 @@
 package com.example.running_app.data.weather
 
+// To show the weather description based on the weather code from the api
 sealed class WeatherType(
     val weatherDesc: String
 ) {

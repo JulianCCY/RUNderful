@@ -43,7 +43,6 @@ fun StatScreen(
     statsD: StatDetailViewModel = viewModel(),
     settings: SettingsViewModel = viewModel(),
 ) {
-    val TAG = "stats screen"
     // get username
     val userName = settings.getUser().observeAsState().value?.name
     // get num of exercise, total steps of all time, total distance of all time'
@@ -95,7 +94,6 @@ fun StatScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-//            .verticalScroll(rememberScrollState())
     ) {
         StatTitle()
         OverviewBox(generalData)
@@ -509,7 +507,7 @@ fun AvgHeartRate(data: GraphStatsData) {
                     style = MaterialTheme.typography.body2,
                 )
                 Text(
-                    text = " ${calculated.toInt()}",
+                    text = " $calculated",
                     style = MaterialTheme.typography.body2,
                 )
                 Text(
@@ -746,8 +744,8 @@ fun LastTwoSpeed(data: GraphStatsData){
     if (data.speedOfLastTwo.sum()!= 0.0) {
         val latest = data.speedOfLastTwo.first()
         val previous = data.speedOfLastTwo.last()
-        val L = (latest*1000).roundToInt()
-        val P = (previous*1000).roundToInt()
+        val l = (latest*1000).roundToInt()
+        val p = (previous*1000).roundToInt()
 
         Column(
             horizontalAlignment = Alignment.Start,
@@ -780,7 +778,7 @@ fun LastTwoSpeed(data: GraphStatsData){
             }
 
             LinearProgressIndicator(
-                progress = if (latest > previous) L/L.toFloat() else L/P.toFloat(),
+                progress = if (latest > previous) l/l.toFloat() else l/p.toFloat(),
                 color = Orange2,
                 backgroundColor = Color.Transparent,
                 modifier = Modifier
@@ -804,7 +802,7 @@ fun LastTwoSpeed(data: GraphStatsData){
                 )
             }
             LinearProgressIndicator(
-                progress = if (latest > previous) P/L.toFloat() else P/P.toFloat(),
+                progress = if (latest > previous) p/l.toFloat() else p/p.toFloat(),
                 color = Gray,
                 backgroundColor = Color.Transparent,
                 modifier = Modifier
@@ -822,8 +820,8 @@ fun LatestAvgSpeed(data: GraphStatsData){
     if (data.avgSpeed != 0.0 && data.latestSpeed != 0.0) {
         val latest = data.latestSpeed
         val average = data.avgSpeed
-        val L = (latest*1000).roundToInt()
-        val A = (average*1000).roundToInt()
+        val l = (latest*1000).roundToInt()
+        val a = (average*1000).roundToInt()
 
         Column(
             horizontalAlignment = Alignment.Start,
@@ -856,7 +854,7 @@ fun LatestAvgSpeed(data: GraphStatsData){
             }
 
             LinearProgressIndicator(
-                progress = if (latest > average) L/L.toFloat() else L/A.toFloat(),
+                progress = if (latest > average) l/l.toFloat() else l/a.toFloat(),
                 color = Orange2,
                 backgroundColor = Color.Transparent,
                 modifier = Modifier
@@ -880,7 +878,7 @@ fun LatestAvgSpeed(data: GraphStatsData){
                 )
             }
             LinearProgressIndicator(
-                progress = if (latest > average) A/L.toFloat() else A/A.toFloat(),
+                progress = if (latest > average) a/l.toFloat() else a/a.toFloat(),
                 color = Gray,
                 backgroundColor = Color.Transparent,
                 modifier = Modifier

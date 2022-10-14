@@ -1,5 +1,6 @@
 package com.example.running_app.data.stats
 
+// Data class for the data insight on stats screen
 data class GraphStatsData(
     val speedOfLastFive: List<Double>,
     val heartOfLastFive: List<Int>,

@@ -109,9 +109,6 @@ fun MainScreenButton(navController: NavController) {
             Icon(
                 Icons.Sharp.KeyboardArrowLeft,
                 contentDescription = "ArrowLeft",
-//                tint = MaterialTheme.colors.primaryVariant,
-//                modifier = Modifier
-//                    .size(20.dp)
             )
             Text(text = "Back to main screen")
         }

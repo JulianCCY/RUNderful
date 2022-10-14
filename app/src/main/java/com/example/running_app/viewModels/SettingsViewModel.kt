@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
+// access to room data base to get and modify data for setting screen
 class SettingsViewModel(application: Application): AndroidViewModel(application){
 
     val TAG = "ROOM"
@@ -68,7 +69,7 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
     fun cleanAppData() {
         viewModelScope.launch {
             roomDB.runningDao().deleteAllRecords()
-            roomDB.coordinatesDao().getALLCoordinates()
+            roomDB.coordinatesDao().deleteAllCoordinates()
         }
     }
 }

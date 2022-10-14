@@ -3,11 +3,11 @@ package com.example.running_app.viewModels
 
 import android.annotation.SuppressLint
 import android.app.Application
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.AndroidViewModel
 import com.example.running_app.data.db.RoomDB
 import kotlin.math.floor
 
+// access room database to get data for goals screen
 class GoalsViewModel(application: Application) : AndroidViewModel(application) {
     private val roomDB = RoomDB.get(application)
     // total distance, total steps, total hours, average speed, average stride length, kcal, record
@@ -18,7 +18,7 @@ class GoalsViewModel(application: Application) : AndroidViewModel(application) {
         var result = (roomDB.runningDao().getTotaldistance()/1000.0).toFloat()
         if(result >= target[0]){
             level[0] = floor(result/target[0]).toInt()
-            result = result % target[0]
+            result %= target[0]
         }
         return result
     }
@@ -43,7 +43,7 @@ class GoalsViewModel(application: Application) : AndroidViewModel(application) {
 
     @SuppressLint("SuspiciousIndentation")
     fun getHighestVelocity(): Float{
-        var result = roomDB.runningDao().getHighestSpeed().toFloat()
+        val result = roomDB.runningDao().getHighestSpeed().toFloat()
         if(result >= target[3]){
             level[3] = floor(result/target[3]).toInt()
         }
@@ -51,7 +51,7 @@ class GoalsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getHighestStrideLength(): Float{
-        var result = roomDB.runningDao().getHighestStrideLength().toFloat()
+        val result = roomDB.runningDao().getHighestStrideLength().toFloat()
         if (result >= target[4]) {
             level[4] = floor(result/target[4]).toInt()
         }
@@ -62,7 +62,7 @@ class GoalsViewModel(application: Application) : AndroidViewModel(application) {
         var result = roomDB.runningDao().get_calories_burnt()
         if(result >= target[5]){
             level[5] = (result/target[5])
-            result = result % target[5]
+            result %= target[5]
         }
         return result
     }
@@ -71,7 +71,7 @@ class GoalsViewModel(application: Application) : AndroidViewModel(application) {
         var result = roomDB.runningDao().getNumberOfRecords()
         if(result >= target[6]){
             level[6] = (result/target[6])
-            result = result % target[6]
+            result %= target[6]
         }
         return result
     }

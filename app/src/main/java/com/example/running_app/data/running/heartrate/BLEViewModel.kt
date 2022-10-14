@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+// To connect to the heart rate device and store live update heart rate value
 class BLEViewModel(application: Application) : AndroidViewModel(application) {
 
     val TAG = "BLE viewModel"

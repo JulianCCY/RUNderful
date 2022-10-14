@@ -9,6 +9,7 @@ interface WeatherRepository {
     suspend fun getWeatherData(lat: Double, long: Double): WeatherResource<WeatherInfo>
 }
 
+// make a connection between view model and api
 class WeatherRepositoryImp @Inject constructor(
     private val myApi: WeatherApi
 ): WeatherRepository {

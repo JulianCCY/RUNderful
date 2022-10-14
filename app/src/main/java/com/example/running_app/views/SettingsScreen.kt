@@ -44,7 +44,6 @@ fun SettingsScreen(navController: NavController, bleViewModel: BLEViewModel = vi
 fun SettingsTitle() {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-//        verticalAlignment = Alignment.Bottom,
         modifier = Modifier
             .fillMaxWidth()
     ) {

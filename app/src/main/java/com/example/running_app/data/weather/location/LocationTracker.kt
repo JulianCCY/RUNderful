@@ -17,6 +17,7 @@ interface LocationTracker {
     suspend fun getCurrentLocation(): Location?
 }
 
+// Get location permission and get user's current location
 @ExperimentalCoroutinesApi
 class InitLocationTracker @Inject constructor(
     private val locationClient: FusedLocationProviderClient,

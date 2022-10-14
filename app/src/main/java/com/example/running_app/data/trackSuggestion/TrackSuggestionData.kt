@@ -2,6 +2,7 @@ package com.example.running_app.data.trackSuggestion
 
 import com.google.android.gms.maps.model.LatLng
 
+// Hard coded Track suggestion
 data class TrackSuggestionStructure(
     val title: String,
     val distance: Int,

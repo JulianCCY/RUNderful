@@ -53,7 +53,6 @@ fun RunningScreen(navController: NavController, weatherViewModel: WeatherViewMod
     Column(
         modifier = Modifier
             .fillMaxSize()
-//            .verticalScroll(rememberScrollState())
     ) {
         CounterDisplay()
         StatsDisplay()
@@ -381,13 +380,6 @@ fun Buttons(
         runningViewModel.temperature = state.weatherInfo.currentWeatherData.temperatureCelsius.roundToInt()
     }
 
-
-//    val testing = runningViewModel.getAllRecords().observeAsState()
-//    Log.d("Room Running", "${testing.value}")
-
-//
-//    val testing2 = runningViewModel.getAllCoordinates().observeAsState()
-//    Log.d("Room Running", "${testing2.value}")
     val context = LocalContext.current
     val intent = Intent(context, MainActivity::class.java)
     val pendingIntent = PendingIntent.getActivity(context, 0 , intent, 0)
@@ -478,68 +470,6 @@ fun Buttons(
             }
         }
     }
-//    Column(
-//        verticalArrangement = Arrangement.SpaceAround,
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        modifier = Modifier
-//            .padding(10.dp)
-//            .fillMaxWidth()
-//            .height(150.dp)
-//    ) {
-//        // Pause Resume Button
-//        Button(
-//            onClick = {
-//                if (pauseResume == "pause") {
-//                    runningViewModel.isRunning = false
-//                    runningViewModel.pauseRunning()
-//                    runningViewModel.unregisterStepCounterSensor()
-//                    pauseResume = "resume"
-//                    Log.d("steps", "pause")
-//                } else if (pauseResume == "resume") {
-//                    runningViewModel.isRunning = true
-//                    runningViewModel.startRunning()
-//                    runningViewModel.registerStepCounterSensor()
-//                    pauseResume = "pause"
-//                    Log.d("steps", "resume")
-//                }
-//            },
-//            modifier = Modifier
-//                .clip(CutCornerShape(10.dp))
-//                .width(200.dp)
-//        ) {
-//            if (pauseResume == "pause") {
-//                Text(
-//                    text = "Pause",
-//                    style = MaterialTheme.typography.body1,
-//                )
-//            } else if (pauseResume == "resume") {
-//                Text(
-//                    text = "Resume",
-//                    style = MaterialTheme.typography.body1,
-//                )
-//            }
-//        }
-//        // Finish button
-//        Button(
-//            onClick = {
-//                if (runningViewModel.latitude.isNotEmpty() && runningViewModel.longitude.isNotEmpty()) {
-//                    runningViewModel.stopRunning()
-//                    runningViewModel.unregisterStepCounterSensor()
-////                isButtonVisible = true
-//                    navController.navigate("result")
-//                    Log.d("steps", "stop")
-//                }
-//            },
-//            modifier = Modifier
-//                .clip(CutCornerShape(10.dp))
-//                .width(200.dp)
-//        ) {
-//            Text(
-//                text = "Finish",
-//                style = MaterialTheme.typography.body1
-//            )
-//        }
-//    }
 }
 
 @Composable

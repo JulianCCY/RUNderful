@@ -8,6 +8,7 @@ import com.example.running_app.data.db.RoomDB
 import com.example.running_app.data.db.Running
 import com.google.android.gms.maps.model.LatLng
 
+// access room database queries for the data insights
 class StatDetailViewModel(application: Application): AndroidViewModel(application) {
 
     private val roomDB = RoomDB.get(application)

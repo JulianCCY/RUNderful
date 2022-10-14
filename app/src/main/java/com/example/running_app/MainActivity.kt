@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity(){
     private val goalsViewModel: GoalsViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
+    // create notification when users start a run and finish a run
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
@@ -57,6 +58,7 @@ class MainActivity : ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createNotificationChannel()
+        // check permission of the app
         permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ){
@@ -136,16 +138,3 @@ class MainActivity : ComponentActivity(){
         }
     }
 }
-
-//@Composable
-//fun Greeting(name: String) {
-//    Text(text = "Hello $name!")
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    Running_AppTheme {
-//        Greeting("Android")
-//    }
-//}

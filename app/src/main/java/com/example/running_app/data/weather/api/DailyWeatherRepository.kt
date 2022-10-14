@@ -9,6 +9,7 @@ interface DailyWeatherRepository{
     suspend fun getDailyWeatherData(lat: Double, long: Double): WeatherResource<DailyWeatherInfo>
 }
 
+// make a connection between view model and api
 class DailyWeatherRepositoryImp @Inject constructor(
    private val myApi: DailyWeatherApi
 ): DailyWeatherRepository {

@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity(){
                 ) {
                     NavHost(navController, startDestination = "main") {
                         composable("main") {
-                            MainScreen(navController)
+                            MainScreen(navController, dailyWeatherViewModel)
                         }
                         composable("settings") {
                             SettingsScreen(navController)

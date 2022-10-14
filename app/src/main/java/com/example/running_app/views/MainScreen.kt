@@ -6,6 +6,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,8 +20,11 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AcUnit
+import androidx.compose.material.icons.filled.SevereCold
 import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -44,7 +49,10 @@ import com.example.running_app.R
 import com.example.running_app.data.running.heartrate.BLEViewModel
 import com.example.running_app.views.utils.FeaturesUI
 import com.example.running_app.ui.theme.*
+import com.example.running_app.viewModels.DailyWeatherViewModel
+import com.example.running_app.viewModels.QuotesViewModel
 import com.example.running_app.viewModels.SettingsViewModel
+import com.example.running_app.viewModels.WeatherViewModel
 import com.example.running_app.views.utils.quadFromTo
 import java.text.SimpleDateFormat
 import java.util.*
@@ -52,7 +60,8 @@ import java.util.*
 @Composable
 fun MainScreen(
     navController: NavController,
-    settingsViewModel: SettingsViewModel = viewModel()
+    dailyWeatherViewModel: DailyWeatherViewModel,
+    settingsViewModel: SettingsViewModel = viewModel(),
 ) {
     settingsViewModel.getUserWeight()
     Box(
@@ -63,7 +72,7 @@ fun MainScreen(
         Column {
             Setting(navController)
             Greetings()
-            Quotes()
+            Quotes(dailyWeatherViewModel = dailyWeatherViewModel)
             FeatureSection(
                 features = listOf(
                     FeaturesUI("Weather", Icons.Sharp.WbSunny, LightGreen1, LightGreen2, LightGreen3, 1),
@@ -136,21 +145,89 @@ fun Greetings() {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Quotes() {
-    Row(
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically,
+fun Quotes(viewModel: QuotesViewModel = viewModel(), dailyWeatherViewModel: DailyWeatherViewModel) {
+    val quotes by viewModel.quoteLoop.collectAsState(initial = "")
+    Column(
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(15.dp)
     ) {
-        Text(
-            text = "What a nice day to exercise.",
-            style = MaterialTheme.typography.subtitle2
-        )
+        // Quote
+        Row(
+        ) {
+            AnimatedContent(
+                targetState = quotes,
+                transitionSpec = {
+                    addAnimation().using(
+                        SizeTransform(clip = true)
+                    )
+                }
+            ) { quote ->
+                Text(
+                    text = quote,
+                    style = MaterialTheme.typography.body1
+                )
+            }
+        }
+        // Weather
+        Row {
+            WeatherIcon(dailyState = dailyWeatherViewModel.dailyState)
+            Spacer(modifier = Modifier.width(5.dp))
+            when (dailyWeatherViewModel.dailyState.weatherInfo?.todayWeatherData?.daily_weatherType?.weatherDesc) {
+                "Clear sky", "Mainly clear" -> {
+                    Text(
+                        text = "Good day for running",
+                        style = MaterialTheme.typography.body2,
+                    )
+                }
+                "Partly cloudy", "Overcast", "Foggy", "Depositing rime fog" -> {
+                    Text(
+                        text = "Heavy snow, running with caution",
+                        style = MaterialTheme.typography.body2,
+                    )
+                }
+                "Slight snow fall", "Moderate snow fall", "Snow grains", "Light snow showers" -> {
+                    Text(
+                        text = "Slight snow, running with caution",
+                        style = MaterialTheme.typography.body2,
+                    )
+                }
+                "Heavy snow fall", "Heavy snow showers" -> {
+                    Text(
+                        text = "Heavy snow, running is not recommended",
+                        style = MaterialTheme.typography.body2,
+                    )
+                }
+                "Moderate thunderstorm", "Thunderstorm with slight hail", "Thunderstorm with heavy hail" -> {
+                    Text(
+                        text = "Thunderstorm, running is not recommended",
+                        style = MaterialTheme.typography.body2,
+                    )
+                }
+                else -> {
+                    Text(
+                        text = "Running is not recommended today",
+                        style = MaterialTheme.typography.body2,
+                    )
+                }
+            }
+        }
     }
 }
+
+@ExperimentalAnimationApi
+fun addAnimation(duration: Int = 800): ContentTransform {
+    return slideInVertically(animationSpec = tween(durationMillis = duration)) { height -> height } + fadeIn(
+        animationSpec = tween(durationMillis = duration)
+    ) with slideOutVertically(animationSpec = tween(durationMillis = duration)) { height -> -height } + fadeOut(
+        animationSpec = tween(durationMillis = duration)
+    )
+}
+
 @Composable
 fun FeatureSection(features: List<FeaturesUI>, navController: NavController) {
     val haptic = LocalHapticFeedback.current
@@ -191,7 +268,9 @@ fun FeatureSection(features: List<FeaturesUI>, navController: NavController) {
                         onClick = {
                             navController.navigate("startRunning")
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            NotificationManagerCompat.from(context).notify(123,notify)
+                            NotificationManagerCompat
+                                .from(context)
+                                .notify(123, notify)
                         }
                     )
             ) {

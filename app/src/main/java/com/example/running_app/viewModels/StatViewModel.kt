@@ -1,6 +1,7 @@
 package com.example.running_app.viewModels
 
 import android.app.Application
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class StatViewModel(application: Application): AndroidViewModel(application) {
+
+    val switch = mutableStateOf("records")
 
     private val roomDB = RoomDB.get(application)
 

@@ -32,6 +32,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun WeatherScreen(weatherViewModel: WeatherViewModel, dailyWeatherViewModel: DailyWeatherViewModel) {
+    // update weather screen everytime you access it
     weatherViewModel.loadWeatherInfo()
     dailyWeatherViewModel.loadDailyWeatherInfo()
     Column(
@@ -50,58 +51,21 @@ fun CurrentWeather(
     dailyState: DailyWeatherState,
     viewModel: WeatherViewModel,
 ) {
-
-        Box(
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 15.dp)
+            .fillMaxWidth()
+    ) {
+        Column(
             modifier = Modifier
-                .padding(horizontal = 15.dp)
-                .fillMaxWidth()
+                .padding(15.dp)
         ) {
-            dailyState.weatherInfo?.todayWeatherData?.let {
-                // Weather Icon
-//                Box(
-//                    modifier = Modifier
-//                        .align(Alignment.BottomEnd)
-//                        .padding(20.dp)
-//                ) {
-//                    WeatherIcon(dailyState)
-//                }
-            }
             Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .padding(15.dp)
-            ) {
-                // Last updated
-//                Row(
-//                    horizontalArrangement = Arrangement.Start,
-//                    verticalAlignment = Alignment.CenterVertically,
-//                ) {
-//                    val updated = state.weatherInfo?.currentWeatherData?.time
-//                    if (updated != null) {
-//                        Icon(
-//                            Icons.Sharp.Update,
-//                            contentDescription = "LastUpdated",
-//                            modifier = Modifier
-//                                .size(20.dp)
-//                        )
-//                        Text(
-//                            text = state.weatherInfo.currentWeatherData.time.format(DateTimeFormatter.ofPattern("HH:mm")),
-//                            style = MaterialTheme.typography.body2,
-//                        )
-//                    } else {
-//                        Box(
-//                            modifier = Modifier
-//                                .width(40.dp)
-//                                .height(24.dp)
-//                                .background(Gray)
-//                        ) { }
-//                    }
-//                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp, bottom = 30.dp)
+                    .fillMaxWidth()
+                    .padding(top = 5.dp, bottom = 30.dp)
                 ) {
                     // Current City
                     val address by viewModel.address.observeAsState()
@@ -147,12 +111,6 @@ fun CurrentWeather(
                             style = MaterialTheme.typography.body1,
                             color = MaterialTheme.colors.onPrimary,
                         )
-//                        CircularProgressIndicator(
-//                            modifier = Modifier
-//                                .size(128.dp)
-//                                .padding(15.dp),
-//                            strokeWidth = 8.dp,
-//                        )
                     }
 
                     // Description

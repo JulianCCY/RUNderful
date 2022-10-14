@@ -146,7 +146,7 @@ fun TotalStepsGoal(viewModel: GoalsViewModel) {
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
-                progress = (viewModel.getTotalSteps()/(viewModel.target[1]).toFloat()).toFloat(),
+                progress = (viewModel.getTotalSteps()/(viewModel.target[1]).toFloat()),
                 color = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .padding(5.dp)
@@ -199,7 +199,7 @@ fun TotalHours(viewModel: GoalsViewModel){
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
-                progress = (viewModel.getTotalHours()/viewModel.target[2].toFloat()).toFloat(),
+                progress = (viewModel.getTotalHours()/viewModel.target[2].toFloat()),
                 color = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .padding(5.dp)
@@ -359,7 +359,7 @@ fun CaloriesGoal(viewModel: GoalsViewModel) {
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
-                progress = (viewModel.getCaloriesBurnt()/viewModel.target[5].toFloat()).toFloat(),
+                progress = (viewModel.getCaloriesBurnt()/viewModel.target[5].toFloat()),
                 color = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .padding(5.dp)
@@ -412,7 +412,7 @@ fun ExercisesGoal(viewModel: GoalsViewModel) {
                 style = MaterialTheme.typography.body1,
             )
             LinearProgressIndicator(
-                progress = (viewModel.getTotalRecord()/viewModel.target[6].toFloat()).toFloat(),
+                progress = (viewModel.getTotalRecord()/viewModel.target[6].toFloat()),
                 color = MaterialTheme.colors.onSecondary,
                 modifier = Modifier
                     .padding(5.dp)

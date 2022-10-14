@@ -5,15 +5,19 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.DeleteForever
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,42 +30,45 @@ import com.example.running_app.data.result.RunRecordForUI
 import com.example.running_app.data.stats.GraphStatsData
 import com.example.running_app.data.stats.StatGeneral
 import com.example.running_app.viewModels.SettingsViewModel
-import com.google.android.gms.maps.model.LatLng
+import com.example.running_app.viewModels.StatDetailViewModel
 import com.madrapps.plot.line.DataPoint
 import com.madrapps.plot.line.LineGraph
 import com.madrapps.plot.line.LinePlot
-import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
-
-//Move to backend file / database file later
-// Moved your data class to data folder -> result and stats
 
 @Composable
 fun StatScreen(
     navController: NavController,
     stats: StatViewModel = viewModel(),
+    statsD: StatDetailViewModel = viewModel(),
     settings: SettingsViewModel = viewModel(),
 ) {
     val TAG = "stats screen"
     // get username
     val userName = settings.getUser().observeAsState().value?.name
-    Log.d(TAG, "username: $userName")
     // get num of exercise, total steps of all time, total distance of all time'
     val numOfExercises = stats.getNumExe().observeAsState().value
-    Log.d(TAG, "exercise: $numOfExercises")
     val totalSteps = stats.getTS().observeAsState().value
-    Log.d(TAG, "total steps: $totalSteps")
     val totalDistance = stats.getTD().observeAsState().value?.roundToInt()
-    Log.d(TAG, "distance: $totalDistance")
 
     // average speed of last 5 record
     val lastFiveAvgSpeed = if (!stats.getL5AS().observeAsState().value.isNullOrEmpty()) stats.getL5AS().observeAsState().value else listOf(0.0)
-    Log.d(TAG, "l5avg speed, $lastFiveAvgSpeed")
-
     // average heart rate of last 5 record
     val lastFiveAvgHR = if(!stats.getL5HR().observeAsState().value.isNullOrEmpty()) stats.getL5HR().observeAsState().value else listOf(0)
-    Log.d(TAG, "l5avg heart $lastFiveAvgHR")
+    // total steps of last 2 record
+    val lastTwoSteps = if (!statsD.compareTwoLatestSteps().observeAsState().value.isNullOrEmpty()) statsD.compareTwoLatestSteps().observeAsState().value else listOf(0,0)
+    // total steps of latest and average
+    val latestSteps = if (statsD.getLatestSteps().observeAsState().value != null) statsD.getLatestSteps().observeAsState().value else 0
+    val avgSteps = if (statsD.getAverageSteps().observeAsState().value != null) statsD.getAverageSteps().observeAsState().value else 0
+    // latest and average distance
+    val latestDistance = if (statsD.getLatestDistance().observeAsState().value != null) statsD.getLatestDistance().observeAsState().value else 0.0
+    val avgDistance = if (statsD.getAverageDistance().observeAsState().value != null) statsD.getAverageDistance().observeAsState().value else 0.0
+    // latest speed, two latest speed, average speed
+    val latestSpeed = if (statsD.getLatestSpeed().observeAsState().value != null) statsD.getLatestSpeed().observeAsState().value else 0.0
+    val lastTwoSpeed = if (!statsD.compareTwoLatestSpeed().observeAsState().value.isNullOrEmpty()) statsD.compareTwoLatestSpeed().observeAsState().value else listOf(0.0, 0.0)
+    val avgSpeed = if (statsD.getAverageSpeed().observeAsState().value != null) statsD.getAverageSpeed().observeAsState().value else 0.0
 
+    val lastTwoCalories = if (!statsD.compareTwoLatestCalories().observeAsState().value.isNullOrEmpty()) statsD.compareTwoLatestCalories().observeAsState().value else listOf(0, 0)
 
     val generalData = StatGeneral(
         userName ?: "Username",
@@ -70,23 +77,30 @@ fun StatScreen(
         totalDistance ?: 0,
     )
 
-    //        listOf(3.0,2.5,1.4,3.5,2.4),
-//        listOf(160, 164, 183, 172, 178)
-
     val graphData = GraphStatsData(
         lastFiveAvgSpeed ?: listOf(0.0),
         lastFiveAvgHR ?: listOf(0),
+        lastTwoSteps ?: listOf(0, 0),
+        latestSteps ?: 0,
+        avgSteps ?: 0,
+        latestDistance ?: 0.0,
+        avgDistance ?: 0.0,
+        latestSpeed ?: 0.0,
+        lastTwoSpeed ?: listOf(0.0, 0.0),
+        avgSpeed ?: 0.0,
+        lastTwoCalories ?: listOf(0, 0)
+
     )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+//            .verticalScroll(rememberScrollState())
     ) {
         StatTitle()
         OverviewBox(generalData)
-        GraphSection(graphData)
-        Histories(navController = navController)
+        StatSwitch(stats)
+        Stat(stats, navController, graphData)
     }
 }
 
@@ -189,7 +203,7 @@ fun OverviewData(data: StatGeneral) {
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 20.dp)
 //            .border(width = 2.dp, color = Orange1, CutCornerShape(60.dp, 10.dp, 60.dp, 10.dp))
-            .height(200.dp)
+            .height(150.dp)
     ) {
         Column {
             Row(
@@ -269,6 +283,65 @@ fun Distance(data: StatGeneral) {
     }
 }
 
+
+@Composable
+fun StatSwitch(statViewModel: StatViewModel) {
+    val switch by remember { statViewModel.switch }
+    Column (
+        modifier = Modifier
+            .padding(15.dp)
+            .fillMaxWidth()
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+        ) {
+            Text(
+                text = "Record History",
+                style = MaterialTheme.typography.body1,
+                fontWeight = if (switch == "records") FontWeight.Bold else FontWeight.Normal,
+                modifier = Modifier
+                    .selectable(
+                        selected = true,
+                        onClick = { statViewModel.switch.value = "records" }
+                    )
+            )
+            Text(
+                text = "Data Insight",
+                style = MaterialTheme.typography.body1,
+                fontWeight = if (switch == "insight") FontWeight.Bold else FontWeight.Normal,
+                modifier = Modifier
+                    .selectable(
+                        selected = true,
+                        onClick = {
+                            statViewModel.switch.value = "insight"
+                        }
+                    )
+            )
+        }
+        Spacer(modifier = Modifier.height(3.dp))
+        Divider(
+            color = Orange1,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun Stat(statViewModel: StatViewModel, navController: NavController, graphData: GraphStatsData){
+    val switch by remember {statViewModel.switch}
+    if (switch == "records") {
+        Histories(navController = navController)
+    }
+    if (switch == "insight") {
+        GraphSection(graphData)
+    }
+}
+
+
 @Composable
 fun PlotGraph(lines: List<List<DataPoint>>) {
     LineGraph(
@@ -298,13 +371,99 @@ fun PlotGraph(lines: List<List<DataPoint>>) {
 fun GraphSection(data: GraphStatsData) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(15.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         AvgVelocity(data)
         AvgHeartRate(data)
+        StepsTitle(data)
+        LastTwoSteps(data)
+        LatestAvgSteps(data)
+        DistanceTitle(data)
+        LatestAvgDistance(data)
+        SpeedTitle(data)
+        LastTwoSpeed(data)
+        LatestAvgSpeed(data)
+        CaloriesTitle(data)
+        LastTwoCalories(data)
     }
 }
+
+@Composable
+fun StepsTitle(data: GraphStatsData){
+    if (data.stepsOfLastTwo.sum()!= 0 || data.avgSteps != 0){
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 10.dp, bottom = 10.dp)
+        ) {
+            Text(
+                text = "Running Steps",
+                style = MaterialTheme.typography.body1,
+                color = LightOrange1
+            )
+        }
+    }
+}
+
+@Composable
+fun DistanceTitle(data: GraphStatsData){
+    if (data.avgDistance != 0.0){
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 10.dp, bottom = 10.dp)
+        ) {
+            Text(
+                text = "Running Distance",
+                style = MaterialTheme.typography.body1,
+                color = LightOrange1
+            )
+        }
+    }
+}
+
+@Composable
+fun SpeedTitle(data: GraphStatsData){
+    if (data.speedOfLastTwo.sum()!= 0.0 || (data.avgSpeed != 0.0 && data.latestSpeed != 0.0)){
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 10.dp, bottom = 10.dp)
+        ) {
+            Text(
+                text = "Running Speed",
+                style = MaterialTheme.typography.body1,
+                color = LightOrange1
+            )
+        }
+    }
+
+}
+
+@Composable
+fun CaloriesTitle(data: GraphStatsData){
+    if (data.sumOfCaloriesOfLastTwo.sum() != 0){
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 10.dp, bottom = 10.dp)
+        ) {
+            Text(
+                text = "Active calories",
+                style = MaterialTheme.typography.body1,
+                color = LightOrange1
+            )
+        }
+    }
+}
+
+
 
 @Composable
 fun AvgVelocity(data: GraphStatsData) {
@@ -313,22 +472,22 @@ fun AvgVelocity(data: GraphStatsData) {
         val calculated = (data.speedOfLastFive.sum() / data.speedOfLastFive.size)
 
         Column (
-            horizontalAlignment = Alignment.CenterHorizontally
-                ){
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
             Row(
                 verticalAlignment = Alignment.Bottom,
             ) {
                 Text(
                     text = stringResource(R.string.avg_speed_of_past_five_exercises),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.body2,
                 )
                 Text(
                     text = " ${String.format("%.2f", calculated)}",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.body2,
                 )
                 Text(
                     text = " m/s",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.body2,
                 )
             }
         }
@@ -351,17 +510,461 @@ fun AvgHeartRate(data: GraphStatsData) {
                 )
                 Text(
                     text = " ${calculated.toInt()}",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.body2,
                 )
                 Text(
                     text = " BPM",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.body2,
                 )
             }
         }
         PlotGraph(lines = listOf(graphData))
     }
 }
+
+@Composable
+fun LastTwoSteps(data: GraphStatsData){
+    if (data.stepsOfLastTwo.sum()!= 0) {
+        val latest = data.stepsOfLastTwo.first()
+        val previous = data.stepsOfLastTwo.last()
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 10.dp)
+        ) {
+            Text(
+                text = if (latest > previous) "You took steps in latest run than last time"
+            else "You took fewer steps in latest run than last time",
+                style = MaterialTheme.typography.body2,
+
+            )
+
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$latest",
+                    style = MaterialTheme.typography.body1,
+                    color = Orange2
+                )
+                Text(
+                    text = " steps(latest)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+            LinearProgressIndicator(
+                progress = if (latest > previous) latest/latest.toFloat() else latest/previous.toFloat(),
+                color = Orange2,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$previous",
+                    style = MaterialTheme.typography.body1,
+                )
+                Text(
+                    text = " steps(previous)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+            LinearProgressIndicator(
+                progress = if (latest > previous) previous/latest.toFloat() else previous/previous.toFloat(),
+                color = Gray,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun LatestAvgSteps(data: GraphStatsData){
+    if (data.avgSteps != 0) {
+        val latest = data.latestSteps
+        val average = data.avgSteps
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Text(
+                text = if (latest > average) "You took more steps in latest run than average time"
+                else "You took fewer steps in latest run than average time",
+                style = MaterialTheme.typography.body2,
+
+                )
+
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$latest",
+                    style = MaterialTheme.typography.body1,
+                    color = Orange2
+                )
+                Text(
+                    text = " steps(latest)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+            LinearProgressIndicator(
+                progress = if (latest > average) latest/latest.toFloat() else latest/average.toFloat(),
+                color = Orange2,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$average",
+                    style = MaterialTheme.typography.body1,
+                )
+                Text(
+                    text = " steps(average)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+            LinearProgressIndicator(
+                progress = if (latest > average) average/latest.toFloat() else average/average.toFloat(),
+                color = Gray,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+
+
+        }
+    }
+}
+
+
+@Composable
+fun LatestAvgDistance(data: GraphStatsData){
+    if (data.avgDistance != 0.0) {
+        val latest = data.latestDistance
+        val average = data.avgDistance
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Text(
+                text = if (latest > average) "You took more distance in latest run than average time"
+                else "You took fewer distance in latest run than average time",
+                style = MaterialTheme.typography.body2,
+
+                )
+
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$latest",
+                    style = MaterialTheme.typography.body1,
+                    color = Orange2
+                )
+                Text(
+                    text = " m(latest)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+            LinearProgressIndicator(
+                progress = if (latest > average) latest.roundToInt()/latest.roundToInt().toFloat() else latest.roundToInt()/average.roundToInt().toFloat(),
+                color = Orange2,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$average",
+                    style = MaterialTheme.typography.body1,
+                )
+                Text(
+                    text = " m(average)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+            LinearProgressIndicator(
+                progress = if (latest > average) latest.roundToInt()/latest.roundToInt().toFloat() else average.roundToInt()/average.roundToInt().toFloat(),
+                color = Gray,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+
+
+        }
+    }
+}
+
+@Composable
+fun LastTwoSpeed(data: GraphStatsData){
+    if (data.speedOfLastTwo.sum()!= 0.0) {
+        val latest = data.speedOfLastTwo.first()
+        val previous = data.speedOfLastTwo.last()
+        val L = (latest*1000).roundToInt()
+        val P = (previous*1000).roundToInt()
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 10.dp)
+        ) {
+            Text(
+                text = if (latest > previous) "You ran faster in latest run than last time"
+                else "You ran slower in latest run than last time",
+                style = MaterialTheme.typography.body2,
+                )
+
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$latest",
+                    style = MaterialTheme.typography.body1,
+                    color = Orange2
+                )
+                Text(
+                    text = " m/s(latest)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+
+            LinearProgressIndicator(
+                progress = if (latest > previous) L/L.toFloat() else L/P.toFloat(),
+                color = Orange2,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$previous",
+                    style = MaterialTheme.typography.body1,
+                )
+                Text(
+                    text = " m/s(previous)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+            LinearProgressIndicator(
+                progress = if (latest > previous) P/L.toFloat() else P/P.toFloat(),
+                color = Gray,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+
+
+        }
+    }
+}
+
+@Composable
+fun LatestAvgSpeed(data: GraphStatsData){
+    if (data.avgSpeed != 0.0 && data.latestSpeed != 0.0) {
+        val latest = data.latestSpeed
+        val average = data.avgSpeed
+        val L = (latest*1000).roundToInt()
+        val A = (average*1000).roundToInt()
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 10.dp)
+        ) {
+            Text(
+                text = if (latest > average) "You ran faster in latest run than average time"
+                else "You're running slower in latest run than average time",
+                style = MaterialTheme.typography.body2,
+            )
+
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$latest",
+                    style = MaterialTheme.typography.body1,
+                    color = Orange2
+                )
+                Text(
+                    text = " m/s(latest)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+
+            LinearProgressIndicator(
+                progress = if (latest > average) L/L.toFloat() else L/A.toFloat(),
+                color = Orange2,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$average",
+                    style = MaterialTheme.typography.body1,
+                )
+                Text(
+                    text = " m/s(average)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+            LinearProgressIndicator(
+                progress = if (latest > average) A/L.toFloat() else A/A.toFloat(),
+                color = Gray,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun LastTwoCalories(data: GraphStatsData){
+    if (data.sumOfCaloriesOfLastTwo.sum() != 0){
+
+        val latest = data.sumOfCaloriesOfLastTwo.first()
+        val previous = data.sumOfCaloriesOfLastTwo.last()
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 10.dp)
+        ) {
+            Text(
+                text = if (latest > previous) "You burned more calories in latest training day than last time"
+                else "You burned fewer calories in latest training day than last time",
+                style = MaterialTheme.typography.body2,
+
+                )
+
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$latest",
+                    style = MaterialTheme.typography.body1,
+                    color = Orange2
+                )
+                Text(
+                    text = " kcal(latest)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+            LinearProgressIndicator(
+                progress = if (latest > previous) latest/latest.toFloat() else latest/previous.toFloat(),
+                color = Orange2,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp)
+            ){
+                Text(
+                    text = "$previous",
+                    style = MaterialTheme.typography.body1,
+                )
+                Text(
+                    text = " kcal(previous)",
+                    style = MaterialTheme.typography.body2,
+                    color = Color.LightGray
+                )
+            }
+            LinearProgressIndicator(
+                progress = if (latest > previous) previous/latest.toFloat() else previous/previous.toFloat(),
+                color = Gray,
+                backgroundColor = Color.Transparent,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .height(25.dp)
+            )
+        }
+
+    }
+}
+
 @Composable
 fun Histories(viewModel: StatViewModel = viewModel(), navController: NavController) {
 
@@ -394,14 +997,6 @@ fun Histories(viewModel: StatViewModel = viewModel(), navController: NavControll
             .fillMaxWidth()
             .padding(15.dp)
             ) {
-        item {
-            Row {
-                Text(
-                    text = stringResource(id = R.string.history_list_title),
-                    style = MaterialTheme.typography.subtitle2,
-                )
-            }
-        }
 
         if (getAllRecord != null) {
             items(getAllRecord) {

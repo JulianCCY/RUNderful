@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity(){
     private val runningViewModel: RunningViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val statViewModel: StatViewModel by viewModels()
+    private val statDetailViewModel: StatDetailViewModel by viewModels()
     private val goalsViewModel: GoalsViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
@@ -105,7 +106,7 @@ class MainActivity : ComponentActivity(){
                             TrackSuggestionScreen()
                         }
                         composable("stats") {
-                            StatScreen(navController, statViewModel, settingsViewModel)
+                            StatScreen(navController, statViewModel, statDetailViewModel, settingsViewModel)
                         }
                         composable("statsDetail/{dataId}") {
                             val dataId = it.arguments?.getString("dataId")?.toLong() ?: 0

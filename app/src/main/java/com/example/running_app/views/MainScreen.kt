@@ -143,10 +143,10 @@ fun Quotes() {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(15.dp)
+            .padding(horizontal = 18.dp)
     ) {
         Text(
-            text = "What a nice day to exercise.",
+            text = "It's RUNderful.",
             style = MaterialTheme.typography.subtitle2
         )
     }

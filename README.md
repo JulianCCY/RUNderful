@@ -61,7 +61,6 @@
 <p align="center">
   <img src="https://user-images.githubusercontent.com/70948419/195961103-45289f61-6863-486e-9a43-e2310be99361.png" width="250"> 
   <img src="https://user-images.githubusercontent.com/70948419/195961107-4eb73585-f2e9-4321-8265-ac0baa77f57c.png" width="250"> 
-  <img src="" width="250">
 </p> 
 
 

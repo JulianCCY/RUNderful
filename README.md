@@ -32,7 +32,7 @@
 - Accessibility checked
 - Basic components (Activity, broadcast receiver, content provider)
 - Persistence (Room and SharedPreferences)
-- Connection to APIs (Open-Meteo Weather API, Google Map API)
+- Connection to APIs ([Open-Meteo Weather API](https://github.com/JulianCCY/RUNderful/blob/main/app/src/main/java/com/example/running_app/data/weather/module/AppModule.kt), [Google Map API(Expired)](https://github.com/JulianCCY/RUNderful/blob/main/app/src/main/AndroidManifest.xml))
 - Tracking Location (Android Location)
 - Usage of graph library
 - MVVM Architecture

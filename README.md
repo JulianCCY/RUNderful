@@ -40,35 +40,29 @@
 - ViewModel, LiveData
 
 ## App Screenshot
-
-
-
-
-
-
-
-
 <p align="center">
-  <img src="" width="250"> 
-  <img src="" width="250"> 
-  <img src="" width="250">
+  <img src="https://user-images.githubusercontent.com/70948419/195960707-e01f0173-43ef-4ed3-981b-40990759d2a8.png" width="250"> 
+  <img src="https://user-images.githubusercontent.com/70948419/195961312-d55c0543-5a08-40d3-b178-90f46b3ec120.png" width="250"> 
+  <img src="https://user-images.githubusercontent.com/70948419/195961313-1365a129-15cc-4941-9b2e-ab26de33978e.png" width="250">
 </p> 
 
 <p align="center">
-  <img src="" width="250"> 
-  <img src="" width="250"> 
-  <img src="" width="250">
+  <img src="https://user-images.githubusercontent.com/70948419/195960941-987c42be-04a6-4452-b568-9c69e7da796b.png" width="250"> 
+  <img src="https://user-images.githubusercontent.com/70948419/195960979-e221738a-2690-4a6b-b566-fd899e26658e.png" width="250"> 
+  <img src="https://user-images.githubusercontent.com/70948419/195960948-803ad656-2668-4af2-a3de-3f59fa381121.png" width="250">
 </p> 
 
 <p align="center">
-  <img src="" width="250"> 
-  <img src="" width="250"> 
-  <img src="" width="250">
+  <img src="https://user-images.githubusercontent.com/70948419/195961037-fa4ded76-d136-4ba0-98d9-0bc73ce963af.png" width="250"> 
+  <img src="https://user-images.githubusercontent.com/70948419/195961044-ad88c430-cc5d-4342-830f-7ca4d6453c0f.png" width="250"> 
+  <img src="https://user-images.githubusercontent.com/70948419/195961050-27c3ee29-4c7f-40e7-81d1-de34b47a8312.png" width="250">
 </p> 
 
-
-
-
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/70948419/195961103-45289f61-6863-486e-9a43-e2310be99361.png" width="250"> 
+  <img src="https://user-images.githubusercontent.com/70948419/195961107-4eb73585-f2e9-4321-8265-ac0baa77f57c.png" width="250"> 
+  <img src="" width="250">
+</p> 
 
 
 ## Useful resources & References
